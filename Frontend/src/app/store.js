@@ -1,8 +1,10 @@
 import { configureStore }  from "@reduxjs/toolkit";
-import favorites from '../features/favorites/favoritesSlice'
+import entries from '../features/entries/entriesSlice'
+import tags from '../features/tags/tagsSlice'
 
 export const store = configureStore({
     reducer: {
-        favorites: favorites,
+        entries: entries,
+        tags: tags,
     }
 })

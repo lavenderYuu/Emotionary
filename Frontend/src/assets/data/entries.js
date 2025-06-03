@@ -3,8 +3,8 @@ export const entries = [
     "id": 1,
     "title": "Morning Walk",
     "date": "2025-06-01T07:15:00Z",
-    "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
-    "tags": ["morning", "nature"],
+    "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
+    "tags": ["morning", "nature", "productivity"],
     "favorite": true
   },
   {
@@ -19,7 +19,7 @@ export const entries = [
     "id": 3,
     "title": "Dinner with Friends",
     "date": "2025-05-31T19:30:00Z",
-    "content": "Met up with Jane and Marcus at the new Thai place downtown. Food was amazing!",
+    "content": "Had some dinner with friends~",
     "tags": ["friends", "food"],
     "favorite": true
   },
@@ -27,15 +27,15 @@ export const entries = [
     "id": 4,
     "title": "Late Night Thoughts",
     "date": "2025-05-31T23:45:00Z",
-    "content": "Thinking about the future and where I want to be in a year. Feeling hopeful but uncertain.",
+    "content": "Thinking about the future and where I want to be in a year. Feeling hopeful but uncertain. This entry is extra long so that we can see what it looks like.",
     "tags": [],
-    "favorite": false
+    "favorite": true
   },
   {
     "id": 5,
-    "title": "This is a really long title that spans 2 lines",
+    "title": "This is a long title that spans 2 lines",
     "date": "2025-06-01T07:15:00Z",
-    "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming.",
+    "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
     "tags": ["morning"],
     "favorite": true
   },
@@ -53,7 +53,7 @@ export const entries = [
     "date": "2025-05-31T19:30:00Z",
     "content": "Met up with Jane and Marcus at the new Thai place downtown. Food was amazing!",
     "tags": ["food"],
-    "favorite": true
+    "favorite": false
   },
   {
     "id": 8,
