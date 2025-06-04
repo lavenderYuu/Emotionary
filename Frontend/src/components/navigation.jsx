@@ -89,8 +89,8 @@ const NavigationBar = () => {
             alt="emotionary logo"
             height="50"
             style={{
-              marginLeft: "5%",
-              marginRight: "auto",
+              marginLeft: "5px",
+              marginRight: "5%",
             }}
           ></img>
           <Box
