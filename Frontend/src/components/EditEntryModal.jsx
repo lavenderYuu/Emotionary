@@ -12,26 +12,29 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, Chip, Link } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 
-// base component: https://mui.com/material-ui/react-dialog/
-const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
-  const id = useSelector((state) => state.entries.nextId);
+// a copy of CreateEntryModal but with values filled in
+const EditEntryModal = ({ isOpen, onClose, onSave }) => {
+  const entry = useSelector((state) => state.entries.activeEntry);
   const tags = useSelector(selectSortedTags);
-
+  
   const [formData, setFormData] = useState({
     title: '',
     date: null,
     content: ''
   });
-  const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
+  const [activeTags, setActiveTags] = useState([]);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setFormData({ title: '', date: null, content: '' });
-      setActiveTags([]);
+    if (entry) {
+      setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
+      setActiveTags(entry.tags);
+      setId(entry.id);
     }
-  }, [isOpen]);
+  }, [entry]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -54,7 +57,7 @@ const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
 
     if (isValid) {
       onSave({
-        id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false // figure out a better way to set ID?
+        id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false
       })
     } else {
       alert("Journal title, date, and content are required.");
@@ -64,7 +67,7 @@ const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
   const toggleTag = (id) => {
     const exists = activeTags.some((tid) => tid === id );
     
-    if (activeTags.length < 3) { // max 3 tags per entry
+    if (activeTags.length < 3) {
       if (exists) {
         const filteredTags = activeTags.filter((tid) => tid !== id );
         setActiveTags(filteredTags);
@@ -84,7 +87,7 @@ const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
       <Dialog
         onClose={onClose}
         open={isOpen}
-        slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
+        slotProps={{
           paper: {
             sx: { 
             width: '80vw',
@@ -96,9 +99,9 @@ const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
-          slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
+          slotProps={{
             htmlInput: {
-            maxLength: 25
+            maxLength: 40
             }
           }}
           value={formData.title}
@@ -148,4 +151,4 @@ const CreateEntryModal = ({ isOpen, onClose, onSave }) => {
   );
 }
 
-export default CreateEntryModal;
+export default EditEntryModal;

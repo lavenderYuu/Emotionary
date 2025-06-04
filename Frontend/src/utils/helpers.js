@@ -1,6 +1,7 @@
+import dayjs from "dayjs";
+
 export const getDate = (date) => {
-    const entryDate = new Date(date);
-    return entryDate.toLocaleDateString('en-US');
+    return dayjs(date).format('MM/DD/YYYY'); // https://day.js.org/docs/en/display/format
 };
 
 export const getTags = (tags) => {

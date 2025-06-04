@@ -17,13 +17,14 @@ export const entriesSlice = createSlice({
         entries: entries,
         activeEntry: null,
         favorites: getFavorites(),
+        nextId: entries.length + 1
     },
 
     reducers: {
         selectEntry(state, action) {
-            const selectEntry = entries.find((e) => e.id === action.payload);
+            const selectEntry = state.entries.find((e) => e.id === action.payload);
             state.activeEntry = selectEntry || null;
-            console.log("active entry:", state.activeEntry)
+            console.log("selected entry:", state.activeEntry.id)
         },
 
         resetEntry(state, action) {
@@ -43,11 +44,27 @@ export const entriesSlice = createSlice({
         },
 
         createEntry(state, action) {
+            // console.log("create entry:", action.payload);
             state.entries.push(action.payload);
+            state.nextId += 1;
+        },
+
+        deleteEntry(state, action) {
+            const entry = action.payload;
+            const index = state.entries.findIndex((e) => e.id === entry.id);
+            if (index > -1) {
+                state.entries.splice(index, 1);
+            }
+        },
+
+        editEntry(state, action) {
+            const entry = action.payload;
+            const index = state.entries.findIndex((e) => e.id === entry.id);
+            state.entries[index] = entry;
         },
     },
 })
 
-export const { doFavorite, selectEntry, createEntry, resetEntry } = entriesSlice.actions;
+export const { selectEntry, resetEntry, doFavorite, createEntry, deleteEntry, editEntry} = entriesSlice.actions;
 
 export default entriesSlice.reducer;
