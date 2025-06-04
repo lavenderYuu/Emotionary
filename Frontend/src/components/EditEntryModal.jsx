@@ -129,13 +129,13 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers sx={{ p: 2 }}>
-          <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={6} 
+          <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}
             onChange={handleInputChange}
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1.25, mr: 1.5, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
+              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
                 onClick={() => toggleTag(tag.id)} />
             ))}
             <Link sx={{ mt: 1.25, mr: 1.5, fontSize: 'small' }} component="button" >Manage Tags</Link>

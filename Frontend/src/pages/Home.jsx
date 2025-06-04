@@ -35,9 +35,13 @@ const Home = () => {
     dispatch(createEntry(entry));
   }
 
-  const handleEditEntry = (entry) => {
-    setIsEditModalOpen(false);
+  const handleEditEntry = () => {
     setIsViewModalOpen(false);
+    setIsEditModalOpen(true);
+  }
+
+  const handleSaveEntry = (entry) => {
+    setIsEditModalOpen(false);
     dispatch(editEntry(entry));
   }
 
@@ -52,9 +56,9 @@ const Home = () => {
         <p>Welcome to your emotion diary.</p> 
         <Button onClick={handleCreateModal}>Create an entry</Button>
         <EntryCard onClick={handleOpenCard} onEdit={() => setIsEditModalOpen(true)}/>
-        <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={() => setIsEditModalOpen(true)} />
+        <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEntryModal isOpen={isCreateModalOpen} onClose={handleCloseModal} onSave={handleCreateEntry} />
-        <EditEntryModal isOpen={isEditModalOpen} onClose={handleCloseModal} onSave={handleEditEntry} />
+        <EditEntryModal isOpen={isEditModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} />
       </>
   )
 }
