@@ -15,17 +15,17 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 
-// a copy of CreateEntryModal but with values filled in
-const EditEntryModal = ({ isOpen, onClose, onSave }) => {
+// base component: https://mui.com/material-ui/react-dialog/
+const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const entry = useSelector((state) => state.entries.activeEntry);
+  const nextId = useSelector((state) => state.entries.nextId);
   const tags = useSelector(selectSortedTags);
-  
   const [formData, setFormData] = useState({
     title: '',
     date: null,
     content: ''
   });
-  const [activeTags, setActiveTags] = useState([]);
+  const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
   const [id, setId] = useState(null);
 
   useEffect(() => {
@@ -35,6 +35,18 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
       setId(entry.id);
     }
   }, [entry]);
+
+  useEffect(() => {
+    if (mode === 'create') {
+      setFormData({ title: '', date: null, content: '' });
+      setActiveTags([]);
+      setId(nextId);
+    } else if (mode === 'edit') {
+      setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
+      setActiveTags(entry.tags);
+      setId(entry.id);
+    }
+  }, [mode]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -67,7 +79,7 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
   const toggleTag = (id) => {
     const exists = activeTags.some((tid) => tid === id );
     
-    if (activeTags.length < 3) {
+    if (activeTags.length < 3) { // max 3 tags per entry
       if (exists) {
         const filteredTags = activeTags.filter((tid) => tid !== id );
         setActiveTags(filteredTags);
@@ -87,7 +99,7 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
       <Dialog
         onClose={onClose}
         open={isOpen}
-        slotProps={{
+        slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
           paper: {
             sx: { 
             width: '80vw',
@@ -99,7 +111,7 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
-          slotProps={{
+          slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
             htmlInput: {
             maxLength: 40
             }
@@ -151,4 +163,4 @@ const EditEntryModal = ({ isOpen, onClose, onSave }) => {
   );
 }
 
-export default EditEntryModal;
+export default CreateEditEntryModal;

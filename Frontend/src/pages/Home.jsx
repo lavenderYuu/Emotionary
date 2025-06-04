@@ -4,13 +4,12 @@ import ViewEntryModal from "../components/ViewEntryModal";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEntry, editEntry, resetEntry, selectEntry } from "../features/entries/entriesSlice";
-import CreateEntryModal from "../components/CreateEntryModal";
-import EditEntryModal from "../components/EditEntryModal";
+import CreateEditEntryModal from "../components/CreateEditEntryModal";
 
 const Home = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
 
   const handleOpenCard = (id) => {
@@ -20,29 +19,29 @@ const Home = () => {
 
   const handleCloseModal = () => {
     setIsViewModalOpen(false);
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(false);
+    setIsModalOpen(false);
     dispatch(resetEntry());
   };
 
   const handleCreateModal = () => {
     setIsViewModalOpen(false);
-    setIsCreateModalOpen(true);
+    setIsModalOpen(true);
+    setMode('create');
   };
-
-  const handleCreateEntry = (entry) => {
-    setIsCreateModalOpen(false);
-    dispatch(createEntry(entry));
-  }
 
   const handleEditEntry = () => {
     setIsViewModalOpen(false);
-    setIsEditModalOpen(true);
+    setIsModalOpen(true);
+    setMode('edit');
   }
 
   const handleSaveEntry = (entry) => {
-    setIsEditModalOpen(false);
-    dispatch(editEntry(entry));
+    setIsModalOpen(false);
+    if (mode === 'create') {
+      dispatch(createEntry(entry));
+    } else if (mode === 'edit') {
+      dispatch(editEntry(entry));
+    }
   }
 
   return (
@@ -55,10 +54,9 @@ const Home = () => {
         <h1>Hello 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <Button onClick={handleCreateModal}>Create an entry</Button>
-        <EntryCard onClick={handleOpenCard} onEdit={() => setIsEditModalOpen(true)}/>
+        <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
-        <CreateEntryModal isOpen={isCreateModalOpen} onClose={handleCloseModal} onSave={handleCreateEntry} />
-        <EditEntryModal isOpen={isEditModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} />
+        <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
       </>
   )
 }
