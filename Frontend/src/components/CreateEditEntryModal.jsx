@@ -28,7 +28,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
-
+  
   useEffect(() => {
     if (entry) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
@@ -42,7 +42,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       setFormData({ title: '', date: null, content: '' });
       setActiveTags([]);
       setId(nextId);
-    } else if (mode === 'edit') {
+    }if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags);
       setId(entry.id);
@@ -79,6 +79,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
   const handleClose = () => {
     setAlert(false);
+    setFormData({ title: '', date: null, content: '' });
+    setActiveTags([]);
     onClose();
   }
 
