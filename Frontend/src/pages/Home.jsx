@@ -1,4 +1,5 @@
 import EntryCard from "../components/EntryCard"
+import MoodChart from "../components/MoodChart";
 
 const Home = () => {
     return (
@@ -10,6 +11,7 @@ const Home = () => {
           </img>
           <h1>Hello 👋🏻</h1>
           <p>Welcome to your emotion diary.</p> 
+          <MoodChart />
           <EntryCard />
         </>
     )

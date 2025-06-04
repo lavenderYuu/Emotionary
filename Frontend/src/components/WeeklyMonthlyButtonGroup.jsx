@@ -2,11 +2,11 @@ import { useState } from 'react';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 
-export default function WeeklyMonthlyButtonGroup() {
-  const [selected, setSelected] = useState('weekly');
+export default function WeeklyMonthlyButtonGroup({ selected, setSelected }) {
 
   return (
-    <ButtonGroup
+    <div>
+      <ButtonGroup
       disableElevation
       variant="contained"
       aria-label="Disabled button group"
@@ -93,5 +93,6 @@ export default function WeeklyMonthlyButtonGroup() {
         </div>
       )}
     </ButtonGroup>
+  </div>
   );
 }
