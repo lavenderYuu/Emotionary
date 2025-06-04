@@ -26,7 +26,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     content: ''
   });
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
-  const [id, setId] = useState(null);
+  const [id, setId] = useState('');
+  const [alert, setAlert] = useState(false);
 
   useEffect(() => {
     if (entry) {
@@ -72,8 +73,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false
       })
     } else {
-      alert("Journal title, date, and content are required.");
+      window.alert("Journal title, date, and content are required.");
     }
+  }
+
+  const handleClose = () => {
+    setAlert(false);
+    onClose();
   }
 
   const toggleTag = (id) => {
@@ -97,7 +103,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   return (
     <>
       <Dialog
-        onClose={onClose}
+        onClose={()=> setAlert(true)}
         open={isOpen}
         slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
           paper: {
@@ -131,7 +137,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         </DialogTitle>
         <IconButton
           aria-label="close"
-          onClick={onClose}
+          onClick={()=> setAlert(true)}
           sx={(theme) => ({
             position: 'absolute',
             right: 8,
@@ -158,6 +164,23 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             Save
           </Button>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={alert}
+        onClose={() => setAlert(false)}
+        slotProps={{
+          paper: {
+            sx: { 
+            borderRadius: 4
+          }
+          }
+        }}>
+          <DialogTitle>Are you sure you want to leave?</DialogTitle>
+          <DialogContent>Any changes you have made will not be saved.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Button onClick={() => setAlert(false)}>Continue editing</Button>
+            <Button onClick={handleClose}>Yes, I want to close</Button>
+          </DialogActions>
       </Dialog>
     </>
   );

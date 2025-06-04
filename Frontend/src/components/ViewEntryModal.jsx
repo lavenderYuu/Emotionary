@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import { Box, Chip } from '@mui/material';
 import { getDate, getTags } from '../utils/helpers';
 import { deleteEntry, editEntry } from '../features/entries/entriesSlice';
+import { useState } from 'react';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
@@ -18,8 +19,10 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const entry = useSelector((state) => state.entries.activeEntry);
   const tags = useSelector((state) => state.tags.tags);
   const tagMap = useMemo(() => getTags(tags), [tags]);
+  const [alert, setAlert] = useState(false);
 
   const handleDelete = () => {
+    setAlert(false);
     dispatch(deleteEntry(entry));
     onClose();
   }
@@ -79,7 +82,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
             })}
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button onClick={handleDelete}>
+            <Button onClick={() => setAlert(true)}>
             Delete
             </Button>
             <Button onClick={handleEdit}>
@@ -87,6 +90,23 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
             </Button>
             </Box>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={alert}
+        onClose={() => setAlert(false)}
+        slotProps={{
+          paper: {
+            sx: { 
+            borderRadius: 4
+          }
+          }
+        }}>
+          <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
+          <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
+            <Button onClick={() => setAlert(false)}>Nevermind</Button>
+            <Button onClick={handleDelete}>Yes, delete</Button>
+          </DialogActions>
       </Dialog>
     </>
   );

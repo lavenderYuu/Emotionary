@@ -17,6 +17,11 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { getDate, getTags } from '../utils/helpers';
 import { useState } from 'react';
 import { selectSortedEntries } from '../features/entries/entriesSelectors';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 const EntryCard = ({ onClick, onEdit }) => {
@@ -27,6 +32,7 @@ const EntryCard = ({ onClick, onEdit }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [alert, setAlert] = useState(false);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -51,7 +57,14 @@ const EntryCard = ({ onClick, onEdit }) => {
     dispatch(selectEntry(id));
   }
 
+  const handleNevermind = () => {
+    setAnchorEl(null);
+    setAlert(false);
+  }
+
   const handleDelete = () => {
+    setAnchorEl(null);
+    setAlert(false);
     dispatch(deleteEntry(entry));
     handleClose();
   }
@@ -188,10 +201,27 @@ const EntryCard = ({ onClick, onEdit }) => {
         <MenuItem key='edit' onClick={handleEdit}>
           Edit
         </MenuItem>
-        <MenuItem key='delete' onClick={handleDelete}>
+        <MenuItem key='delete' onClick={() => setAlert(true)}>
           Delete
         </MenuItem>
       </Menu>}
+      <Dialog
+        open={alert}
+        onClose={handleNevermind}
+        slotProps={{
+          paper: {
+            sx: { 
+            borderRadius: 4
+          }
+          }
+        }}>
+          <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
+          <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
+            <Button onClick={handleNevermind}>Nevermind</Button>
+            <Button onClick={handleDelete}>Yes, delete</Button>
+          </DialogActions>
+      </Dialog>
     </>
   );
 }
