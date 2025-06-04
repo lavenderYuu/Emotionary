@@ -16,7 +16,8 @@ const CreateButton = ({ onClick }) => {
       }}
       onClick={onClick}
     >
-      <CreateOutlinedIcon />
+      <CreateOutlinedIcon sx={{ mr: 1 }} />
+      Create an entry
     </Button>
   );
 }
