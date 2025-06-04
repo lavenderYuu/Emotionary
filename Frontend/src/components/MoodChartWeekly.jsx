@@ -18,7 +18,7 @@ export default function MoodChartWeekly() {
 
     return (
         <LineChart
-            xAxis={[{ scaleType: 'time', data: dates }]}
+            xAxis={[{ scaleType: 'time', data: dates }]} // TODO: how to always display date instead of time
             series={[
             {
                 data: moodData,

@@ -7,18 +7,12 @@ import WeeklyMonthlyButtonGroup from './WeeklyMonthlyButtonGroup';
 export default function MoodChart() {
   const [view, setView] = useState('week');
 
-  const handleChange = (_, newView) => {
-    if (newView !== null) {
-      setView(newView);
-    }
-  };
-
   return (
     <div>
       <div
         style={{
           border: '1px solid rgb(226, 210, 190)',
-          borderRadius: '4',
+          borderRadius: '15px',
           padding: '20px',
           margin: '60px 28px 7px 28px',
           backgroundColor: 'rgb(251, 246, 239)',
