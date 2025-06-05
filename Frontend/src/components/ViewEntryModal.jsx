@@ -44,11 +44,16 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
           }
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }}>
-          {entry.title}
-          <Typography>
-            {getDate(entry.date)}
-          </Typography>
+        <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', width: '85%' }}>
+          <Box>
+            <Typography sx={{ fontSize: '20px' }}>
+              {entry.title}
+            </Typography>
+            <Typography>
+              {getDate(entry.date)}
+            </Typography>
+          </Box>
+          <Typography>Mood: {entry.mood}</Typography>
         </DialogTitle>
         <IconButton
           aria-label="close"
