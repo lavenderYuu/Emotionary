@@ -100,6 +100,7 @@ const NavigationBar = () => {
   );
 
   return (
+    <>
     <Box
       sx={{
         flexGrow: 1,
@@ -169,6 +170,12 @@ const NavigationBar = () => {
         {drawer}
       </Drawer>
     </Box>
+    <Box component="main" sx={{ 
+      pt: 8, 
+      px: 2  
+    }}>
+    </Box>
+    </>
   );
 };
 
