@@ -9,11 +9,12 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Chip, Link } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
+import SaveButton from './buttons/SaveButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
@@ -113,6 +114,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             width: '80vw',
             borderRadius: 4,
             backgroundColor: 'rgb(251, 246, 239)',
+            fontFamily: 'Outfit, sans-serif'
           }
           }
         }}
@@ -121,7 +123,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
           slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
             htmlInput: {
-            maxLength: 40
+            maxLength: 40,
+            style: { fontFamily: 'Outfit, sans-serif' }
             }
           }}
           value={formData.title}
@@ -152,19 +155,19 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}
             onChange={handleInputChange}
+            sx={{ fontFamily: 'Outfit, sans-serif' }}
+            InputProps={{ style: { fontFamily: 'Outfit, sans-serif' } }}
+            InputLabelProps={{ style: { fontFamily: 'Outfit, sans-serif' }} }
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
+              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}`, fontFamily: 'Outfit, sans-serif' }}
                 onClick={() => toggleTag(tag.id)} />
             ))}
-            <Link sx={{ mt: 1.25, mr: 1.5, fontSize: 'small' }} component="button" >Manage Tags</Link>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button type='submit' onClick={handleSubmit}>
-            Save
-          </Button>
+          <SaveButton type='submit' onClick={handleSubmit} />
         </DialogActions>
       </Dialog>
       <Dialog
@@ -177,9 +180,9 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           }
           }
         }}>
-          <DialogTitle>Are you sure you want to leave?</DialogTitle>
-          <DialogContent>Any changes you have made will not be saved.</DialogContent>
-          <DialogActions sx={{ display: 'flex', justifyContent: 'space-between'}}>
+          <DialogTitle sx={{ fontFamily: 'Outfit, sans-serif' }}>Are you sure you want to leave?</DialogTitle>
+          <DialogContent sx={{ fontFamily: 'Outfit, sans-serif' }}>Any changes you have made will not be saved.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Outfit, sans-serif'}}>
             <Button onClick={() => setAlert(false)}>Continue editing</Button>
             <Button onClick={handleClose}>Yes, I want to close</Button>
           </DialogActions>

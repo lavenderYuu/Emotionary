@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoginButton from '../components/LoginButton';
+import LoginButton from '../components/buttons/LoginButton';
 import LoginModal from '../components/LoginModal';
 
 
