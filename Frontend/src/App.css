@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+/* .nav-reset *, .nav-reset *::before, .nav-reset *::after {
+  all: unset;
+  display: revert;
+  font-family: revert;
+  box-sizing: border-box;
+} */
