@@ -9,11 +9,12 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Chip, Link } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
+import SaveButton from './SaveButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
@@ -158,13 +159,10 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
               <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
                 onClick={() => toggleTag(tag.id)} />
             ))}
-            <Link sx={{ mt: 1.25, mr: 1.5, fontSize: 'small' }} component="button" >Manage Tags</Link>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button type='submit' onClick={handleSubmit}>
-            Save
-          </Button>
+          <SaveButton type='submit' onClick={handleSubmit} />
         </DialogActions>
       </Dialog>
       <Dialog
