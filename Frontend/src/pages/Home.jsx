@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { createEntry, editEntry, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
+import logo from "../images/emotionary.svg"
 
 const Home = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -49,7 +50,7 @@ const Home = () => {
   return (
       <>
         <img
-          src="/images/emotionary.svg"
+          src={logo}
           alt="emotionary logo"
           width="300">
         </img>

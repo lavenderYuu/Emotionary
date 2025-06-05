@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LoginButton from '../components/buttons/LoginButton';
 import LoginModal from '../components/LoginModal';
+import logo from "../images/landing_page_logo.png"
 
 
 export default function Landing () {
@@ -21,7 +22,7 @@ export default function Landing () {
           marginTop: '-60px'
         }}>
           <img
-            src="/images/landing_page_logo.png"
+            src={logo}
             width="300"
             style={{ marginBottom: '20px' }}
           />
