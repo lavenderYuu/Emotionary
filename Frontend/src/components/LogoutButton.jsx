@@ -1,10 +1,12 @@
+import * as React from 'react';
 import Button from '@mui/material/Button';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-const CreateButton = ({ onClick }) => {
+const LogoutButton = ({ onClick }) => {
   return (
     <Button
       variant="contained"
+      startIcon={<LogoutIcon />}
       sx={{ 
           backgroundColor: '#ffe59a',
           color: '#3d3d3d',
@@ -12,14 +14,12 @@ const CreateButton = ({ onClick }) => {
           fontFamily: 'Outfit, sans-serif',
           fontWeight: 500,
           textTransform: 'none',
-          m: 1
       }}
       onClick={onClick}
     >
-      <CreateOutlinedIcon sx={{ mr: 1 }} />
-      Create an entry
+      Sign Out
     </Button>
   );
 }
 
-export default CreateButton;
+export default LogoutButton;

@@ -1,7 +1,6 @@
 import Button from '@mui/material/Button';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
-const CreateButton = ({ onClick }) => {
+const EditButton = ({ onClick }) => {
   return (
     <Button
       variant="contained"
@@ -16,10 +15,9 @@ const CreateButton = ({ onClick }) => {
       }}
       onClick={onClick}
     >
-      <CreateOutlinedIcon sx={{ mr: 1 }} />
-      Create an entry
+      Edit
     </Button>
   );
 }
 
-export default CreateButton;
+export default EditButton;
