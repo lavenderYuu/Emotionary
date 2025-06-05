@@ -1,17 +1,20 @@
 import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../assets/emotionary.svg";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-import { useMediaQuery, useTheme } from '@mui/material'
-//https://mui.com/material-ui/react-app-bar/#app-bar-with-responsive-menu
+import { useMediaQuery, useTheme } from "@mui/material";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+
 const NavMenu = styled("ul")({
   display: "flex",
   listStyle: "none",
@@ -32,8 +35,6 @@ const NavItem = styled("li")({
   },
 });
 
-
-
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -43,7 +44,6 @@ const Search = styled("div")(({ theme }) => ({
     borderRadius: "20px",
   },
   marginLeft: 0,
-  marginRight: "10%",
   width: "100%",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
@@ -79,43 +79,84 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const NavigationBar = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
+      <List>
+        {["Home", "Insights", "Entries","Log out"].map((text) => (
+          <ListItem button key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#fbf6ef", borderRadius: 15 }}>
-        <Toolbar>
-          <img
-            src={logo}
-            alt="emotionary logo"
-            height="50"
-            style={{
-              marginLeft: "5px",
-              marginRight: "5%",
-            }}
-          ></img>
-          <Box
-            sx={{ display: { xs: "none", md: "block", marginRight: "auto" } }}
-          >
-            <NavMenu className="nav_menu">
-              <NavItem>Home</NavItem>
-              <NavItem>Insights</NavItem>
-              <NavItem>Entries</NavItem>
-            </NavMenu>
-          </Box>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
+      <AppBar position="static" sx={{ bgcolor: "#fbf6ef" }}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <img
+              src={logo}
+              alt="emotionary logo"
+              height="50"
+              style={{ marginRight: "40px" }}
             />
-          </Search>
-          <Button color="inherit" sx={{ color: "black" }}>
-            Logout
-          </Button>
+            {!isMobile && (
+              <NavMenu className="nav_menu">
+                <NavItem>Home</NavItem>
+                <NavItem>Insights</NavItem>
+                <NavItem>Entries</NavItem>
+              </NavMenu>
+            )}
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+
+            {isMobile ? (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="end"
+                onClick={handleDrawerToggle}
+                sx={{ color: "black" }}
+              >
+                <MenuIcon />
+              </IconButton>
+            ) : (
+              <IconButton sx={{ color: "black", fontSize:"18px" }}>Logout</IconButton>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          "& .MuiDrawer-paper": {
+            bgcolor: "#fbf6ef",
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
     </Box>
   );
 };
