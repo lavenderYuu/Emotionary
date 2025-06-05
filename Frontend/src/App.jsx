@@ -7,7 +7,7 @@ import NavigationBar from "./components/navigation";
 function MainLayout() {
   return (
     <>
-      {/* <NavigationBar /> */}
+      <NavigationBar />
       <Routes>
         <Route path="/dashboard" element={<Home />} />
       </Routes>

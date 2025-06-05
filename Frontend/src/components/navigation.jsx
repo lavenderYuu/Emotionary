@@ -100,8 +100,17 @@ const NavigationBar = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#fbf6ef" }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        position: "fixed", 
+        top: 0,
+        left: 0, 
+        right: 0, 
+        zIndex: (theme) => theme.zIndex.drawer,
+      }}
+    >
+      <AppBar sx={{ bgcolor: "#fbf6ef" }}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
@@ -140,7 +149,9 @@ const NavigationBar = () => {
                 <MenuIcon />
               </IconButton>
             ) : (
-              <IconButton sx={{ color: "black", fontSize:"18px" }}>Logout</IconButton>
+              <IconButton sx={{ color: "black", fontSize: "18px" }}>
+                Logout
+              </IconButton>
             )}
           </Box>
         </Toolbar>
