@@ -15,7 +15,7 @@ export const entries = [
     "content": "Spent a couple of hours replying to emails and finishing up a project outline. Work has been really tough and the hours are so long.",
     "tags": ["work"],
     "favorite": false,
-    "sentiment": "☹️"
+    "mood": ""
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@ export const entries = [
     "content": "Had some dinner with friends~",
     "tags": ["friends", "food"],
     "favorite": true,
-    "sentiment": "😊"
+    "mood": "😊"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@ export const entries = [
     "content": "Thinking about the future and where I want to be in a year. Feeling hopeful but uncertain.",
     "tags": [],
     "favorite": true,
-    "sentiment": "😭"
+    "mood": "😭"
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@ export const entries = [
     "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
     "tags": ["morning"],
     "favorite": true,
-    "sentiment": "😐"
+    "mood": "😐"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@ export const entries = [
     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla aliquet mollis ex sed mollis. Quisque pretium, augue eget venenatis pulvinar, orci leo pharetra felis, quis tincidunt nibh metus et justo. Vivamus sed dapibus arcu, posuere laoreet ipsum. Nulla convallis fermentum eros a sollicitudin. Praesent varius ipsum quis elit condimentum, id euismod orci porttitor. Nam ut tincidunt dui. Mauris vitae ligula et nunc malesuada elementum volutpat vel lectus. Pellentesque iaculis aliquam aliquet. Nam purus ligula, finibus lacinia sollicitudin eget, faucibus eu magna. Duis orci odio, efficitur vitae dignissim sit amet, vestibulum ac nisl. Donec non auctor risus. Sed sed ultrices sem. Nulla id est et lorem congue volutpat eget sed nulla.",
     "tags": ["work"],
     "favorite": false,
-    "sentiment": "😐"
+    "mood": "😐"
   },
   {
     "id": 7,
@@ -60,7 +60,7 @@ export const entries = [
     "content": "Met up with Jane and Marcus at the new Thai place downtown. Food was amazing!",
     "tags": ["food"],
     "favorite": false,
-    "sentiment": "😀"
+    "mood": "😀"
   },
   {
     "id": 8,
@@ -69,6 +69,6 @@ export const entries = [
     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla aliquet mollis ex sed mollis. Quisque pretium, augue eget venenatis pulvinar, orci leo pharetra felis, quis tincidunt nibh metus et justo. Vivamus sed dapibus arcu, posuere laoreet ipsum. Nulla convallis fermentum eros a sollicitudin. Praesent varius ipsum quis elit condimentum, id euismod orci porttitor. Nam ut tincidunt dui. Mauris vitae ligula et nunc malesuada elementum volutpat vel lectus. Pellentesque iaculis aliquam aliquet. Nam purus ligula, finibus lacinia sollicitudin eget, faucibus eu magna. Duis orci odio, efficitur vitae dignissim sit amet, vestibulum ac nisl. Donec non auctor risus. Sed sed ultrices sem. Nulla id est et lorem congue volutpat eget sed nulla.",
     "tags": ["night"],
     "favorite": false,
-    "sentiment": "😐"
+    "mood": "😐"
   }
 ];
