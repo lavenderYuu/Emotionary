@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,8 +9,9 @@ import { useSelector, useDispatch } from "react-redux"
 import { useMemo } from 'react';
 import { Box, Chip } from '@mui/material';
 import { getDate, getTags } from '../utils/helpers';
-import { deleteEntry, editEntry } from '../features/entries/entriesSlice';
+import { editEntry } from '../features/entries/entriesSlice';
 import { useState } from 'react';
+import EditButton from './EditButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
@@ -20,12 +20,6 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const tags = useSelector((state) => state.tags.tags);
   const tagMap = useMemo(() => getTags(tags), [tags]);
   const [alert, setAlert] = useState(false);
-
-  const handleDelete = () => {
-    setAlert(false);
-    dispatch(deleteEntry(entry));
-    onClose();
-  }
 
   const handleEdit = () => {
     dispatch(editEntry(entry));
@@ -51,11 +45,16 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
           }
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif'  }}>
-          {entry.title}
-          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
-            {getDate(entry.date)}
-          </Typography>
+        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex', justifyContent: 'space-between', width: '85%' }}>
+          <Box>
+            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>
+              {entry.title}
+            </Typography>
+            <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
+              {getDate(entry.date)}
+            </Typography>
+          </Box>
+          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>Mood: {entry.mood}</Typography>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -82,32 +81,8 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
               ) : null;
             })}
           </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button onClick={() => setAlert(true)}>
-            Delete
-            </Button>
-            <Button onClick={handleEdit}>
-              Edit
-            </Button>
-            </Box>
+          <EditButton onClick={handleEdit} />
         </DialogActions>
-      </Dialog>
-      <Dialog
-        open={alert}
-        onClose={() => setAlert(false)}
-        slotProps={{
-          paper: {
-            sx: { 
-            borderRadius: 4
-          }
-          }
-        }}>
-          <DialogTitle sx={{ fontFamily: 'Outfit, sans-serif' }}>Are you sure you want to delete this entry?</DialogTitle>
-          <DialogContent sx={{ fontFamily: 'Outfit, sans-serif' }}>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
-          <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
-            <Button onClick={() => setAlert(false)}>Nevermind</Button>
-            <Button onClick={handleDelete}>Yes, delete</Button>
-          </DialogActions>
       </Dialog>
     </>
   );

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEntry, editEntry, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
+import CreateButton from "../components/CreateButton";
 
 const Home = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -55,7 +56,7 @@ const Home = () => {
         <h1>Hello 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <MoodChart />
-        <Button onClick={handleCreateModal}>Create an entry</Button>
+        <CreateButton onClick={handleCreateModal} />
         <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>

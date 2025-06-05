@@ -5,7 +5,8 @@ export const entries = [
     "date": "2025-06-01",
     "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
     "tags": ["morning", "nature", "productivity"],
-    "favorite": true
+    "favorite": true,
+    "mood": "😊"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@ export const entries = [
     "date": "2025-05-01",
     "content": "Spent a couple of hours replying to emails and finishing up a project outline. Work has been really tough and the hours are so long.",
     "tags": ["work"],
-    "favorite": false
+    "favorite": false,
+    "sentiment": "☹️"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@ export const entries = [
     "date": "2025-05-24",
     "content": "Had some dinner with friends~",
     "tags": ["friends", "food"],
-    "favorite": true
+    "favorite": true,
+    "sentiment": "😊"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@ export const entries = [
     "date": "2025-05-20",
     "content": "Thinking about the future and where I want to be in a year. Feeling hopeful but uncertain.",
     "tags": [],
-    "favorite": true
+    "favorite": true,
+    "sentiment": "😭"
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@ export const entries = [
     "date": "2025-05-30",
     "content": "Had a peaceful walk by the lake. The air was fresh and I spotted a few ducks swimming. This entry is extra long so that we can see what it looks like. This entry is extra long so that we can see what it looks like.",
     "tags": ["morning"],
-    "favorite": true
+    "favorite": true,
+    "sentiment": "😐"
   },
   {
     "id": 6,
@@ -45,7 +50,8 @@ export const entries = [
     "date": "2025-05-20",
     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla aliquet mollis ex sed mollis. Quisque pretium, augue eget venenatis pulvinar, orci leo pharetra felis, quis tincidunt nibh metus et justo. Vivamus sed dapibus arcu, posuere laoreet ipsum. Nulla convallis fermentum eros a sollicitudin. Praesent varius ipsum quis elit condimentum, id euismod orci porttitor. Nam ut tincidunt dui. Mauris vitae ligula et nunc malesuada elementum volutpat vel lectus. Pellentesque iaculis aliquam aliquet. Nam purus ligula, finibus lacinia sollicitudin eget, faucibus eu magna. Duis orci odio, efficitur vitae dignissim sit amet, vestibulum ac nisl. Donec non auctor risus. Sed sed ultrices sem. Nulla id est et lorem congue volutpat eget sed nulla.",
     "tags": ["work"],
-    "favorite": false
+    "favorite": false,
+    "sentiment": "😐"
   },
   {
     "id": 7,
@@ -53,7 +59,8 @@ export const entries = [
     "date": "2025-05-15",
     "content": "Met up with Jane and Marcus at the new Thai place downtown. Food was amazing!",
     "tags": ["food"],
-    "favorite": false
+    "favorite": false,
+    "sentiment": "😀"
   },
   {
     "id": 8,
@@ -61,6 +68,7 @@ export const entries = [
     "date": "2025-05-05",
     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla aliquet mollis ex sed mollis. Quisque pretium, augue eget venenatis pulvinar, orci leo pharetra felis, quis tincidunt nibh metus et justo. Vivamus sed dapibus arcu, posuere laoreet ipsum. Nulla convallis fermentum eros a sollicitudin. Praesent varius ipsum quis elit condimentum, id euismod orci porttitor. Nam ut tincidunt dui. Mauris vitae ligula et nunc malesuada elementum volutpat vel lectus. Pellentesque iaculis aliquam aliquet. Nam purus ligula, finibus lacinia sollicitudin eget, faucibus eu magna. Duis orci odio, efficitur vitae dignissim sit amet, vestibulum ac nisl. Donec non auctor risus. Sed sed ultrices sem. Nulla id est et lorem congue volutpat eget sed nulla.",
     "tags": ["night"],
-    "favorite": false
+    "favorite": false,
+    "sentiment": "😐"
   }
 ];
