@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
-import CloseButton from './CloseButton';
+import CloseButton from './buttons/CloseButton';
 
 const style = {
   position: 'absolute',
@@ -23,13 +24,15 @@ const style = {
 export default function LoginModal({ open, onClose }) {
   const [showSignIn, setShowSignIn] = useState(true);
 
+  const navigate = useNavigate();
+
   const handleClose = () => {
     setShowSignIn(true);
     onClose();
   }
 
   const handleSuccess = (response) => {
-    // placeholder function
+    navigate('/dashboard');
   };
 
   const handleError = (error) => {
@@ -57,6 +60,7 @@ export default function LoginModal({ open, onClose }) {
             sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}
             onSubmit={(event) => {
               event.preventDefault();
+              navigate('/dashboard');
             }}
           >
             {showSignIn ?  (null) : (
