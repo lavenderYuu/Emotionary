@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEntry, editEntry, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
-import CreateButton from "../components/CreateButton";
+import CreateButton from "../components/buttons/CreateButton";
 
 const Home = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);

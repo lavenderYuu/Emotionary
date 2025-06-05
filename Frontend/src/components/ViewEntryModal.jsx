@@ -11,7 +11,7 @@ import { Box, Chip } from '@mui/material';
 import { getDate, getTags } from '../utils/helpers';
 import { editEntry } from '../features/entries/entriesSlice';
 import { useState } from 'react';
-import EditButton from './EditButton'
+import EditButton from './buttons/EditButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {

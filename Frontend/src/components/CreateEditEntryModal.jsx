@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
-import SaveButton from './SaveButton'
+import SaveButton from './buttons/SaveButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {

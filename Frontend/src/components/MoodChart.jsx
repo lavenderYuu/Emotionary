@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import MoodChartWeekly from './MoodChartWeekly';
 import MoodChartMonthly from './MoodChartMonthly';
-import WeeklyMonthlyButtonGroup from './WeeklyMonthlyButtonGroup';
+import WeeklyMonthlyButtonGroup from './buttons/WeeklyMonthlyButtonGroup';
 
 export default function MoodChart() {
   const [view, setView] = useState('week');
