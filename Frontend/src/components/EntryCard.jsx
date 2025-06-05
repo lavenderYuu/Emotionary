@@ -105,13 +105,15 @@ const EntryCard = ({ onClick, onEdit }) => {
                     <Typography
                       sx={{
                         maxWidth: '100%',
-                        fontSize: '20px'
+                        fontSize: '20px',
+                        fontFamily: 'Outfit, sans-serif' 
                       }}
                     >
                       {entry.title}
                     </Typography>
                   }
                   subheader={getDate(entry.date)}
+                  subheaderTypographyProps={{ sx: { fontFamily: 'Outfit, sans-serif' } }}
                   action={
                     <IconButton
                       aria-label="more"
@@ -131,7 +133,8 @@ const EntryCard = ({ onClick, onEdit }) => {
                   sx={{
                     width: '100%',
                     display:'flex',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    fontFamily: 'Outfit, sans-serif'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -144,7 +147,8 @@ const EntryCard = ({ onClick, onEdit }) => {
                       display: '-webkit-box', // https://stackoverflow.com/questions/5269713/css-ellipsis-on-second-line
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
-                      textOverflow: 'ellipsis'
+                      textOverflow: 'ellipsis',
+                      fontFamily: 'Outfit, sans-serif' 
                     }}>
                     {entry.content}
                   </Typography>
