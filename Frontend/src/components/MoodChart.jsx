@@ -13,8 +13,8 @@ export default function MoodChart() {
         style={{
           border: '1px solid rgb(226, 210, 190)',
           borderRadius: '15px',
-          padding: '20px',
-          margin: '60px 28px 7px 28px',
+          padding: '25px',
+          margin: '60px 28px 20px 28px',
           backgroundColor: 'rgb(251, 246, 239)',
         }}
       >
