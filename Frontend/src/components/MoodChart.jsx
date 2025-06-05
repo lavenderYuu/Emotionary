@@ -7,7 +7,7 @@ import WeeklyMonthlyButtonGroup from './WeeklyMonthlyButtonGroup';
 export default function MoodChart() {
   const [view, setView] = useState('week');
 
-  return (
+  return ( // TODO: implement overlay (https://mui.com/x/react-charts/styling/) or "no data yet" localeText (https://mui.com/x/react-charts/localization/) for new app users 
     <div>
       <div
         style={{
