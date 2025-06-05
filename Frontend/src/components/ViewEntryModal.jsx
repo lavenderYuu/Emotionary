@@ -40,20 +40,21 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
             maxHeight: '60vh',
             borderRadius: 4,
             backgroundColor: 'rgb(251, 246, 239)',
+            fontFamily: 'Outfit, sans-serif' 
           }
           }
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', width: '85%' }}>
+        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex', justifyContent: 'space-between', width: '85%' }}>
           <Box>
-            <Typography sx={{ fontSize: '20px' }}>
+            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>
               {entry.title}
             </Typography>
-            <Typography>
+            <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
               {getDate(entry.date)}
             </Typography>
           </Box>
-          <Typography>Mood: {entry.mood}</Typography>
+          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>Mood: {entry.mood}</Typography>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -66,8 +67,8 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>
-          <Typography>
+        <DialogContent dividers sx={{ fontFamily: 'Outfit, sans-serif' }}>
+          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
             {entry.content}
           </Typography>
         </DialogContent>
@@ -76,7 +77,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
             {entry.tags.map((id) => {
               const tag = tagMap[id];
               return tag ? (
-                <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, m: 1, border:`2px solid ${tag.color}` }}/>
+                <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, m: 1, border:`2px solid ${tag.color}`, fontFamily: 'Outfit, sans-serif' }}/>
               ) : null;
             })}
           </Box>
