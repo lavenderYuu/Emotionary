@@ -15,7 +15,7 @@ export const entries = [
     "content": "Spent a couple of hours replying to emails and finishing up a project outline. Work has been really tough and the hours are so long.",
     "tags": ["work"],
     "favorite": false,
-    "mood": ""
+    "mood": "☹️"
   },
   {
     "id": 3,

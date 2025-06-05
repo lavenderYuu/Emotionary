@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
-import CloseButton from './CloseButton';
+import CloseButton from './buttons/CloseButton';
 
 const style = {
   position: 'absolute',
