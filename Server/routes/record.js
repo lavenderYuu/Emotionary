@@ -1,7 +1,6 @@
 import express from "express";
 // This will help us connect to the database
 import db from "../db/connection.js";
-import { ObjectId } from "mongodb";
 
 const router = express.Router();
 // This section will help you get a list of all the records.
