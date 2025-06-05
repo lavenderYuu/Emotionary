@@ -7,19 +7,66 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import { entries } from "../assets/data/entries";
 import { useSelector, useDispatch } from "react-redux"
-import { doFavorite } from '../features/favorites/favoritesSlice';
+import { useMemo } from 'react';
+import { selectEntry, doFavorite, deleteEntry, resetEntry, editEntry } from '../features/entries/entriesSlice';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import CircleIcon from '@mui/icons-material/Circle';
+import { getDate, getTags } from '../utils/helpers';
+import { useState } from 'react';
+import { selectSortedEntries } from '../features/entries/entriesSelectors';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
-// overview: https://mui.com/material-ui/react-card/
-const EntryCard = () => {
-  const favorites = useSelector((state) => state.favorites);
+// base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
+const EntryCard = ({ onClick, onEdit }) => {
+  const entries = useSelector(selectSortedEntries);
+  const favorites = useSelector((state) => state.entries.favorites);
+  const tags = useSelector((state) => state.tags.tags);
+  const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
-  console.log("favorites: ", favorites);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [alert, setAlert] = useState(false);
 
-  const getDate = (date) => {
-    const entryDate = new Date(date);
-    return entryDate.toLocaleDateString('en-US');
+  const handleClose = () => {
+    setAnchorEl(null);
+    dispatch(resetEntry());
+  };
+
+  const handleEdit = () => {
+    setAnchorEl(null);
+    onEdit();
+  };
+
+  const tagMap = useMemo(() => getTags(tags), [tags]);
+
+  const handleFavorite = (e, entry) => {
+    e.stopPropagation();
+    dispatch(doFavorite(entry));
+  }
+
+  const handleKebab = (e, id) => {
+    e.stopPropagation(); 
+    setAnchorEl(e.currentTarget);
+    dispatch(selectEntry(id));
+  }
+
+  const handleNevermind = () => {
+    setAnchorEl(null);
+    setAlert(false);
+  }
+
+  const handleDelete = () => {
+    setAnchorEl(null);
+    setAlert(false);
+    dispatch(deleteEntry(entry));
+    handleClose();
   }
 
   return (
@@ -35,27 +82,56 @@ const EntryCard = () => {
           <Box
             key={index}
             sx={{ margin: '8px' }}>
-              <Card sx={{ 
-                width: 280,
-                height: 224,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                textAlign: 'left',
-                borderRadius: 4,
-                border: '1px solid rgb(226, 210, 190)',
-                backgroundColor: 'rgb(251, 246, 239)',
-                boxShadow: 'none',
-                overflow: 'hidden'
-              }}>
+              <Card 
+                onClick={() => onClick(entry.id)}
+                sx={{ 
+                  width: 280,
+                  height: 224,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  textAlign: 'left',
+                  borderRadius: 4,
+                  border: '1px solid #e2d2be',
+                  backgroundColor: '#fbf6ef',
+                  boxShadow: 'none',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  '&:hover': { backgroundColor: '#f5eee4' }
+                }}>
                 <CardHeader
-                  title={entry.title}
+                  title={
+                    <Typography
+                      sx={{
+                        maxWidth: '100%',
+                        fontSize: '20px'
+                      }}
+                    >
+                      {entry.title}
+                    </Typography>
+                  }
                   subheader={getDate(entry.date)}
+                  action={
+                    <IconButton
+                      aria-label="more"
+                      id="long-button"
+                      aria-controls={'menu'}
+                      aria-expanded={'menu'}
+                      aria-haspopup="true"
+                      onClick={(e) => handleKebab(e, entry.id)}
+                      sx={{
+                        top: -2,
+                        right: 30
+                      }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  }
                   sx={{
-                    display:'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'flex-start'
+                    width: '100%',
+                    display:'flex',
+                    justifyContent: 'space-between'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -66,29 +142,86 @@ const EntryCard = () => {
                     sx={{
                       overflow: 'hidden',
                       display: '-webkit-box', // https://stackoverflow.com/questions/5269713/css-ellipsis-on-second-line
-                      WebkitLineClamp: 2,
+                      WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       textOverflow: 'ellipsis'
                     }}>
                     {entry.content}
                   </Typography>
                 </CardContent>
-                <CardActions disableSpacing>
-                  <IconButton 
+                <CardActions
+                  disableSpacing
+                  sx={{
+                    width: '90%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <IconButton
                     aria-label="add to favorites"
-                    onClick={() => dispatch(doFavorite(entry))}
-                    >
+                    onClick={(e) => handleFavorite(e, entry)}
+                  >
                     {favorites.some((favorite) => favorite.id === entry.id) ? (
                       <FavoriteIcon color="error" />
                     ) : (
                       <FavoriteBorderOutlinedIcon />
                     )}
                   </IconButton>
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    {entry.tags.map((id) => {
+                      const tag = tagMap[id];
+                      return tag ? (
+                        <CircleIcon key={tag.id} sx={{ color: tag.color, fontSize: 12 }} />
+                      ) : null;
+                    })}
+                  </Box>
                 </CardActions>
               </Card>
           </Box>
         ))}
      </Box>
+     {entry &&
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        disableScrollLock
+        slotProps={{
+          paper: {
+            style: {
+              width: '14ch',
+              boxShadow: 'none',
+              border: '1px solid #e2d2be',
+              borderRadius: 6,
+            },
+          }
+        }}
+      >
+        <MenuItem key='edit' onClick={handleEdit}>
+          Edit
+        </MenuItem>
+        <MenuItem key='delete' onClick={() => setAlert(true)}>
+          Delete
+        </MenuItem>
+      </Menu>}
+      <Dialog
+        open={alert}
+        onClose={handleNevermind}
+        slotProps={{
+          paper: {
+            sx: { 
+            borderRadius: 4
+          }
+          }
+        }}>
+          <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
+          <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
+            <Button onClick={handleNevermind}>Nevermind</Button>
+            <Button onClick={handleDelete}>Yes, delete</Button>
+          </DialogActions>
+      </Dialog>
     </>
   );
 }

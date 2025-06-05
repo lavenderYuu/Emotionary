@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import EntryCard from "../components/EntryCard"
 import MoodChart from "../components/MoodChart";
 
