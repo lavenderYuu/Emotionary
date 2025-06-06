@@ -22,5 +22,5 @@ For Milestone 1, we implemented the basic frontend structure of our app, includi
 
 ## Getting Started
 1. `cd` to the `Frontend` folder.
-2. Run `docker pull lavyu/my-react-app`.
-3. Run `docker run -p 5174:5174 lavyu/my-react-app`.
+2. Run `docker pull lavyu/slack`.
+3. Run `docker run -p 5174:5174 lavyu/slack`.
