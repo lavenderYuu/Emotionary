@@ -1,0 +1,48 @@
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
+
+const EntrySchema = new Schema(
+    {
+        title: {
+            type: String,
+            required: true,
+        },
+
+        date: {
+            type: Date,
+            required: true,
+        },
+
+        content: {
+            type: String,
+            required: true,
+        },
+        
+        tags: {
+            type: [String],
+        },
+
+        favorite: {
+            type: Boolean,
+            default: false,
+        },
+
+        user_id : {
+            type: String,
+            // type: mongoose.Types.ObjectId,
+            // ref: User
+            required: true,
+        },
+
+        mood: {
+            type: String,
+            // type: mongoose.Types.ObjectId,
+            // ref: Mood
+            required: true,
+        }
+    }
+)
+
+const Entry = model("Entry", EntrySchema, "entry");
+
+export { Entry };
