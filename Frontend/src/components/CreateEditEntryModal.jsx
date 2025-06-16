@@ -21,6 +21,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const entry = useSelector((state) => state.entries.activeEntry);
   const nextId = useSelector((state) => state.entries.nextId);
   const tags = useSelector(selectSortedTags);
+
   const [formData, setFormData] = useState({
     title: '',
     date: null,
@@ -29,6 +30,23 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
+  // const [tags, setTags] = useState([]); // TODO: User-specific tags
+  // const [entry, setEntry] = useState([]); // TODO: Currently open entry
+
+  // Fetch user-specific tags and entry data from backend when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // fetch(`http://localhost:3000/tags/${userId}`)
+      //   .then(res => res.json())
+      //   .then(data => setTags(data))
+      //   .catch(err => console.error('Failed to fetch tags for user:', err));
+
+      // fetch(`http://localhost:3000/entries/${entry._id}`)
+      //   .then(res => res.json())
+      //   .then(data => setEntry(data))
+      //   .catch(err => console.error('Failed to fetch entries:', err));
+    }
+  }, [isOpen]);
   
   useEffect(() => {
     if (entry) {
@@ -42,11 +60,11 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     if (mode === 'create') {
       setFormData({ title: '', date: null, content: '' });
       setActiveTags([]);
-      setId(nextId);
-    }if (mode === 'edit') {
+      setId(nextId); // TODO: Replace with actual ID
+    } else if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags);
-      setId(entry.id);
+      setId(entry.id); // TODO: Replace with actual ID
     }
   }, [mode]);
 
@@ -65,16 +83,55 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { title, date, content } = formData;
     const isValid = (title.trim() !== '') && date && (content.trim() !== '');
 
-    if (isValid) {
-      onSave({
-        id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false
-      })
-    } else {
+    if (!isValid) {
       window.alert("Journal title, date, and content are required.");
+    } else {
+      onSave({
+        id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false, user_id: '123', mood: '😊'
+      })
+
+      const entryData = {
+        id, // TODO: Replace with actual entry ID
+        title,
+        date: date.toISOString(),
+        content,
+        tags: activeTags,
+        favorite: false,
+        user_id: '123', // TODO: Replace with actual user ID
+        mood: '😊' // TODO: Replace with actual mood
+      };
+
+      try {
+        let response;
+        if (mode === "create") {
+          console.log("in create mode");
+          response = await fetch('http://localhost:3000/entries', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entryData),
+          });
+        } else if (mode === "edit") {
+          console.log("in edit mode");
+          console.log(id); // TODO: GET ACTUAL ID
+          response = await fetch(`http://localhost:3000/entries/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entryData),
+          });
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to save entry');
+        }
+
+        const savedEntry = await response.json();
+      } catch (err) {
+        window.alert(err.message);
+      }
     }
   }
 
@@ -120,6 +177,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         }}
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
+          {/* Title field */}
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
           slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
             htmlInput: {
@@ -130,6 +188,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           value={formData.title}
           onChange={handleInputChange}
           />
+          {/* Date picker */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               required 
@@ -151,6 +210,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         >
           <CloseIcon />
         </IconButton>
+        {/* Main entry field */}
         <DialogContent dividers sx={{ p: 2 }}>
           <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}

@@ -1,5 +1,6 @@
 import express from 'express';
 import entry from "./entry.js"
+import tag from "./tag.js";
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.post("/product", (req, res) => {
 });
 
 router.use('/entries', entry);
+router.use('/tags', tag);
 
 export { router };
