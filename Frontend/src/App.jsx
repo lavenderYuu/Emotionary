@@ -3,6 +3,9 @@ import "./App.css";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import NavigationBar from "./components/navigation";
+import { useDispatch } from "react-redux";
+import { fetchEntries } from "./features/entries/entriesSlice";
+import { useEffect } from "react";
 
 function MainLayout() {
   return (
@@ -16,6 +19,12 @@ function MainLayout() {
 }
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchEntries());
+  }, [dispatch])
+
   return (
     <BrowserRouter>
       <Routes>

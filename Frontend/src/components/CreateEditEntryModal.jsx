@@ -15,13 +15,14 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 import SaveButton from './buttons/SaveButton'
+import { fetchEntries } from '../features/entries/entriesSlice';
+import { useDispatch } from 'react-redux';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const entry = useSelector((state) => state.entries.activeEntry);
   const nextId = useSelector((state) => state.entries.nextId);
   const tags = useSelector(selectSortedTags);
-
   const [formData, setFormData] = useState({
     title: '',
     date: null,
@@ -30,9 +31,9 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
+  const dispatch = useDispatch();
+  console.log("active entry:", entry?._id);
   // const [tags, setTags] = useState([]); // TODO: User-specific tags
-  // const [entry, setEntry] = useState([]); // TODO: Currently open entry
-
   // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +53,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     if (entry) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags);
-      setId(entry.id);
+      setId(entry._id);
     }
   }, [entry]);
 
@@ -64,7 +65,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     } else if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags);
-      setId(entry.id); // TODO: Replace with actual ID
+      setId(entry._id);
     }
   }, [mode]);
 
@@ -100,7 +101,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         date: date.toISOString(),
         content,
         tags: activeTags,
-        favorite: false,
+        favorite: entry.favorite,
         user_id: '123', // TODO: Replace with actual user ID
         mood: '😊' // TODO: Replace with actual mood
       };
@@ -116,7 +117,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           });
         } else if (mode === "edit") {
           console.log("in edit mode");
-          console.log(id); // TODO: GET ACTUAL ID
+          console.log(id);
           response = await fetch(`http://localhost:3000/entries/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -128,7 +129,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           throw new Error('Failed to save entry');
         }
 
-        const savedEntry = await response.json();
+        await response.json();
+        dispatch(fetchEntries());
       } catch (err) {
         window.alert(err.message);
       }

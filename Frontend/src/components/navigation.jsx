@@ -122,9 +122,9 @@ const NavigationBar = () => {
             />
             {!isMobile && (
               <NavMenu className="nav_menu">
-                <NavItem>Home</NavItem>
-                <NavItem>Insights</NavItem>
-                <NavItem>Entries</NavItem>
+                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Home</NavItem>
+                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Insights</NavItem>
+                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Entries</NavItem>
               </NavMenu>
             )}
           </Box>
@@ -150,7 +150,7 @@ const NavigationBar = () => {
                 <MenuIcon />
               </IconButton>
             ) : (
-              <IconButton sx={{ color: "black", fontSize: "18px" }}>
+              <IconButton sx={{ color: "black", fontSize: "18px", fontFamily: 'Outfit, sans-serif' }}>
                 Logout
               </IconButton>
             )}

@@ -5,26 +5,17 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import { useMemo } from 'react';
 import { Box, Chip } from '@mui/material';
 import { getDate, getTags } from '../utils/helpers';
-import { editEntry } from '../features/entries/entriesSlice';
-import { useState } from 'react';
 import EditButton from './buttons/EditButton'
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
-  const dispatch = useDispatch();
   const entry = useSelector((state) => state.entries.activeEntry);
   const tags = useSelector((state) => state.tags.tags);
   const tagMap = useMemo(() => getTags(tags), [tags]);
-  const [alert, setAlert] = useState(false);
-
-  const handleEdit = () => {
-    dispatch(editEntry(entry));
-    onEdit();
-  }
 
   if (!entry) return null;
 
@@ -81,7 +72,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
               ) : null;
             })}
           </Box>
-          <EditButton onClick={handleEdit} />
+          <EditButton onClick={() => onEdit()} />
         </DialogActions>
       </Dialog>
     </>
