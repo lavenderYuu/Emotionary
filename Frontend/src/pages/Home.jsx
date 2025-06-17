@@ -4,10 +4,9 @@ import MoodChart from "../components/MoodChart";
 import ViewEntryModal from "../components/ViewEntryModal";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createEntry, editEntry, resetEntry, selectEntry } from "../features/entries/entriesSlice";
+import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
-import logo from "../images/emotionary.svg"
 
 const Home = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -38,22 +37,13 @@ const Home = () => {
     setMode('edit');
   }
 
-  const handleSaveEntry = (entry) => {
+  const handleSaveEntry = async () => {
     setIsModalOpen(false);
-    if (mode === 'create') {
-      dispatch(createEntry(entry));
-    } else if (mode === 'edit') {
-      dispatch(editEntry(entry));
-    }
+    dispatch(fetchEntries());
   }
 
   return (
       <>
-        <img
-          src={logo}
-          alt="emotionary logo"
-          width="300">
-        </img>
         <h1>Hello 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <MoodChart />

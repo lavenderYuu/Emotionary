@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useSelector, useDispatch } from "react-redux"
 import { useMemo } from 'react';
-import { selectEntry, doFavorite, deleteEntry, resetEntry, editEntry } from '../features/entries/entriesSlice';
+import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -26,7 +26,6 @@ import Button from '@mui/material/Button';
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 const EntryCard = ({ onClick, onEdit }) => {
   const entries = useSelector(selectSortedEntries);
-  const favorites = useSelector((state) => state.entries.favorites);
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
@@ -46,9 +45,9 @@ const EntryCard = ({ onClick, onEdit }) => {
 
   const tagMap = useMemo(() => getTags(tags), [tags]);
 
-  const handleFavorite = (e, entry) => {
+  const handleFavorite = async (e, entry) => {
     e.stopPropagation();
-    dispatch(doFavorite(entry));
+    dispatch(favoriteEntry(entry));
   }
 
   const handleKebab = (e, id) => {
@@ -62,10 +61,12 @@ const EntryCard = ({ onClick, onEdit }) => {
     setAlert(false);
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
     dispatch(deleteEntry(entry));
+    dispatch(resetEntry());
+    dispatch(fetchEntries());
     handleClose();
   }
 
@@ -83,7 +84,7 @@ const EntryCard = ({ onClick, onEdit }) => {
             key={index}
             sx={{ margin: '8px' }}>
               <Card 
-                onClick={() => onClick(entry.id)}
+                onClick={() => onClick(entry._id)}
                 sx={{ 
                   width: 280,
                   height: 224,
@@ -121,7 +122,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       aria-controls={'menu'}
                       aria-expanded={'menu'}
                       aria-haspopup="true"
-                      onClick={(e) => handleKebab(e, entry.id)}
+                      onClick={(e) => handleKebab(e, entry._id)}
                       sx={{
                         top: -2,
                         right: 30
@@ -166,11 +167,9 @@ const EntryCard = ({ onClick, onEdit }) => {
                     aria-label="add to favorites"
                     onClick={(e) => handleFavorite(e, entry)}
                   >
-                    {favorites.some((favorite) => favorite.id === entry.id) ? (
-                      <FavoriteIcon color="error" />
-                    ) : (
-                      <FavoriteBorderOutlinedIcon />
-                    )}
+                    {entry.favorite === true ? 
+                      <FavoriteIcon color="error" /> : 
+                      <FavoriteBorderOutlinedIcon />}
                   </IconButton>
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
                     {entry.tags.map((id) => {
