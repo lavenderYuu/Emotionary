@@ -32,7 +32,6 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
   const dispatch = useDispatch();
-  console.log("active entry:", entry?._id);
   // const [tags, setTags] = useState([]); // TODO: User-specific tags
   // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
@@ -61,7 +60,6 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     if (mode === 'create') {
       setFormData({ title: '', date: null, content: '' });
       setActiveTags([]);
-      setId(nextId); // TODO: Replace with actual ID
     } else if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags);
@@ -91,17 +89,14 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     if (!isValid) {
       window.alert("Journal title, date, and content are required.");
     } else {
-      onSave({
-        id: id, title: title, date: date.toISOString(), content: content, tags: activeTags, favorite: false, user_id: '123', mood: '😊'
-      })
+      onSave();
 
       const entryData = {
-        id, // TODO: Replace with actual entry ID
         title,
         date: date.toISOString(),
         content,
         tags: activeTags,
-        favorite: entry.favorite,
+        favorite: entry?.favorite ? entry.favorite : false,
         user_id: '123', // TODO: Replace with actual user ID
         mood: '😊' // TODO: Replace with actual mood
       };
@@ -129,6 +124,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           throw new Error('Failed to save entry');
         }
 
+        setId("");
+        setFormData({ title: '', date: null, content: '' });
         await response.json();
         dispatch(fetchEntries());
       } catch (err) {

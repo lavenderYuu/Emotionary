@@ -37,7 +37,7 @@ const Home = () => {
     setMode('edit');
   }
 
-  const handleSaveEntry = async (entry) => {
+  const handleSaveEntry = async () => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
   }

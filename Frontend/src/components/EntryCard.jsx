@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useSelector, useDispatch } from "react-redux"
 import { useMemo } from 'react';
-import { selectEntry, deleteEntry, resetEntry, favoriteEntry } from '../features/entries/entriesSlice';
+import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -32,7 +32,6 @@ const EntryCard = ({ onClick, onEdit }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
-  console.log("active entry:", entry?._id);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -62,10 +61,11 @@ const EntryCard = ({ onClick, onEdit }) => {
     setAlert(false);
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
     dispatch(deleteEntry(entry));
+    dispatch(resetEntry());
     dispatch(fetchEntries());
     handleClose();
   }
