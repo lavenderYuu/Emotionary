@@ -17,6 +17,9 @@ import { selectSortedTags } from '../features/tags/tagsSelectors';
 import SaveButton from './buttons/SaveButton'
 import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
+import { InferenceClient } from '@huggingface/inference';
+
+const client = new InferenceClient('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');
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
@@ -91,6 +94,22 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     } else {
       onSave();
 
+      const sentimentAnalysisResult = await client.textClassification({ // returns an array of predictions (label + score)
+        model: 'tabularisai/multilingual-sentiment-analysis',
+        inputs: content,
+      });
+
+      const sentimentEmojiMap = {
+        'Very Positive': '😀',
+        'Positive': '😊',
+        'Neutral': '😐',
+        'Negative': '☹️',
+        'Very Negative': '😭',
+      };
+
+      const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
+      const sentiment = sentimentEmojiMap[sentimentLabel];
+
       const entryData = {
         title,
         date: date.toISOString(),
@@ -98,7 +117,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: '123', // TODO: Replace with actual user ID
-        mood: '😊' // TODO: Replace with actual mood
+        mood: sentiment // TODO: Replace with actual mood
       };
 
       try {
