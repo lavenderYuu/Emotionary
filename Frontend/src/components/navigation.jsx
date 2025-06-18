@@ -14,6 +14,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { Link } from "react-router-dom";
 
 const NavMenu = styled("ul")({
   display: "flex",
@@ -123,7 +124,7 @@ const NavigationBar = () => {
             {!isMobile && (
               <NavMenu className="nav_menu">
                 <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Home</NavItem>
-                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Insights</NavItem>
+                <NavItem as={Link} to='/insights' style={{ fontFamily: 'Outfit, sans-serif' }}>Insights</NavItem>
                 <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Entries</NavItem>
               </NavMenu>
             )}
