@@ -3,6 +3,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import NavigationBar from "./components/navigation";
+import Insights from "./pages/Insights";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect } from "react";
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/*" element={<MainLayout />} />
+        <Route path="/insights" element={<Insights />}/>
       </Routes>
     </BrowserRouter>
   );
