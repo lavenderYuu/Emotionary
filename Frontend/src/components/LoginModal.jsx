@@ -69,11 +69,15 @@ export default function LoginModal({ open, onClose }) {
           password: formData.password,
         }),
       });
+      
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
       alert("User registered successfully");
       setShowSignIn(true);
+      setFormData({ firstName: "", email: "", password: "" }); 
     } catch (error) {
       console.error("Error during registration:", error);
       alert("Registration failed: " + error.message);
@@ -93,10 +97,13 @@ export default function LoginModal({ open, onClose }) {
           password: formData.password,
         }),
       });
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
+
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
       dispatch(setUserId(data.user._id));
       navigate("/dashboard");
     } catch (error) {
