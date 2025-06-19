@@ -102,80 +102,101 @@ const NavigationBar = () => {
 
   return (
     <>
-    <Box
-      sx={{
-        flexGrow: 1,
-        position: "fixed", 
-        top: 0,
-        left: 0, 
-        right: 0, 
-        zIndex: (theme) => theme.zIndex.drawer,
-      }}
-    >
-      <AppBar sx={{ bgcolor: "#fbf6ef" }}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={logo}
-              alt="emotionary logo"
-              height="50"
-              style={{ marginRight: "40px" }}
-            />
-            {!isMobile && (
-              <NavMenu className="nav_menu">
-                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Home</NavItem>
-                <NavItem as={Link} to='/insights' style={{ fontFamily: 'Outfit, sans-serif' }}>Insights</NavItem>
-                <NavItem style={{ fontFamily: 'Outfit, sans-serif' }}>Entries</NavItem>
-              </NavMenu>
-            )}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-
-            {isMobile ? (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="end"
-                onClick={handleDrawerToggle}
-                sx={{ color: "black" }}
-              >
-                <MenuIcon />
-              </IconButton>
-            ) : (
-              <IconButton sx={{ color: "black", fontSize: "18px", fontFamily: 'Outfit, sans-serif' }}>
-                Logout
-              </IconButton>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        anchor="right"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
+      <Box
         sx={{
-          "& .MuiDrawer-paper": {
-            bgcolor: "#fbf6ef",
-          },
+          flexGrow: 1,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.drawer,
         }}
       >
-        {drawer}
-      </Drawer>
-    </Box>
-    <Box component="main" sx={{ 
-      pt: 8, 
-      px: 2  
-    }}>
-    </Box>
+        <AppBar sx={{ bgcolor: "#fbf6ef" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={logo}
+                alt="emotionary logo"
+                height="50"
+                style={{ marginRight: "40px" }}
+              />
+              {!isMobile && (
+                <NavMenu className="nav_menu">
+                  <NavItem style={{ fontFamily: "Outfit, sans-serif" }}>
+                    Home
+                  </NavItem>
+                  <NavItem
+                    as={Link}
+                    to="/insights"
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                      color: "inherit",
+                    }}
+                  >
+                    Insights
+                  </NavItem>
+                  <NavItem style={{ fontFamily: "Outfit, sans-serif" }}>
+                    Entries
+                  </NavItem>
+                </NavMenu>
+              )}
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </Search>
+
+              {isMobile ? (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="end"
+                  onClick={handleDrawerToggle}
+                  sx={{ color: "black" }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              ) : (
+                <IconButton
+                  sx={{
+                    color: "black",
+                    fontSize: "18px",
+                    fontFamily: "Outfit, sans-serif",
+                  }}
+                >
+                  Logout
+                </IconButton>
+              )}
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          anchor="right"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          sx={{
+            "& .MuiDrawer-paper": {
+              bgcolor: "#fbf6ef",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          pt: 8,
+          px: 2,
+        }}
+      ></Box>
     </>
   );
 };

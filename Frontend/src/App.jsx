@@ -14,6 +14,7 @@ function MainLayout() {
       <NavigationBar />
       <Routes>
         <Route path="/dashboard" element={<Home />} />
+        <Route path="/insights" element={<Insights />} />
       </Routes>
     </>
   );
@@ -31,7 +32,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/*" element={<MainLayout />} />
-        <Route path="/insights" element={<Insights />}/>
       </Routes>
     </BrowserRouter>
   );
