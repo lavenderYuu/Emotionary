@@ -28,8 +28,9 @@ const NavMenu = styled("ul")({
   margin: 0,
 });
 
-const NavItem = styled("li")({
+const NavItem = styled("a")({
   cursor: "pointer",
+  color: "#333",
   fontFamily: "Roboto",
   "&:hover": {
     color: "#1976d2",
@@ -123,7 +124,11 @@ const NavigationBar = () => {
               />
               {!isMobile && (
                 <NavMenu className="nav_menu">
-                  <NavItem style={{ fontFamily: "Outfit, sans-serif" }}>
+                  <NavItem
+                    as={Link}
+                    to="/dashboard"
+                    style={{ fontFamily: "Outfit, sans-serif" }}
+                  >
                     Home
                   </NavItem>
                   <NavItem
@@ -131,7 +136,6 @@ const NavigationBar = () => {
                     to="/insights"
                     style={{
                       fontFamily: "Outfit, sans-serif",
-                      color: "inherit",
                     }}
                   >
                     Insights
