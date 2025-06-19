@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchEntries = createAsyncThunk('entries/fetchEntries', async () => {
-    const res = await fetch('http://localhost:3000/entries');
+export const fetchEntries = createAsyncThunk('entries/fetchEntries', async (_, { getState }) => {
+    const userId = getState().auth.userId;
+    const res = await fetch(`http://localhost:3000/users/${userId}/entries`);
     return await res.json();
 });
 

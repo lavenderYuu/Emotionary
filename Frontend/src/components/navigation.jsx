@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -7,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../images/emotionary.svg";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useMediaQuery, useTheme } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
@@ -140,7 +139,13 @@ const NavigationBar = () => {
                   >
                     Insights
                   </NavItem>
-                  <NavItem style={{ fontFamily: "Outfit, sans-serif" }}>
+                  <NavItem
+                    as={Link}
+                    to="/entries"
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                    }}
+                  >
                     Entries
                   </NavItem>
                 </NavMenu>

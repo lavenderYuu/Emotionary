@@ -70,6 +70,10 @@ const EntryCard = ({ onClick, onEdit }) => {
     handleClose();
   }
 
+  if (entries.length === 0) {
+    return <Box sx={{ margin: 4 }}>Whoops, you have no journal entries! Please create an entry.</Box>
+  }
+
   return (
     <>
      <Box sx={{ 

@@ -24,8 +24,8 @@ const client = new InferenceClient('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');
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const entry = useSelector((state) => state.entries.activeEntry);
-  const nextId = useSelector((state) => state.entries.nextId);
   const tags = useSelector(selectSortedTags);
+  const userId = useSelector((state) => state.auth.userId);
   const [formData, setFormData] = useState({
     title: '',
     date: null,
@@ -36,6 +36,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [alert, setAlert] = useState(false);
   const dispatch = useDispatch();
   // const [tags, setTags] = useState([]); // TODO: User-specific tags
+
   // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -116,7 +117,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         content,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
-        user_id: '123', // TODO: Replace with actual user ID
+        user_id: userId, // TODO: Replace with actual user ID
         mood: sentiment // TODO: Replace with actual mood
       };
 
