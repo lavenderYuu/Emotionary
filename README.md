@@ -9,7 +9,7 @@
 - Sophia Pobre
 
 ## Description
-*emotionary* journaling app with sentiment analysis. It will store encrypted user journal entries, sentiment analysis scores, and account information. Users will be able to gain a deeper understanding of their mental well-being, and utilize mood tracking with weekly and monthly summaries to manage their emotions. Users will also be able to tag, favorite, and filter journal entries to search through past entries easily.
+*emotionary* is a journaling app with sentiment analysis. It will store encrypted user journal entries, sentiment analysis scores, and account information. Users will be able to gain a deeper understanding of their mental well-being, and utilize mood tracking with weekly and monthly summaries to manage their emotions. Users will also be able to tag, favorite, and filter journal entries to search through past entries easily.
 
 ## Milestone 1
 For Milestone 1, we implemented the basic frontend structure of our app, including components for authentication, journal entry management, and mood tracking. Below is a summary of the features that have been added: 
@@ -18,9 +18,28 @@ For Milestone 1, we implemented the basic frontend structure of our app, includi
     - A navbar with navigation links, a search bar to find journal entries, and a logout option
     - A mood chart that provides weekly and monthly summaries of the user's mood, generated from sentiment analysis data
     - A "create an entry" feature, which includes the ability to write a new journal entry, add a title, select a date, and add up to three tags for that entry
-    - A feature to view past journal entries, as well as edit, favourite/unfavourite, and delete them
+    - A feature to view past journal entries, as well as edit, favorite/unfavorite, and delete them
+
+## Milestone 2
+For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We also implemented backend API routes for login, entries, and sentiment analysis, all of which access stored data on MongoDB Atlas. Below is a summary of the features that have been added:
+- Landing Page
+    - API calls are made when users register or sign in
+- Home Page
+    - API calls are made when users create, edit, favorite, or delete entries
+- Insights Page - Users can see different insights for their moods in addition to the default graph on the dashboard
+    - Monthly calender view with icons indicating mood on tracked dates 
+    - Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Getting Started
-1. `cd` to the `Frontend` folder.
-2. Run `docker pull lavyu/slack`.
-3. Run `docker run -p 5174:5174 lavyu/slack`.
+1. Clone this repo
+2. Run `docker-compose up`
+3. Frontend will be available at: http://localhost
+4. Backend API runs at: http://localhost:5000
+
+Alternatively:
+1. Pull from Docker Hub:
+`docker pull aaachung/team15-frontend`
+`docker pull aaachung/team15-backend`
+2. Run containers: 
+`docker run -p 3000:3000 aaachung/team15-frontend`
+`docker run -p 80:80 aaachung/team15-backend`
