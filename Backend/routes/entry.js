@@ -61,7 +61,7 @@ router.put('/:entryId', async (req, res) => {
     }
 });
 
-// Edit an existing entry by ID
+// Delete an entry by ID
 // DELETE /entries/:entryId
 router.delete('/:entryId', async (req, res) => {
     try {

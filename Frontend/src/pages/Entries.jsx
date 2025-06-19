@@ -1,5 +1,4 @@
 import EntryCard from "../components/EntryCard"
-import MoodChart from "../components/MoodChart";
 import ViewEntryModal from "../components/ViewEntryModal";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -7,7 +6,7 @@ import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entri
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 
-const Home = () => {
+const Entries = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
@@ -43,10 +42,7 @@ const Home = () => {
 
   return (
       <>
-        <h1>Hello 👋🏻</h1>
-        <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
-        <MoodChart />
         <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
@@ -54,4 +50,4 @@ const Home = () => {
   )
 }
 
-export default Home;
+export default Entries;

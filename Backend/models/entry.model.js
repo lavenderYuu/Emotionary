@@ -28,16 +28,14 @@ const EntrySchema = new Schema(
         },
 
         user_id : {
-            type: String,
-            // type: mongoose.Types.ObjectId,
-            // ref: User
-            required: true,
+            type: mongoose.Types.ObjectId,
+            ref: "User"
         },
 
         mood: {
             type: String,
             // type: mongoose.Types.ObjectId,
-            // ref: Mood
+            // ref: "Mood"
             required: true,
         }
     }

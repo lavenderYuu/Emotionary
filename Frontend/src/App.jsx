@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import NavigationBar from "./components/navigation";
 import Insights from "./pages/Insights";
-import { useDispatch } from "react-redux";
+import Entries from "./pages/Entries";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect } from "react";
 
@@ -15,6 +16,7 @@ function MainLayout() {
       <Routes>
         <Route path="/dashboard" element={<Home />} />
         <Route path="/insights" element={<Insights />} />
+        <Route path="/entries" element={<Entries />} />
       </Routes>
     </>
   );
@@ -22,10 +24,13 @@ function MainLayout() {
 
 function App() {
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
-    dispatch(fetchEntries());
-  }, [dispatch])
+    if (userId) {
+      dispatch(fetchEntries());
+    }
+  }, [userId, dispatch])
 
   return (
     <BrowserRouter>
