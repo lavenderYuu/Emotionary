@@ -2,24 +2,14 @@ import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 export default function MoodPieChart() {
-
-    // const [dates, setDates] = useState([]);
-    // const [moodData, setMoodData] = useState([]);
-    const [moodCounts, setMoodCounts] = useState([]);
+    const entries = useSelector((state) => state.entries.entries);
 
     const moods = ['😭', '☹️', '😐', '😊', '😀'];
 
-    useEffect(() => {
-        const fetchMonthlyEntries = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/entries'); // TODO: filter by user?
-            const entries = await response.json();
-
-            console.log('entries: ', entries);
-
-            const oneMonthAgo = new Date();
+    const oneMonthAgo = new Date();
             oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
             console.log('oneWeekAgo: ', oneMonthAgo);
@@ -37,23 +27,14 @@ export default function MoodPieChart() {
                 label: mood,
             }));
 
-            setMoodCounts(counts);
-        } catch (err) {
-            console.error('Failed to fetch entries: ', err);
-        }
-        };
-
-        fetchMonthlyEntries();
-    }, []);
-
     return (
         <>
-        <h2>Mood Over the Past Month</h2>
+        {/* <h2>Mood Count Over the Past Month</h2> */}
         <PieChart
-            colors={['blue', 'purple', 'green', 'orange', 'yellow']}
+            colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
             series={[
                 {
-                    data: moodCounts,
+                    data: counts,
                     innerRadius: 50,
                     outerRadius: 100,
                     paddingAngle: 5,
