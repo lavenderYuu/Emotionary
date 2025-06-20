@@ -27,7 +27,8 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
 - Home Page
     - API calls are made when users create, edit, favorite, or delete entries
 - Insights Page - Users can see different insights for their moods in addition to the default graph on the dashboard
-    - Monthly calender view with icons indicating mood on tracked dates 
+    - Calender view with colours indicating mood on tracked dates 
+    - Gauge displaying user's average mood over the past month
     - Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Getting Started
