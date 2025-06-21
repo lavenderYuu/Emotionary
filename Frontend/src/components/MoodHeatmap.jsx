@@ -2,29 +2,10 @@ import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 // import ReactTooltip from 'react-tooltip';
 import 'react-calendar-heatmap/dist/styles.css';
+import { useSelector } from 'react-redux';
 
 const MoodHeatmap = () => {
-  const [moodData, setMoodData] = useState([]);
-
-  useEffect(() => {
-    const fetchMoodEntries = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/entries');
-        const entries = await response.json();
-
-        const mapped = entries.map(entry => ({
-          date: entry.date,
-          count: moodToScore[entry.mood] || 0,
-        }));
-
-        setMoodData(mapped);
-      } catch (err) {
-        console.error('failed to fetch mood entries:', err);
-      }
-    };
-
-    fetchMoodEntries();
-  }, []);
+  const entries = useSelector((state) => state.entries.entries);
 
   const moodToScore = {
     '😭': 1,
@@ -33,6 +14,11 @@ const MoodHeatmap = () => {
     '😊': 4,
     '😀': 5,
   };
+
+  const moodData = entries.map(entry => ({
+    date: entry.date,
+    count: moodToScore[entry.mood] || 0,
+  }));
 
   const startDate = new Date();
   startDate.setFullYear(startDate.getFullYear() - 1); // TODO: actually should this start at january?
