@@ -10,3 +10,19 @@ export const getTags = (tags) => {
         return acc;
     }, {});
 };
+
+export const moodToScore = {
+    '😭': 1,
+    '☹️': 2,
+    '😐': 3,
+    '😊': 4, 
+    '😀': 5  
+};
+
+export const scoreToMood = {
+    1: '😭',
+    2: '☹️',
+    3: '😐',
+    4: '😊',
+    5: '😀',
+};

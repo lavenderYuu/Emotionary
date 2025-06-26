@@ -47,6 +47,7 @@ const Home = () => {
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
+        <h2>Recent Entries</h2>
         <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>

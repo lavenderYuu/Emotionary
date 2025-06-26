@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 // import ReactTooltip from 'react-tooltip';
 import 'react-calendar-heatmap/dist/styles.css';
 import { useSelector } from 'react-redux';
+import { moodToScore } from '../utils/helpers';
 
 const MoodHeatmap = () => {
   const entries = useSelector((state) => state.entries.entries);
-
-  const moodToScore = {
-    '😭': 1,
-    '☹️': 2,
-    '😐': 3,
-    '😊': 4,
-    '😀': 5,
-  };
 
   const moodData = entries.map(entry => ({
     date: entry.date,

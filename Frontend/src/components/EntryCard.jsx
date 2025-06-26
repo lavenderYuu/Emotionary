@@ -108,10 +108,11 @@ const EntryCard = ({ onClick, onEdit }) => {
                 <CardHeader
                   title={
                     <Typography
+                      noWrap
                       sx={{
-                        maxWidth: '100%',
+                        width: '224px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif' 
+                        fontFamily: 'Outfit, sans-serif'
                       }}
                     >
                       {entry.title}
@@ -176,12 +177,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    {entry.tags.map((id) => {
-                      const tag = tagMap[id];
-                      return tag ? (
-                        <CircleIcon key={tag.id} sx={{ color: tag.color, fontSize: 12 }} />
-                      ) : null;
-                    })}
+                    {entry.mood}
                   </Box>
                 </CardActions>
               </Card>

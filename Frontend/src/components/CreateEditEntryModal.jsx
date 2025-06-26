@@ -117,8 +117,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         content,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
-        user_id: userId, // TODO: Replace with actual user ID
-        mood: sentiment // TODO: Replace with actual mood
+        user_id: userId,
+        mood: sentiment,
       };
 
       try {
@@ -198,7 +198,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           {/* Title field */}
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
-          slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
+          slotProps={{
             htmlInput: {
             maxLength: 40,
             style: { fontFamily: 'Outfit, sans-serif' }

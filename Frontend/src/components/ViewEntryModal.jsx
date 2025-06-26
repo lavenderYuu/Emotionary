@@ -36,16 +36,16 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
           }
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex', justifyContent: 'space-between', width: '85%' }}>
-          <Box>
-            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>
+        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex-col' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '94%' }}>
+            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif', overflowWrap: 'break-word', whiteSpace: 'normal', minWidth: 0 }}>
               {entry.title}
             </Typography>
-            <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
+          < Typography sx={{ fontFamily: 'Outfit, sans-serif', whiteSpace: 'nowrap' }}>Mood: {entry.mood}</Typography>
+          </Box>
+          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
               {getDate(entry.date)}
             </Typography>
-          </Box>
-          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>Mood: {entry.mood}</Typography>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -58,7 +58,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers sx={{ fontFamily: 'Outfit, sans-serif' }}>
+        <DialogContent dividers sx={{ fontFamily: 'Outfit, sans-serif', p: 2 }}>
           <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
             {entry.content}
           </Typography>

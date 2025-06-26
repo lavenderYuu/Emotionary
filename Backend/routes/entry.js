@@ -15,18 +15,6 @@ router.get('/:entryId', async (req, res) => {
     }
 });
 
-// Get all entries
-// GET /entries
-router.get('/', async (req, res) => {
-    try {
-        const entries = await Entry.find();
-        res.json(entries);
-    } catch (err) {
-        console.error("Error fetching all entries:", err);
-        res.status(400).json({ error: 'Failed to fetch all entries' });
-    }
-});
-
 // Add a new entry
 // POST /entries
 router.post('/', async (req, res) => {

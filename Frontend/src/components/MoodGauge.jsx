@@ -1,24 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { moodToScore, scoreToMood } from '../utils/helpers';
 
 const MonthlyMoodGauge = () => {
     const entries = useSelector((state) => state.entries.entries);
-
-    const emojiToScore = {
-        '😭': 1,
-        '☹️': 2,
-        '😐': 3,
-        '😊': 4,
-        '😀': 5,
-    };
-
-    const scoreToEmoji = {
-        1: '😭',
-        2: '☹️',
-        3: '😐',
-        4: '😊',
-        5: '😀',
-    };
 
     const today = new Date();
     const oneMonthAgo = new Date();
@@ -29,7 +13,7 @@ const MonthlyMoodGauge = () => {
         return entryDate >= oneMonthAgo && entryDate <= today;
     });
 
-    const scores = recentEntries.map(entry => emojiToScore[entry.mood]);
+    const scores = recentEntries.map(entry => moodToScore[entry.mood]);
     const avg = scores.reduce((sum, score) => sum + score, 0) / scores.length;
     const averageMood = parseFloat(avg.toFixed(2)); // 2 decimal places
 
@@ -38,7 +22,7 @@ const MonthlyMoodGauge = () => {
     }
 
     const roundedMood = Math.round(averageMood);
-    const moodEmoji = scoreToEmoji[roundedMood];
+    const moodEmoji = scoreToMood[roundedMood];
 
     const percent = ((averageMood - 1) / 4) * 100;
 
