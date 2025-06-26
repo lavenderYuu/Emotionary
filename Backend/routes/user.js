@@ -1,4 +1,5 @@
 import express from "express";
+import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { Entry } from "../models/entry.model.js";
 
@@ -51,8 +52,13 @@ router.post("/login", async (req, res) => {
         .json({ message: "email and password are required" });
     }
 
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
     if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
