@@ -1,33 +1,66 @@
 import * as React from 'react';
-import { LineChart } from '@mui/x-charts/LineChart'
+import { LineChart } from '@mui/x-charts/LineChart';
+import { useEffect, useState } from 'react';
+import { Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 export default function MoodChartWeekly() {
-    // const xLabelsWeek = [
-    //     'May 24',
-    //     'May 25',
-    //     'May 26',
-    //     'May 27',
-    //     'May 28',
-    //     'May 29',
-    //     'May 30',
-    // ];
+    const entries = useSelector((state) => state.entries.entries);
 
-    const moodData = [2, 5, 4, 3, 3, 4, 4];
+    const moodToScore = {
+        '😭': 1,
+        '☹️': 2,
+        '😐': 3,
+        '😊': 4, 
+        '😀': 5  
+    };
 
-    const dates = Array.from({ length: 7 }, (_, i) => new Date(2025, 4, i + 1));
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    oneWeekAgo.setHours(0,0,0,0);
+
+    console.log('oneWeekAgo: ', oneWeekAgo);
+
+    const weeklyEntries = entries
+        .filter(entry => {
+            const entryDate = new Date(entry.date);
+                return entryDate >= oneWeekAgo;
+            })
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    console.log('weeklyEntries: ', weeklyEntries);
+
+    const dates = weeklyEntries.map(entry => new Date(entry.date));
+    const moodData = weeklyEntries.map(entry => moodToScore[entry.mood]);
+
+    console.log('chartDates: ', dates);
+    console.log('moodScores: ', moodData);
+
+    if (dates[0] !== oneWeekAgo) {
+        dates.push(new Date(oneWeekAgo));
+        moodData.push(null);
+    }
 
     return (
-        <LineChart
-            xAxis={[{ scaleType: 'time', data: dates }]} // TODO: how to always display date instead of time
+        <>
+            <LineChart
+            xAxis={[{ scaleType: 'time',
+                data: dates,
+                valueFormatter: (date) => new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(date),
+                tickNumber: 7 }]}
+            yAxis={[{ min: 1, max: 5}]}
             series={[
             {
                 data: moodData,
-                color: '#b8a7ff'
+                color: '#b8a7ff',
             },
             ]}
             height={300}
             width={1000}
             margin={{ top: 20, bottom: 60, left: 40, right: 20 }}
         />
+        
+        </>
+        
     );
 }

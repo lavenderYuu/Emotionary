@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -7,13 +6,14 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../images/emotionary.svg";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useMediaQuery, useTheme } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { Link } from "react-router-dom";
 
 const NavMenu = styled("ul")({
   display: "flex",
@@ -27,8 +27,9 @@ const NavMenu = styled("ul")({
   margin: 0,
 });
 
-const NavItem = styled("li")({
+const NavItem = styled("a")({
   cursor: "pointer",
+  color: "#333",
   fontFamily: "Roboto",
   "&:hover": {
     color: "#1976d2",
@@ -101,80 +102,110 @@ const NavigationBar = () => {
 
   return (
     <>
-    <Box
-      sx={{
-        flexGrow: 1,
-        position: "fixed", 
-        top: 0,
-        left: 0, 
-        right: 0, 
-        zIndex: (theme) => theme.zIndex.drawer,
-      }}
-    >
-      <AppBar sx={{ bgcolor: "#fbf6ef" }}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={logo}
-              alt="emotionary logo"
-              height="50"
-              style={{ marginRight: "40px" }}
-            />
-            {!isMobile && (
-              <NavMenu className="nav_menu">
-                <NavItem>Home</NavItem>
-                <NavItem>Insights</NavItem>
-                <NavItem>Entries</NavItem>
-              </NavMenu>
-            )}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-
-            {isMobile ? (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="end"
-                onClick={handleDrawerToggle}
-                sx={{ color: "black" }}
-              >
-                <MenuIcon />
-              </IconButton>
-            ) : (
-              <IconButton sx={{ color: "black", fontSize: "18px" }}>
-                Logout
-              </IconButton>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        anchor="right"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
+      <Box
         sx={{
-          "& .MuiDrawer-paper": {
-            bgcolor: "#fbf6ef",
-          },
+          flexGrow: 1,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.drawer,
         }}
       >
-        {drawer}
-      </Drawer>
-    </Box>
-    <Box component="main" sx={{ 
-      pt: 8, 
-      px: 2  
-    }}>
-    </Box>
+        <AppBar sx={{ bgcolor: "#fbf6ef" }}>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={logo}
+                alt="emotionary logo"
+                height="50"
+                style={{ marginRight: "40px" }}
+              />
+              {!isMobile && (
+                <NavMenu className="nav_menu">
+                  <NavItem
+                    as={Link}
+                    to="/dashboard"
+                    style={{ fontFamily: "Outfit, sans-serif" }}
+                  >
+                    Home
+                  </NavItem>
+                  <NavItem
+                    as={Link}
+                    to="/insights"
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                    }}
+                  >
+                    Insights
+                  </NavItem>
+                  <NavItem
+                    as={Link}
+                    to="/entries"
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                    }}
+                  >
+                    Entries
+                  </NavItem>
+                </NavMenu>
+              )}
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </Search>
+
+              {isMobile ? (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="end"
+                  onClick={handleDrawerToggle}
+                  sx={{ color: "black" }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              ) : (
+                <IconButton
+                  sx={{
+                    color: "black",
+                    fontSize: "18px",
+                    fontFamily: "Outfit, sans-serif",
+                  }}
+                >
+                  Logout
+                </IconButton>
+              )}
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          anchor="right"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          sx={{
+            "& .MuiDrawer-paper": {
+              bgcolor: "#fbf6ef",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          pt: 8,
+          px: 2,
+        }}
+      ></Box>
     </>
   );
 };
