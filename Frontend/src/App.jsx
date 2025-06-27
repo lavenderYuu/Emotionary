@@ -9,8 +9,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect } from "react";
 import { setUserId } from "./features/users/usersSlice";
+import { Navigate } from "react-router-dom";
 
 function MainLayout() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  if (!isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <>
       <NavigationBar />
