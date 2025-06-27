@@ -5,23 +5,40 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useMemo } from 'react';
 import { Box, Chip } from '@mui/material';
 import { getDate, getTags } from '../utils/helpers';
 import EditButton from './buttons/EditButton'
+import MoodButton from './buttons/MoodButton';
+import { fetchEntries } from '../features/entries/entriesSlice';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const entry = useSelector((state) => state.entries.activeEntry);
   const tags = useSelector((state) => state.tags.tags);
   const tagMap = useMemo(() => getTags(tags), [tags]);
+  const dispatch = useDispatch();
+
+  const handleSelectMood = async (selectedMood) => {
+    try {
+      const response = await fetch(`http://localhost:3000/entries/${entry._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mood: selectedMood }),
+      });
+      dispatch(fetchEntries());
+    } catch (err) {
+      window.alert(err.message);
+    }
+  }
 
   if (!entry) return null;
 
   return (
     <>
       <Dialog
+        disableScrollLock
         onClose={onClose}
         open={isOpen}
         slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
@@ -36,16 +53,16 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
           }
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex', justifyContent: 'space-between', width: '85%' }}>
-          <Box>
-            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>
+        <DialogTitle sx={{ m: 0, p: 2, fontFamily: 'Outfit, sans-serif' , display: 'flex-col' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '94%' }}>
+            <Typography sx={{ fontSize: '20px', fontFamily: 'Outfit, sans-serif', overflowWrap: 'break-word', whiteSpace: 'normal', minWidth: 0 }}>
               {entry.title}
             </Typography>
-            <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
+            <MoodButton onSelectMood={handleSelectMood} mood={entry.mood} />
+          </Box>
+          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
               {getDate(entry.date)}
             </Typography>
-          </Box>
-          <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>Mood: {entry.mood}</Typography>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -58,7 +75,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers sx={{ fontFamily: 'Outfit, sans-serif' }}>
+        <DialogContent dividers sx={{ fontFamily: 'Outfit, sans-serif', p: 2 }}>
           <Typography sx={{ fontFamily: 'Outfit, sans-serif' }}>
             {entry.content}
           </Typography>

@@ -13,7 +13,6 @@ import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } fro
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import CircleIcon from '@mui/icons-material/Circle';
 import { getDate, getTags } from '../utils/helpers';
 import { useState } from 'react';
 import { selectSortedEntries } from '../features/entries/entriesSelectors';
@@ -83,7 +82,7 @@ const EntryCard = ({ onClick, onEdit }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.map((entry, index) => (
+        {entries.slice(0,8).map((entry, index) => ( // display top 8
           <Box
             key={index}
             sx={{ margin: '8px' }}>
@@ -108,10 +107,11 @@ const EntryCard = ({ onClick, onEdit }) => {
                 <CardHeader
                   title={
                     <Typography
+                      noWrap
                       sx={{
-                        maxWidth: '100%',
+                        width: '224px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif' 
+                        fontFamily: 'Outfit, sans-serif'
                       }}
                     >
                       {entry.title}
@@ -175,13 +175,8 @@ const EntryCard = ({ onClick, onEdit }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    {entry.tags.map((id) => {
-                      const tag = tagMap[id];
-                      return tag ? (
-                        <CircleIcon key={tag.id} sx={{ color: tag.color, fontSize: 12 }} />
-                      ) : null;
-                    })}
+                  <Box sx={{ fontSize: 20 }}>
+                    {entry.mood}
                   </Box>
                 </CardActions>
               </Card>

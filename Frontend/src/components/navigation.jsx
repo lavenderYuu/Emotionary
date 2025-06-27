@@ -10,10 +10,9 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useMediaQuery, useTheme } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { clearUserId } from "../features/users/usersSlice";
+import { useDispatch } from "react-redux";
 
 const NavMenu = styled("ul")({
   display: "flex",
@@ -27,10 +26,19 @@ const NavMenu = styled("ul")({
   margin: 0,
 });
 
+const DrawerMenu = styled(NavMenu)({
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "20px",
+  padding: "20px",
+});
+
 const NavItem = styled("a")({
   cursor: "pointer",
+  fontSize: "18px",
+  fontWeight: "500",
   color: "#333",
-  fontFamily: "Roboto",
+  fontFamily: "Outfit, sans-serif",
   "&:hover": {
     color: "#1976d2",
   },
@@ -83,20 +91,59 @@ const NavigationBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/users/logout", {
+        method: "POST"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      dispatch(clearUserId());
+      navigate("/", { state: { fromLogout: true } })
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  const navLinks = [
+    { label: "Home", path: "/dashboard" },
+    { label: "Insights", path: "/insights" },
+    { label: "Entries", path: "/entries" },
+  ]
+
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
-      <List>
-        {["Home", "Insights", "Entries","Log out"].map((text) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
+       <DrawerMenu>
+        {navLinks.map(({ label, path }) => (
+          <NavItem
+            key={label}
+            as={Link}
+            to={path}
+          >
+            {label}
+          </NavItem>
         ))}
-      </List>
+          <NavItem
+            onClick={handleLogout}
+            key="logout"
+            as={Link}
+            to={"/"}
+          >
+            Logout
+          </NavItem>
+      </DrawerMenu>
     </Box>
   );
 
@@ -121,33 +168,18 @@ const NavigationBar = () => {
                 height="50"
                 style={{ marginRight: "40px" }}
               />
+              {/* Desktop */}
               {!isMobile && (
                 <NavMenu className="nav_menu">
-                  <NavItem
-                    as={Link}
-                    to="/dashboard"
-                    style={{ fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Home
-                  </NavItem>
-                  <NavItem
-                    as={Link}
-                    to="/insights"
-                    style={{
-                      fontFamily: "Outfit, sans-serif",
-                    }}
-                  >
-                    Insights
-                  </NavItem>
-                  <NavItem
-                    as={Link}
-                    to="/entries"
-                    style={{
-                      fontFamily: "Outfit, sans-serif",
-                    }}
-                  >
-                    Entries
-                  </NavItem>
+                  {navLinks.map(({ label, path }) => (
+                    <NavItem
+                      key={label}
+                      as={Link}
+                      to={path}
+                    >
+                      {label}
+                    </NavItem>
+                  ))}
                 </NavMenu>
               )}
             </Box>
@@ -161,7 +193,7 @@ const NavigationBar = () => {
                   inputProps={{ "aria-label": "search" }}
                 />
               </Search>
-
+              {/* Mobile */}
               {isMobile ? (
                 <IconButton
                   color="inherit"
@@ -173,15 +205,14 @@ const NavigationBar = () => {
                   <MenuIcon />
                 </IconButton>
               ) : (
-                <IconButton
-                  sx={{
-                    color: "black",
-                    fontSize: "18px",
-                    fontFamily: "Outfit, sans-serif",
-                  }}
+                <NavItem
+                  onClick={handleLogout}
+                  key="logout"
+                  as={Link}
+                  to={"/"}
                 >
                   Logout
-                </IconButton>
+                </NavItem>
               )}
             </Box>
           </Toolbar>

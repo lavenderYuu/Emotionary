@@ -11,8 +11,15 @@ const CreateButton = ({ onClick }) => {
           borderRadius: '30px',
           fontFamily: 'Outfit, sans-serif',
           fontWeight: 500,
+          fontSize: 14,
           textTransform: 'none',
-          m: 1
+          boxShadow: 8,
+          m: 1,
+          p: 2,
+          position: 'fixed',
+          bottom: 72,
+          right: 72,
+          zIndex: 10,
       }}
       onClick={onClick}
     >

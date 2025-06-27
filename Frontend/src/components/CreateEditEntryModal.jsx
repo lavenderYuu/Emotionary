@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Box, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import SaveButton from './buttons/SaveButton'
 import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
+import { sentimentEmojiMap } from '../utils/helpers';
 
 const client = new InferenceClient('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');
 
@@ -100,14 +101,6 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         inputs: content,
       });
 
-      const sentimentEmojiMap = {
-        'Very Positive': '😀',
-        'Positive': '😊',
-        'Neutral': '😐',
-        'Negative': '☹️',
-        'Very Negative': '😭',
-      };
-
       const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
       const sentiment = sentimentEmojiMap[sentimentLabel];
 
@@ -117,8 +110,8 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         content,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
-        user_id: userId, // TODO: Replace with actual user ID
-        mood: sentiment // TODO: Replace with actual mood
+        user_id: userId,
+        mood: sentiment,
       };
 
       try {
@@ -182,6 +175,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   return (
     <>
       <Dialog
+        disableScrollLock
         onClose={()=> setAlert(true)}
         open={isOpen}
         slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
@@ -198,7 +192,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           {/* Title field */}
           <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
-          slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
+          slotProps={{
             htmlInput: {
             maxLength: 40,
             style: { fontFamily: 'Outfit, sans-serif' }
@@ -209,7 +203,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           />
           {/* Date picker */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <DateTimePicker
               required 
               disableFuture
               label='Date'

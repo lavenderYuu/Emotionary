@@ -1,25 +1,16 @@
-import * as React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { moodToScore } from '../utils/helpers';
+import { Box } from '@mui/material';
 
 export default function MoodChartWeekly() {
     const entries = useSelector((state) => state.entries.entries);
-
-    const moodToScore = {
-        '😭': 1,
-        '☹️': 2,
-        '😐': 3,
-        '😊': 4, 
-        '😀': 5  
-    };
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     oneWeekAgo.setHours(0,0,0,0);
 
-    console.log('oneWeekAgo: ', oneWeekAgo);
+    // console.log('oneWeekAgo: ', oneWeekAgo);
 
     const weeklyEntries = entries
         .filter(entry => {
@@ -28,13 +19,13 @@ export default function MoodChartWeekly() {
             })
             .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    console.log('weeklyEntries: ', weeklyEntries);
+    // console.log('weeklyEntries: ', weeklyEntries);
 
     const dates = weeklyEntries.map(entry => new Date(entry.date));
     const moodData = weeklyEntries.map(entry => moodToScore[entry.mood]);
 
-    console.log('chartDates: ', dates);
-    console.log('moodScores: ', moodData);
+    // console.log('chartDates: ', dates);
+    // console.log('moodScores: ', moodData);
 
     if (dates[0] !== oneWeekAgo) {
         dates.push(new Date(oneWeekAgo));

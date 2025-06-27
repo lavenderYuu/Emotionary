@@ -36,13 +36,18 @@ export const entriesSlice = createSlice({
         },
         resetEntry(state, action) {
             state.activeEntry = null;
-            console.log("reset entry:", state.activeEntry)
+            // console.log("reset entry:", state.activeEntry)
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchEntries.fulfilled, (state, action) => {
                 state.entries = action.payload;
+
+                if (state.activeEntry) {
+                    const update = action.payload.find((entry) => entry._id === state.activeEntry._id);
+                    state.activeEntry = update;
+                }
             })
             .addCase(favoriteEntry.fulfilled, (state, action) => {
                 const entry = action.payload;
