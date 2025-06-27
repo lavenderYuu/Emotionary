@@ -175,6 +175,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   return (
     <>
       <Dialog
+        disableScrollLock
         onClose={()=> setAlert(true)}
         open={isOpen}
         slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
