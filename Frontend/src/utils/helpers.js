@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(localizedFormat);
 
 export const getDate = (date) => {
-    return dayjs(date).format('MM/DD/YYYY'); // https://day.js.org/docs/en/display/format
+    return dayjs(date).format('lll'); // https://day.js.org/docs/en/display/format
 };
 
 export const getTags = (tags) => {

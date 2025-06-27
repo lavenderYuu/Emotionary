@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Box, Chip } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -209,7 +209,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           />
           {/* Date picker */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <DateTimePicker
               required 
               disableFuture
               label='Date'
