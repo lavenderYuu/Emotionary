@@ -29,3 +29,11 @@ export const scoreToMood = {
     4: '😊',
     5: '😀',
 };
+
+export const sentimentEmojiMap = {
+    'Very Positive': '😀',
+    'Positive': '😊',
+    'Neutral': '😐',
+    'Negative': '☹️',
+    'Very Negative': '😭',
+};

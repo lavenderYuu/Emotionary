@@ -18,6 +18,7 @@ import SaveButton from './buttons/SaveButton'
 import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
+import { sentimentEmojiMap } from '../utils/helpers';
 
 const client = new InferenceClient('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');
 
@@ -99,14 +100,6 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         model: 'tabularisai/multilingual-sentiment-analysis',
         inputs: content,
       });
-
-      const sentimentEmojiMap = {
-        'Very Positive': '😀',
-        'Positive': '😊',
-        'Neutral': '😐',
-        'Negative': '☹️',
-        'Very Negative': '😭',
-      };
 
       const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
       const sentiment = sentimentEmojiMap[sentimentLabel];
