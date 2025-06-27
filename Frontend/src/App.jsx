@@ -36,8 +36,9 @@ function App() {
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      dispatch(setUserId(storedUserId));
+    const storedUserName = localStorage.getItem("userName");
+    if (storedUserId && storedUserName) {
+      dispatch(setUserId({ userId: storedUserId, userName: storedUserName }));
     }
   }, [dispatch]);
 

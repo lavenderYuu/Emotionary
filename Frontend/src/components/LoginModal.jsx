@@ -104,7 +104,7 @@ export default function LoginModal({ open, onClose }) {
         throw new Error(data.message);
       }
 
-      dispatch(setUserId(data.user._id));
+      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);

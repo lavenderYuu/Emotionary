@@ -2,12 +2,13 @@ import EntryCard from "../components/EntryCard"
 import MoodChart from "../components/MoodChart";
 import ViewEntryModal from "../components/ViewEntryModal";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 
 const Home = () => {
+  const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
@@ -43,7 +44,7 @@ const Home = () => {
 
   return (
       <>
-        <h1>Hello 👋🏻</h1>
+        <h1>Hello, {userName} 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
