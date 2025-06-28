@@ -10,7 +10,7 @@ router.get('/:entryId', async (req, res) => {
         const entry = await Entry.findById(req.params.entryId)
         res.json(entry);
     } catch (err) {
-        console.error(`Error fetching entry ${entryId}:`, err);
+        console.error(`Error fetching entry ${req.params.entryId}:`, err);
         res.status(400).json({ error: 'Failed to fetch entry' });
     }
 });
@@ -77,8 +77,8 @@ router.delete('/:entryId', async (req, res) => {
         const entry = await Entry.findByIdAndDelete(req.params.entryId);
         res.json(entry);
     } catch (err) {
-        console.error(`Error deleting entry ${entry._id}:`, err);
-        res.status(400).json({ error: 'Failed to update entry' });
+        console.error(`Error deleting entry ${req.params.entryId}:`, err);
+        res.status(400).json({ error: 'Failed to delete entry' });
     }
 });
 

@@ -23,8 +23,9 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ onClick, onEdit, num }) => {
-  const entries = useSelector(selectSortedEntries);
+const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
+  const allEntries = useSelector(selectSortedEntries);
+  const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
