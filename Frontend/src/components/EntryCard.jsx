@@ -23,7 +23,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false }) => {
+const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
   const allEntries = useSelector(selectSortedEntries);
   const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
   const tags = useSelector((state) => state.tags.tags);
@@ -32,6 +32,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
+  const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -83,8 +84,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {/* If displayAll is true, display all entries; otherwise, only display the first 8 entries */}
-        {(displayAll ? entries : entries.slice(0, 8)).map((entry, index) => (
+        {entries.slice(0, displayNum).map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>
@@ -113,14 +113,12 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
                       sx={{
                         width: '224px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif'
                       }}
                     >
                       {entry.title}
                     </Typography>
                   }
                   subheader={getDate(entry.date)}
-                  subheaderTypographyProps={{ sx: { fontFamily: 'Outfit, sans-serif' } }}
                   action={
                     <IconButton
                       aria-label="more"
@@ -141,7 +139,6 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
                     width: '100%',
                     display:'flex',
                     justifyContent: 'space-between',
-                    fontFamily: 'Outfit, sans-serif'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -155,7 +152,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       textOverflow: 'ellipsis',
-                      fontFamily: 'Outfit, sans-serif' 
+                      fontSize: 16,
                     }}>
                     {entry.content}
                   </Typography>
@@ -177,7 +174,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ fontSize: 20 }}>
+                  <Box sx={{ fontSize: 18 }}>
                     {entry.mood}
                   </Box>
                 </CardActions>

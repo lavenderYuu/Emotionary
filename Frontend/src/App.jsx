@@ -11,6 +11,8 @@ import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect } from "react";
 import { setUserId } from "./features/users/usersSlice";
 import { Navigate } from "react-router-dom";
+import theme from "./utils/theme";
+import { ThemeProvider } from '@mui/material/styles';
 
 function MainLayout() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -51,12 +53,14 @@ function App() {
   }, [userId, dispatch]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/*" element={<MainLayout />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/*" element={<MainLayout />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

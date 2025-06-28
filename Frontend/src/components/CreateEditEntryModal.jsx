@@ -184,18 +184,19 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             width: '80vw',
             borderRadius: 4,
             backgroundColor: 'rgb(251, 246, 239)',
-            fontFamily: 'Outfit, sans-serif'
           }
           }
         }}
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           {/* Title field */}
-          <TextField required name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
+          <TextField required label='Title' name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
           slotProps={{
             htmlInput: {
-            maxLength: 40,
-            style: { fontFamily: 'Outfit, sans-serif' }
+              maxLength: 40,
+            },
+            inputLabel: {
+              required: false,
             }
           }}
           value={formData.title}
@@ -228,13 +229,10 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}
             onChange={handleInputChange}
-            sx={{ fontFamily: 'Outfit, sans-serif' }}
-            InputProps={{ style: { fontFamily: 'Outfit, sans-serif' } }}
-            InputLabelProps={{ style: { fontFamily: 'Outfit, sans-serif' }} }
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}`, fontFamily: 'Outfit, sans-serif' }}
+              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
                 onClick={() => toggleTag(tag.id)} />
             ))}
           </Box>
@@ -253,9 +251,9 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           }
           }
         }}>
-          <DialogTitle sx={{ fontFamily: 'Outfit, sans-serif' }}>Are you sure you want to leave?</DialogTitle>
-          <DialogContent sx={{ fontFamily: 'Outfit, sans-serif' }}>Any changes you have made will not be saved.</DialogContent>
-          <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Outfit, sans-serif'}}>
+          <DialogTitle>Are you sure you want to leave?</DialogTitle>
+          <DialogContent>Any changes you have made will not be saved.</DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button onClick={() => setAlert(false)}>Continue editing</Button>
             <Button onClick={handleClose}>Yes, I want to close</Button>
           </DialogActions>

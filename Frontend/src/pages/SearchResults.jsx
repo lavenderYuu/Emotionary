@@ -70,7 +70,7 @@ export default function SearchResults() {
         paddingTop: "40px"
       }}
     >
-      <h2>Search Results for "{query}"</h2>
+      <h1>Search Results for "{query}"</h1>
       {searchResults.length === 0 ? (
         <p>No matching entries found.</p>
       ) : (
@@ -78,7 +78,6 @@ export default function SearchResults() {
           entries={searchResults}
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
-          displayAll={true}
         />
       )}
       <CreateButton onClick={handleCreateModal} />
