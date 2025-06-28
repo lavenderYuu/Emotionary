@@ -111,14 +111,12 @@ const EntryCard = ({ onClick, onEdit }) => {
                       sx={{
                         width: '224px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif'
                       }}
                     >
                       {entry.title}
                     </Typography>
                   }
                   subheader={getDate(entry.date)}
-                  subheaderTypographyProps={{ sx: { fontFamily: 'Outfit, sans-serif' } }}
                   action={
                     <IconButton
                       aria-label="more"
@@ -139,7 +137,6 @@ const EntryCard = ({ onClick, onEdit }) => {
                     width: '100%',
                     display:'flex',
                     justifyContent: 'space-between',
-                    fontFamily: 'Outfit, sans-serif'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -153,7 +150,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       textOverflow: 'ellipsis',
-                      fontFamily: 'Outfit, sans-serif' 
+                      fontSize: 16,
                     }}>
                     {entry.content}
                   </Typography>
@@ -175,7 +172,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ fontSize: 20 }}>
+                  <Box sx={{ fontSize: 18 }}>
                     {entry.mood}
                   </Box>
                 </CardActions>
