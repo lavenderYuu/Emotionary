@@ -23,8 +23,9 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ onClick, onEdit }) => {
-  const entries = useSelector(selectSortedEntries);
+const EntryCard = ({ entries: searchResults, onClick, onEdit, displayAll = false }) => {
+  const allEntries = useSelector(selectSortedEntries);
+  const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
@@ -82,7 +83,8 @@ const EntryCard = ({ onClick, onEdit }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.slice(0,8).map((entry, index) => ( // display top 8
+        {/* If displayAll is true, display all entries; otherwise, only display the first 8 entries */}
+        {(displayAll ? entries : entries.slice(0, 8)).map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>

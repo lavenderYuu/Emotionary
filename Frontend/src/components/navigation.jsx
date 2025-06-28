@@ -91,6 +91,7 @@ const NavigationBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -114,6 +115,13 @@ const NavigationBar = () => {
       navigate("/", { state: { fromLogout: true } })
     } catch (error) {
       console.error("Error during logout:", error);
+    }
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === "Enter" && searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
     }
   };
 
@@ -191,6 +199,9 @@ const NavigationBar = () => {
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
+                  value={searchQuery}
+                  onChange={event => setSearchQuery(event.target.value)}
+                  onKeyDown={handleSearchKeyDown}
                 />
               </Search>
               {/* Mobile */}

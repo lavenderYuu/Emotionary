@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import NavigationBar from "./components/navigation";
 import Insights from "./pages/Insights";
 import Entries from "./pages/Entries";
+import SearchResults from "./pages/SearchResults";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect } from "react";
@@ -25,6 +26,7 @@ function MainLayout() {
         <Route path="/dashboard" element={<Home />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/entries" element={<Entries />} />
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
     </>
   );
