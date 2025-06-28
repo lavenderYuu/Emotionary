@@ -23,7 +23,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const handleSelectMood = async (selectedMood) => {
     try {
       const response = await fetch(`http://localhost:3000/entries/${entry._id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mood: selectedMood }),
       });
