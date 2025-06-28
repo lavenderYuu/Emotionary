@@ -25,24 +25,21 @@ export default function MoodPieChart() {
 
     return (
         <>
-        {/* <h2>Mood Count Over the Past Month</h2> */}
-        <PieChart
-            colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
-            series={[
-                {
-                    data: counts,
-                    innerRadius: 50,
-                    outerRadius: 100,
-                    paddingAngle: 5,
-                    cornerRadius: 5
-                }
-            ]}
-            width={200}
-            height={200}
-        
-        />      
-        
+            {/* <h2>Mood Count Over the Past Month</h2> */}
+            <PieChart
+                colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
+                series={[
+                    {
+                        data: counts,
+                        innerRadius: 50,
+                        outerRadius: 100,
+                        paddingAngle: 5,
+                        cornerRadius: 5
+                    }
+                ]}
+                width={200}
+                height={200}
+            />
         </>
-        
     );
 }

@@ -10,19 +10,24 @@ const Insights = () => {
 
   return (
       <>
-        <MoodChart />
-        <h2>Your Mood this Month</h2>
-        <Grid container spacing={20} justifyContent="center">
-          <Grid>
-            {/* <MoodCalendar /> */}
-            <MoodGauge />
-          </Grid>
-          <Grid>
-            <MoodPieChart />
-          </Grid>
-        </Grid>
-        
-        <MoodHeatmap />
+        <h1>Mood Insights</h1>
+        <Box sx={{ 
+          width: '100vw',
+          maxWidth: 1280,
+        }}>
+          <MoodChart />
+          <h2>Your Mood This Month</h2>
+          <Box sx={{ m: 4, display: 'flex', gap: 8, alignItems: 'center', alignContent: 'center', justifyContent: 'center', flexWrap: 'wrap' }} >
+            <Box>
+              {/* <MoodCalendar /> */}
+              <MoodGauge />
+            </Box>
+            <Box>
+              <MoodPieChart />
+            </Box>
+          </Box>
+          <MoodHeatmap />
+        </Box>  
       </>
   )
 }

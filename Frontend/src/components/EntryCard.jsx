@@ -23,7 +23,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ onClick, onEdit }) => {
+const EntryCard = ({ onClick, onEdit, num }) => {
   const entries = useSelector(selectSortedEntries);
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);
@@ -31,6 +31,7 @@ const EntryCard = ({ onClick, onEdit }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
+  const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -82,7 +83,7 @@ const EntryCard = ({ onClick, onEdit }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.slice(0,8).map((entry, index) => ( // display top 8
+        {entries.slice(0, displayNum).map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>
@@ -111,14 +112,12 @@ const EntryCard = ({ onClick, onEdit }) => {
                       sx={{
                         width: '224px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif'
                       }}
                     >
                       {entry.title}
                     </Typography>
                   }
                   subheader={getDate(entry.date)}
-                  subheaderTypographyProps={{ sx: { fontFamily: 'Outfit, sans-serif' } }}
                   action={
                     <IconButton
                       aria-label="more"
@@ -139,7 +138,6 @@ const EntryCard = ({ onClick, onEdit }) => {
                     width: '100%',
                     display:'flex',
                     justifyContent: 'space-between',
-                    fontFamily: 'Outfit, sans-serif'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -153,7 +151,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       textOverflow: 'ellipsis',
-                      fontFamily: 'Outfit, sans-serif' 
+                      fontSize: 16,
                     }}>
                     {entry.content}
                   </Typography>
@@ -175,7 +173,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ fontSize: 20 }}>
+                  <Box sx={{ fontSize: 18 }}>
                     {entry.mood}
                   </Box>
                 </CardActions>

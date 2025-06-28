@@ -9,7 +9,6 @@ const CreateButton = ({ onClick }) => {
           backgroundColor: '#ffe59a',
           color: '#3d3d3d',
           borderRadius: '30px',
-          fontFamily: 'Outfit, sans-serif',
           fontWeight: 500,
           fontSize: 14,
           textTransform: 'none',
@@ -20,6 +19,9 @@ const CreateButton = ({ onClick }) => {
           bottom: 72,
           right: 72,
           zIndex: 10,
+          "&:hover": {
+            boxShadow: 12,
+          }
       }}
       onClick={onClick}
     >

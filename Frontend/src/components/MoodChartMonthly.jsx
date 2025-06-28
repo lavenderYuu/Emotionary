@@ -1,6 +1,6 @@
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useSelector } from 'react-redux';
-import { moodToScore } from '../utils/helpers';
+import { moodToScore, scoreToMood } from '../utils/helpers';
 import { Box } from '@mui/material';
 
 export default function MoodChartMonthly() {
@@ -23,19 +23,31 @@ export default function MoodChartMonthly() {
     // console.log('moodScores: ', moodData);
 
     return (
-        <LineChart
-            xAxis={[{ scaleType: 'time', data: dates, valueFormatter: (date) => new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(date), tickNumber: 7 }]}
-            yAxis={[{ min: 1, max: 5}]}
-            series={[
-            {
-                data: moodData,
-                color: '#b8a7ff'
-            },
-            ]}
-            height={300}
-            width={1000}
-            margin={{ top: 20, bottom: 60, left: 40, right: 20 }}
-            
-        />
+        <>
+            <LineChart
+                xAxis={[{ 
+                    scaleType: 'time', 
+                    data: dates, valueFormatter: (date) => new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(date), 
+                    tickNumber: 7,
+                }]}
+                yAxis={[{ 
+                    min: 1, 
+                    max: 5,
+                    tickNumber: 5, 
+                    valueFormatter: (value) => scoreToMood[value], 
+                    tickLabelStyle: {
+                        fontSize: 18
+                    },
+                }]}
+                series={[
+                {
+                    data: moodData,
+                    color: '#b8a7ff'
+                },
+                ]}
+                height={320}
+                margin={{ top: 40, bottom: 40, left: 40, right: 40 }}
+            />
+        </>
     );
 }
