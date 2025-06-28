@@ -23,7 +23,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ onClick, onEdit }) => {
+const EntryCard = ({ onClick, onEdit, num }) => {
   const entries = useSelector(selectSortedEntries);
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);
@@ -31,6 +31,7 @@ const EntryCard = ({ onClick, onEdit }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
+  const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -82,7 +83,7 @@ const EntryCard = ({ onClick, onEdit }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.slice(0,8).map((entry, index) => ( // display top 8
+        {entries.slice(0, displayNum).map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>
