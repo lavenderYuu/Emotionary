@@ -9,10 +9,10 @@ export const fetchEntries = createAsyncThunk('entries/fetchEntries', async (_, {
 export const favoriteEntry = createAsyncThunk('entries/favoriteEntry', async (entry) => {
     const update = entry.favorite === true ? false : true;
     const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ favorite: update }),
-          });
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favorite: update }),
+    });
     return await res.json();
 });
 

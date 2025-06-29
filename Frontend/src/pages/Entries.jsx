@@ -44,7 +44,7 @@ const Entries = () => {
       <>
         <h1>Journal Entries</h1>
         <CreateButton onClick={handleCreateModal} />
-        <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry} num={'all'}/>
+        <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
       </>
