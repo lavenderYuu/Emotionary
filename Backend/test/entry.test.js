@@ -111,7 +111,7 @@ describe("Entry Tests", function () {
     expect(response.body.mood).to.equal("😊");
   });
 
-    // DELETE /entries/:entryId
+  // DELETE /entries/:entryId
   it("should delete a specified entry", async function () {
     const user1 = new mongoose.Types.ObjectId();
 

@@ -25,7 +25,6 @@ export default function MoodChartMonthly() {
         <>
             <LineChart
                 sx={{ "& .MuiChartsAxis-tickLabel tspan": { fontSize: 15 } }}
-                
                 xAxis={[{ 
                     scaleType: 'time', 
                     data: dates,
@@ -36,16 +35,13 @@ export default function MoodChartMonthly() {
                     min: 1, 
                     max: 5,
                     tickNumber: 5, 
-                    valueFormatter: (value) => scoreToMood[value], 
-                   
+                    valueFormatter: (value) => scoreToMood[value],
                 }]}
-                series={[
-                {
+                series={[{
                     data: moodData,
                     color: '#b8a7ff',
                     valueFormatter: (value) => scoreToMood[value],
-                },
-                ]}
+                }]}
                 height={320}
                 margin={{ top: 40, bottom: 40, left: 30, right: 50 }}
             />

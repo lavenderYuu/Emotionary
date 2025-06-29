@@ -47,13 +47,11 @@ export default function MoodChartWeekly() {
                     tickNumber: 5, 
                     valueFormatter: (value) => scoreToMood[value],
                 }]}
-                series={[
-                    {
-                        data: moodData,
-                        color: '#b8a7ff',
-                        valueFormatter: (value) => scoreToMood[value],
-                    },
-                ]}
+                series={[{
+                    data: moodData,
+                    color: '#b8a7ff',
+                    valueFormatter: (value) => scoreToMood[value],
+                }]}
                 height={320}
                 margin={{ top: 40, bottom: 40, left: 30, right: 50 }}
             />
