@@ -17,7 +17,7 @@ export default function SearchResults() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState("view");
 
-  // Filter entries based on search query, then sort by date (newest first)
+  // Filter entries based on search query
   const searchResults = entries.filter(entry => {
     // Split the query into individual terms
     const terms = query.toLowerCase().split(" ").filter(term => term.trim() !== "");
@@ -28,8 +28,6 @@ export default function SearchResults() {
       entry.content?.toLowerCase().includes(term) ||
       (Array.isArray(entry.tags) && entry.tags.some(tag => tag.toLowerCase().includes(term)))
     );
-  }).sort(function(a, b) {
-    return new Date(b.date) - new Date(a.date);
   });
 
   const handleOpenCard = (id) => {

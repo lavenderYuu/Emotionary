@@ -16,8 +16,7 @@ export default function MoodChartWeekly() {
         .filter(entry => {
             const entryDate = new Date(entry.date);
                 return entryDate >= oneWeekAgo;
-            })
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            });
 
     // console.log('weeklyEntries: ', weeklyEntries);
 

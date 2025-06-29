@@ -79,7 +79,7 @@ router.post("/logout", async (req, res) => {
 // GET /users/:userId/entries
 router.get('/:userId/entries', async (req, res) => {
     try {
-        const entries = await Entry.find({ user_id: req.params.userId });
+        const entries = await Entry.find({ user_id: req.params.userId }).sort({ date: -1 }); // always return sorted in descending order
         res.json(entries);
     } catch (err) {
         console.error("Error fetching entries:", err);
