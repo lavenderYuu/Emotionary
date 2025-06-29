@@ -4,7 +4,7 @@ import { Entry } from '../models/entry.model.js';
 const router = express.Router();
 
 // Get an entry by entryId
-// GET /entries/entryId
+// GET /entries/:entryId
 router.get('/:entryId', async (req, res) => {
     try {
         const entry = await Entry.findById(req.params.entryId)
@@ -15,7 +15,7 @@ router.get('/:entryId', async (req, res) => {
     }
 });
 
-// Add a new entry
+// Create a new entry
 // POST /entries
 router.post('/', async (req, res) => {
     try {
