@@ -6,6 +6,7 @@ import EntryCard from "../components/EntryCard";
 import ViewEntryModal from "../components/ViewEntryModal";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
+import { filterEntriesByQuery } from "../utils/search";
 
 export default function SearchResults() {
   const location = useLocation();
@@ -17,18 +18,7 @@ export default function SearchResults() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState("view");
 
-  // Filter entries based on search query
-  const searchResults = entries.filter(entry => {
-    // Split the query into individual terms
-    const terms = query.toLowerCase().split(" ").filter(term => term.trim() !== "");
-
-    // Check if each query term is present in each entry's title, content, or tags
-    return terms.every(term =>
-      entry.title?.toLowerCase().includes(term) ||
-      entry.content?.toLowerCase().includes(term) ||
-      (Array.isArray(entry.tags) && entry.tags.some(tag => tag.toLowerCase().includes(term)))
-    );
-  });
+  const searchResults = filterEntriesByQuery(entries, query);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);

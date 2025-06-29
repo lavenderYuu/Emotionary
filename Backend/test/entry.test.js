@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
+import sinon from "sinon";
 import { expect } from "chai";
 import { app } from "../server.js";
 import { Entry } from "../models/entry.model.js";
@@ -11,15 +12,19 @@ import { Entry } from "../models/entry.model.js";
 let mongod;
 
 describe("Entry Tests", function () {
+  this.timeout(5000);
+
   before(async () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     await mongoose.connect(uri);
+    sinon.stub(console, 'error'); // Silence console.error during tests
   });
 
   after(async function () {
     await mongoose.disconnect();
     await mongod.stop();
+    console.error.restore(); // Restore console.error after tests
   });
 
   // GET /users/:userId/entries
@@ -45,7 +50,7 @@ describe("Entry Tests", function () {
     expect(response2.body[0].title).to.equal("Title 3");
   });
 
-  // GET /entries/entryId
+  // GET /entries/:entryId
   it("should fetch a specified entry", async function () {
     const user1 = new mongoose.Types.ObjectId();
 
@@ -62,6 +67,191 @@ describe("Entry Tests", function () {
     expect(response.body.content).to.equal("Content 1");
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(false);
+    expect(response.body.mood).to.equal("😊");
+  });
+
+  // POST /entries
+  it("should create a new entry with tags", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: ["tag1", "tag2", "tag3"],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(201);
+    expect(response.body.title).to.equal("Title 1");
+    expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
+    expect(response.body.content).to.equal("Content 1");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
+    expect(response.body.tags).to.include("tag1");
+    expect(response.body.tags).to.include("tag2");
+    expect(response.body.tags).to.include("tag3");
+    expect(response.body.favorite).to.equal(false);
+    expect(response.body.user_id).to.equal(user1.toString());
+    expect(response.body.mood).to.equal("😊");
+  });
+
+  // POST /entries
+  it("should create a new entry with no tags", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(201);
+    expect(response.body.title).to.equal("Title 1");
+    expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
+    expect(response.body.content).to.equal("Content 1");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(0);
+    expect(response.body.favorite).to.equal(false);
+    expect(response.body.user_id).to.equal(user1.toString());
+    expect(response.body.mood).to.equal("😊");
+  });
+
+  // POST /entries
+  it("should fail to create a new entry with no title", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(400);
+    expect(response.body.error).to.equal('Failed to add entry');
+  });
+
+  // POST /entries
+  it("should fail to create a new entry with no date", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "",
+      content: "Content 1",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(400);
+    expect(response.body.error).to.equal('Failed to add entry');
+  });
+
+  // POST /entries
+  it("should fail to create a new entry with no content", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(400);
+    expect(response.body.error).to.equal('Failed to add entry');
+  });
+
+  // POST /entries
+  it("should fail to create a new entry with no mood", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: ""
+    }
+
+    const response = await request(app)
+    .post("/entries")
+    .send(entry);
+
+    expect(response.statusCode).to.equal(400);
+    expect(response.body.error).to.equal('Failed to add entry');
+  });
+
+  // PUT /entries/:entryId
+  it("should update an entry's title, date, content, and tags", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+    
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: ["tag1", "tag2", "tag3"],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const createdEntry = await Entry.create(entry);
+    const entryId = createdEntry._id;
+    const response = await request(app)
+      .put(`/entries/${entryId}`)
+      .send({
+        title: "Updated Title",
+        date: "2025-06-02",
+        content: "Updated Content",
+        tags: ["updatedTag1", "updatedTag2", "tag3"]
+      });
+
+    expect(response.statusCode).to.equal(200);
+    expect(response.body.title).to.equal("Updated Title");
+    expect(response.body.date).to.equal("2025-06-02T00:00:00.000Z");
+    expect(response.body.content).to.equal("Updated Content");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
+    expect(response.body.tags).to.include("updatedTag1");
+    expect(response.body.tags).to.include("updatedTag2");
+    expect(response.body.tags).to.include("tag3");
+    expect(response.body.favorite).to.equal(false);
+    expect(response.body.user_id).to.equal(user1.toString());
     expect(response.body.mood).to.equal("😊");
   });
 
@@ -109,6 +299,55 @@ describe("Entry Tests", function () {
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(true);
     expect(response.body.mood).to.equal("😊");
+  });
+
+  // PUT /entries/:entryId
+  it("should not update an entry if no fields are provided", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+    
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "Content 1",
+      tags: ["tag1", "tag2", "tag3"],
+      favorite: false,
+      user_id: user1,
+      mood: "😊"
+    }
+
+    const createdEntry = await Entry.create(entry);
+    const entryId = createdEntry._id;
+    const response = await request(app)
+      .put(`/entries/${entryId}`)
+      .send({}); // No fields provided
+
+    expect(response.statusCode).to.equal(200);
+    expect(response.body.title).to.equal("Title 1");
+    expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
+    expect(response.body.content).to.equal("Content 1");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
+    expect(response.body.tags).to.include("tag1");
+    expect(response.body.tags).to.include("tag2");
+    expect(response.body.tags).to.include("tag3");
+    expect(response.body.favorite).to.equal(false);
+    expect(response.body.user_id).to.equal(user1.toString());
+    expect(response.body.mood).to.equal("😊");
+  });
+
+  // PUT /entries/:entryId
+  it("should fail to update an entry with non-existent entryId", async function () {
+    const entryId = new mongoose.Types.ObjectId(); // Non-existent entryId
+
+    const response = await request(app)
+      .put(`/entries/${entryId}`)
+      .send({
+        title: "Updated Title",
+        date: "2025-06-02",
+        content: "Updated Content",
+        tags: ["updatedTag1", "updatedTag2"]
+      });
+    expect(response.statusCode).to.equal(404);
+    expect(response.body.error).to.equal("Entry not found");
   });
 
   // DELETE /entries/:entryId
