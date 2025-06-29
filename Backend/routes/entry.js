@@ -49,27 +49,6 @@ router.put('/:entryId', async (req, res) => {
     }
 });
 
-// Edit an existing entry mood
-// PATCH /entries/:entryId
-router.patch('/:entryId', async (req, res) => {
-    try {
-        const updatedEntry = await Entry.findByIdAndUpdate(
-            req.params.entryId,
-            req.body,
-            { new: true }
-        );
-
-        if (!updatedEntry) {
-            return res.status(404).json({ error: 'Entry not found' });
-        }
-
-        res.json(updatedEntry);
-    } catch (err) {
-        console.error("Error updating entry mood:", err);
-        res.status(400).json({ error: 'Failed to update entry mood' });
-    }
-});
-
 // Delete an entry by ID
 // DELETE /entries/:entryId
 router.delete('/:entryId', async (req, res) => {

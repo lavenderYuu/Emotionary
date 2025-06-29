@@ -15,7 +15,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { getDate, getTags } from '../utils/helpers';
 import { useState } from 'react';
-import { selectSortedEntries } from '../features/entries/entriesSelectors';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,7 +23,7 @@ import Button from '@mui/material/Button';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
-  const allEntries = useSelector(selectSortedEntries);
+  const allEntries = useSelector((state) => state.entries.entries);
   const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
   const tags = useSelector((state) => state.tags.tags);
   const entry = useSelector((state) => state.entries.activeEntry);

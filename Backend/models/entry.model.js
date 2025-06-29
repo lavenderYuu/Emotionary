@@ -34,8 +34,6 @@ const EntrySchema = new Schema(
 
         mood: {
             type: String,
-            // type: mongoose.Types.ObjectId,
-            // ref: "Mood"
             required: true,
         }
     }

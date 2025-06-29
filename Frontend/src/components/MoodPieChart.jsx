@@ -27,6 +27,7 @@ export default function MoodPieChart() {
         <>
             {/* <h2>Mood Count Over the Past Month</h2> */}
             <PieChart
+                sx={{ "& .MuiChartsLegend-label": { fontSize: 16 } }}
                 colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
                 series={[
                     {
@@ -37,7 +38,7 @@ export default function MoodPieChart() {
                         cornerRadius: 5
                     }
                 ]}
-                width={200}
+                width={250}
                 height={200}
             />
         </>
