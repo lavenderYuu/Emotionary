@@ -69,10 +69,9 @@ const FilterRow = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        gap: "16px",
+        gap: "28px",
         padding: "12px 0",
         flexWrap: "wrap",
-        gap: "28px",
       }}
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
