@@ -74,7 +74,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // https://developers.google.com/identity/sign-in/web/backend-auth#node.js
 
-// Creates new or fetches exisitng Google user
+// Creates new or fetches existing Google user
 // POST /users/google-auth
 router.post("/google-auth", async (req, res) => {
     const { idToken } = req.body;
