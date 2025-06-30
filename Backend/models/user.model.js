@@ -24,16 +24,15 @@ const UserSchema = new Schema({
 
   password: {
     type: String,
-    required: true,
+    required: function() { return !this.googleId; },
     minlength: [8, "Password should be at least 8 characters long"],
   },
 
-  entries: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Entry",
-    },
-  ],
+  googleId: {
+    type: String,
+    unique: true,
+    required: false,
+  }
 });
 
 // Hash password before User document is saved

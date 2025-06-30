@@ -7,6 +7,8 @@ import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entri
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { useEffect } from "react";
+import { Box } from "@mui/material";
+
 const Home = () => {
   const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -51,7 +53,12 @@ const Home = () => {
         <h1>Hello, {userName} 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
-        <MoodChart />
+        <Box sx={{ 
+          width: '100vw',
+          maxWidth: 1280,
+        }}>
+          <MoodChart />
+        </Box>
         <h2>Recent Entries</h2>
         <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry} num={8}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
