@@ -10,12 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFilter } from "../features/entries/entriesSlice";
 import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-
+import dayjs from "dayjs";
 
 const FilterRow = () => {
     const dispatch = useDispatch();
     const filters = useSelector((state) => state.entries.filters);
-    
 
   const moodOptions = Object.entries(sentimentEmojiMap).map(
     ([label, emoji]) => ({
@@ -39,38 +38,87 @@ const FilterRow = () => {
       })
     );
   };
+
+  const handleDateChange = (field) => (newValue) => {
+    const date = newValue? dayjs(newValue).format('YYYY-MM-DD') : null;
+
+    dispatch(
+      setFilter({
+        ...filters,
+        [field]: date,
+        page: 1,
+      })
+    );
+  }
+
+  const handleMoodChange = (event, newValue) => {
+    dispatch(
+      setFilter({
+        ...filters,
+        mood: newValue ? newValue.value : null,
+        page: 1,
+      })
+    );
+  };
+
   
 
   return (
-    <div className="filter-panel">
-      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "16px",
+        padding: "12px 0",
+        flexWrap: "wrap",
+        gap: "28px",
+      }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Start Date"
-          value={startDate}
-          onChange={(newValue) => setStartDate(newValue)}
+          value={filters.startDate ? dayjs(filters.startDate) : null}
+          onChange={handleDateChange("startDate")}
           disableFuture
+          sx={{
+            width: 180,
+          }}
         />
-        <span style={{ margin: "0 8px" }} />
         <DatePicker
           label="End Date"
-          value={endDate}
-          onChange={(newValue) => setEndDate(newValue)}
+          value={filters.endDate ? dayjs(filters.endDate) : null}
+          onChange={handleDateChange("endDate")}
           disableFuture
+          sx={{ width: 180 }}
         />
-      </LocalizationProvider> */}
-      <IconButton onClick={handleFavorite}>
+      </LocalizationProvider>
+      <Autocomplete
+        disablePortal
+        options={moodOptions}
+        onChange={handleMoodChange}
+        sx={{
+          width: 180,
+        }}
+        renderInput={(params) => <TextField {...params} label="Mood" />}
+      />
+      <IconButton
+        onClick={handleFavorite}
+        sx={{
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "8px",
+          "&:hover": {
+            backgroundColor: "#f5f5f5",
+          },
+        }}
+      >
         {filters.favorite === true ? (
           <FavoriteIcon color="error" />
         ) : (
           <FavoriteBorderOutlinedIcon />
         )}
       </IconButton>
-      {/* <Autocomplete
-        disablePortal
-        options={moodOptions}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Mood" />}
-      /> */}
     </div>
   );
 };

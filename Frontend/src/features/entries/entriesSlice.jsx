@@ -10,8 +10,8 @@ export const filterEntries = createAsyncThunk('entries/filterEntries', async (_,
     const userId = getState().auth.userId;
     const { startDate, endDate, mood, favorite, page, limit } = getState().entries.filters;
     const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate.toISOString());
-    if (endDate) params.append('endDate', endDate.toISOString());
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
     if (mood) params.append('mood', mood);
     if (favorite) params.append('favorite', favorite);
     params.append('page', page);
@@ -68,7 +68,6 @@ export const entriesSlice = createSlice({
     },
     resetEntry(state, action) {
       state.activeEntry = null;
-      // console.log("reset entry:", state.activeEntry)
     },
     setFilter(state, action) {
       state.filters = {
