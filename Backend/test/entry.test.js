@@ -374,4 +374,132 @@ describe("Entry Tests", function () {
     expect(response.body).to.be.an("array").with.lengthOf(1);
     expect(response.body[0].title).to.equal("Title 2");
   });
+
+  describe("Entry Filter Tests", () => {
+    let user1;
+  
+    beforeEach(async () => {
+      user1 = new mongoose.Types.ObjectId();
+      await Entry.deleteMany();
+      await Entry.create([
+        {
+          title: "Title 1",
+          date: "2025-06-01",
+          content: "Content 1",
+          tags: [],
+          favorite: false,
+          user_id: user1,
+          mood: "😊",
+        },
+        {
+          title: "Title 2",
+          date: "2025-06-02",
+          content: "Content 2",
+          tags: [],
+          favorite: true,
+          user_id: user1,
+          mood: "😭",
+        },
+        {
+          title: "Title 3",
+          date: "2025-06-03",
+          content: "Content 3",
+          tags: [],
+          favorite: false,
+          user_id: user1,
+          mood: "😢",
+        },
+        {
+          title: "Title 4",
+          date: "2025-06-04",
+          content: "Content 4",
+          tags: [],
+          favorite: true,
+          user_id: user1,
+          mood: "😃",
+        },
+      ]);
+    });
+  
+
+  // GET /entries/filter/:userId
+  it("should filter entries by date range", async function () {
+    const response = await request(app).get(`/entries/filter/${user1}?startDate=2025-06-02&endDate=2025-06-03`);
+
+    const entries = response.body.entries;
+    expect(response.statusCode).to.equal(200);
+    expect(entries).to.be.an("array").with.lengthOf(2);
+    expect(entries[0].title).to.equal("Title 3");
+    expect(entries[1].title).to.equal("Title 2");
+    expect(response.body.totalEntries).to.equal(2);
+    expect(response.body.totalPages).to.equal(1);
+  }
+  );
+
+  it("should filter entries by mood", async function () {
+    const response = await request(app).get(`/entries/filter/${user1}?mood=😭`);
+    const entries = response.body.entries;
+    expect(response.statusCode).to.equal(200);
+    expect(entries).to.be.an("array").with.lengthOf(1);
+    expect(entries[0].title).to.equal("Title 2");
+  });
+
+  it("should filter entries by favorite status", async function () {
+    const response = await request(app).get(
+      `/entries/filter/${user1}?favorite=true`
+    );
+    const entries = response.body.entries;
+    expect(response.statusCode).to.equal(200);
+    expect(entries).to.be.an("array").with.lengthOf(2);
+    expect(entries[0].title).to.equal("Title 4");
+    expect(entries[1].title).to.equal("Title 2");
+  }
+  );
+
+  it("should filter entries by date range, mood, and favorite status", async function () {
+    const response = await request(app).get(
+      `/entries/filter/${user1}?startDate=2025-06-02&endDate=2025-06-04&mood=😢&favorite=false`
+    );
+    const entries = response.body.entries;
+    expect(response.statusCode).to.equal(200);
+    expect(entries).to.be.an("array").with.lengthOf(1);
+    expect(entries[0].title).to.equal("Title 3");
+    expect(response.body.totalEntries).to.equal(1);
+    expect(response.body.totalPages).to.equal(1);
+  }
+  );
+
+  it("should return an empty array if no entries match the filters", async function () {
+    const response = await request(app).get(
+      `/entries/filter/${user1}?startDate=2025-06-03&endDate=2025-05-04&mood=😢&favorite=false`
+    );
+    const entries = response.body.entries;
+    expect(response.statusCode).to.equal(200);
+    expect(entries).to.be.an("array").with.lengthOf(0);
+    expect(response.body.totalEntries).to.equal(0);
+    expect(response.body.totalPages).to.equal(0);
+  });
+
+  it("should return right pagination when filtering entries", async function () {
+    const response = await request(app).get(`/entries/filter/${user1}?page=1&limit=2`);
+    expect(response.statusCode).to.equal(200);
+    expect(response.body.entries).to.be.an("array").with.lengthOf(2);
+    expect(response.body.entries[0].title).to.equal("Title 4");
+    expect(response.body.entries[1].title).to.equal("Title 3");
+    expect(response.body.totalEntries).to.equal(4);
+    expect(response.body.totalPages).to.equal(2);
+    expect(response.body.currentPage).to.equal(1);
+
+    const responsePage2 = await request(app).get(`/entries/filter/${user1}?page=2&limit=2`);
+    expect(responsePage2.statusCode).to.equal(200);
+    expect(responsePage2.body.entries).to.be.an("array").with.lengthOf(2);
+    expect(responsePage2.body.entries[0].title).to.equal("Title 2");
+    expect(responsePage2.body.entries[1].title).to.equal("Title 1");
+    expect(responsePage2.body.totalEntries).to.equal(4);
+    expect(responsePage2.body.totalPages).to.equal(2);
+    expect(responsePage2.body.currentPage).to.equal(2);
+  });
+
+});
+
 });

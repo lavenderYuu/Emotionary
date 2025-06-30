@@ -29,7 +29,6 @@ router.post("/register", async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      console.log("User already exists:", existingUser);
       return res.status(400).json({ message: "User already exists" });
     }
     const newUser = new User(req.body);
@@ -54,12 +53,12 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email" });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Wrong password" });
     }
 
     res.status(200).json({ message: "Login successful", user });
