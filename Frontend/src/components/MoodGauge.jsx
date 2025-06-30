@@ -15,13 +15,13 @@ const MonthlyMoodGauge = () => {
 
     const scores = recentEntries.map(entry => moodToScore[entry.mood]);
     const avg = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-    const averageMood = parseFloat(avg.toFixed(2)); // 2 decimal places
+    let averageMood = parseFloat(avg.toFixed(2)); // 2 decimal places
     const roundedMood = Math.round(averageMood);
     const moodEmoji = scoreToMood[roundedMood];
     const percent = ((averageMood - 1) / 4) * 100;
 
     if (entries.length === 0) {
-        return <div>No data to display</div>;
+        averageMood = "";
     }
 
     return (
