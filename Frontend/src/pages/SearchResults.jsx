@@ -7,12 +7,10 @@ import ViewEntryModal from "../components/ViewEntryModal";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { filterEntriesByQuery } from "../utils/search";
-import { fetchEntries } from "../features/entries/entriesSlice";
 
 export default function SearchResults() {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("q") || "";
-  useDispatch(fetchEntries());
   const entries = useSelector((state) => state.entries.entries);
   const dispatch = useDispatch();
 

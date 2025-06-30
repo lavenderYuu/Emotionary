@@ -13,6 +13,7 @@ import Drawer from "@mui/material/Drawer";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
+import { fetchEntries } from "../features/entries/entriesSlice";
 
 const NavMenu = styled("ul")({
   display: "flex",
@@ -119,7 +120,10 @@ const NavigationBar = () => {
   };
 
   const handleSearchKeyDown = (event) => {
+
     if (event.key === "Enter" && searchQuery.trim()) {
+      
+      dispatch(fetchEntries());
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
     }
