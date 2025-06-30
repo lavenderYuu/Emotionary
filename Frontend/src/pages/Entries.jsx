@@ -1,8 +1,8 @@
 import EntryCard from "../components/EntryCard"
 import ViewEntryModal from "../components/ViewEntryModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
+import { fetchEntries, filterEntries, resetEntry, selectEntry, setPage } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import FilterRow from "../components/FilterRow";
@@ -13,8 +13,13 @@ const Entries = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
+  const pagination = useSelector((state) => state.entries.pagination);
   
   const allEntries = useSelector((state) => state.entries.entries);
+
+  useEffect(() => {
+    dispatch(filterEntries());
+  }, [dispatch]);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
@@ -44,6 +49,11 @@ const Entries = () => {
     dispatch(fetchEntries());
   }
 
+  const handlePageChange = (event, value) => {
+    dispatch(setPage(value));
+    dispatch(filterEntries());
+  };
+
   return (
     <>
       <h1>Journal Entries</h1>
@@ -61,7 +71,13 @@ const Entries = () => {
         onSave={handleSaveEntry}
         mode={mode}
       />
-      <Pagination count={10} />
+      {pagination.totalPages > 1 && (
+        
+      <Pagination count={pagination.totalPages}
+      page={pagination.currentPage}
+      onChange={handlePageChange}
+      style={{marginLeft:'auto'}} />)
+      }
     </>
   );
 }

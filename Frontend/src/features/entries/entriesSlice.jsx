@@ -15,7 +15,7 @@ export const filterEntries = createAsyncThunk('entries/filterEntries', async (_,
     if (mood) params.append('mood', mood);
     if (favorite) params.append('favorite', favorite);
     params.append('page', page);
-    const res = await fetch(`http://localhost:3000/filter/${userId}?${params.toString()}`);
+    const res = await fetch(`http://localhost:3000/entries/filter/${userId}?${params.toString()}`);
     const data = await res.json();
     return {
         entries: data.entries,
@@ -50,7 +50,7 @@ export const entriesSlice = createSlice({
       startDate: null,
       endDate: null,
       mood: null,
-      favorite: false,
+      favorite: undefined,
       page: 1,
       limit: 8,
     },
@@ -58,7 +58,7 @@ export const entriesSlice = createSlice({
       totalEntries: 0,
       totalPages: 1,
       currentPage: 1,
-    }
+    },
   },
 
   reducers: {
@@ -69,6 +69,16 @@ export const entriesSlice = createSlice({
     resetEntry(state, action) {
       state.activeEntry = null;
       // console.log("reset entry:", state.activeEntry)
+    },
+    setFilter(state, action) {
+      state.filters = {
+        ...state.filters,
+        ...action.payload,
+        page: 1,
+      };
+    },
+    setPage: (state, action) => {
+      state.filters.page = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -83,14 +93,14 @@ export const entriesSlice = createSlice({
           state.activeEntry = update;
         }
       })
-        .addCase(filterEntries.fulfilled, (state, action) => {
+      .addCase(filterEntries.fulfilled, (state, action) => {
         state.entries = action.payload.entries;
         state.pagination = {
-            totalEntries: action.payload.totalEntries,
-            totalPages: action.payload.totalPages,
-            currentPage: action.payload.currentPage,
-          };
-        })
+          totalEntries: action.payload.totalEntries,
+          totalPages: action.payload.totalPages,
+          currentPage: action.payload.currentPage,
+        };
+      })
       .addCase(favoriteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         const index = state.entries.findIndex((e) => e._id === entry._id);
@@ -109,6 +119,6 @@ export const entriesSlice = createSlice({
   },
 });
 
-export const { selectEntry, resetEntry, createEntry } = entriesSlice.actions;
+export const { selectEntry, resetEntry, createEntry, setFilter, setPage} = entriesSlice.actions;
 
 export default entriesSlice.reducer;

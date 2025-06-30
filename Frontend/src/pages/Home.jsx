@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
-
+import { useEffect } from "react";
 const Home = () => {
   const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -41,6 +41,10 @@ const Home = () => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
   }
+
+  useEffect(() => {
+    dispatch(fetchEntries());
+  }, [dispatch]);
 
   return (
       <>
