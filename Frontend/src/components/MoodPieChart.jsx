@@ -23,6 +23,10 @@ export default function MoodPieChart() {
         label: mood,
     }));
 
+    if (entries.length === 0) {
+        return <div>No data to display</div>;
+    }
+
     return (
         <>
             {/* <h2>Mood Count Over the Past Month</h2> */}

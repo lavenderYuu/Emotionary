@@ -39,8 +39,30 @@ export default function LoginModal({ open, onClose }) {
     onClose();
   };
 
-  const handleSuccess = (response) => {
-    navigate("/dashboard");
+  const handleSuccess = async (response) => {
+    const idToken = response.credential;
+
+    try {
+      const response = await fetch("http://localhost:3000/users/google-auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Google authentication failed");
+      }
+
+      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during Google authentication:", error);
+      alert("Google authentication failed: " + error.message);
+    }
   };
 
   const handleChange = (e) => {
@@ -52,7 +74,8 @@ export default function LoginModal({ open, onClose }) {
   };
 
   const handleError = (error) => {
-    // placeholder function
+    console.log("Google login error:", error);
+    window.alert("Google login failed. Please try again.");
   };
 
   const handleSignUp = async (e) => {
