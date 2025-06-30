@@ -3,6 +3,50 @@ import { Entry } from '../models/entry.model.js';
 
 const router = express.Router();
 
+
+router.get("/filter/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const {
+      startDate,
+      endDate,
+      mood,
+      favorite,
+      page = 1,
+      limit = 8,
+    } = req.query;
+    const filter = { user_id: userId };
+    if (startDate) {
+      filter.date = { $gte: new Date(startDate) };
+    }
+    if (endDate) {
+      filter.date = { ...filter.date, $lte: new Date(endDate) };
+    }
+    if (mood) {
+      filter.mood = mood;
+    }
+    if (favorite) {
+      filter.favorite = favorite === "true";
+    }
+    const options = {
+      skip: (page - 1) * limit,
+      limit: parseInt(limit, 10),
+      sort: { date: -1 },
+    };
+    const entries = await Entry.find(filter, null, options);
+    const totalEntries = await Entry.countDocuments(filter);
+    res.json({
+      entries,
+      totalEntries,
+      totalPages: Math.ceil(totalEntries / limit),
+      currentPage: parseInt(page, 10),
+    });
+  } catch (err) {
+    console.error("Error fetching filtered entries:", err);
+    res.status(400).json({ error: "Failed to fetch filtered entries" });
+  }
+});
+
 // Get an entry by entryId
 // GET /entries/:entryId
 router.get('/:entryId', async (req, res) => {
@@ -14,6 +58,7 @@ router.get('/:entryId', async (req, res) => {
         res.status(400).json({ error: 'Failed to fetch entry' });
     }
 });
+
 
 // Create a new entry
 // POST /entries
