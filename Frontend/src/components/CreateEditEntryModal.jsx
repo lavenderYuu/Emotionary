@@ -18,6 +18,7 @@ import SaveButton from './buttons/SaveButton'
 import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
+import TagManagementModal from './TagManagementModal';
 import { sentimentEmojiMap } from '../utils/helpers';
 
 const client = new InferenceClient('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');
@@ -33,6 +34,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     content: ''
   });
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
+  const [isManageTagsOpen, setIsManageTagsOpen] = useState(false);
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
   const dispatch = useDispatch();
@@ -235,6 +237,11 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
               <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
                 onClick={() => toggleTag(tag.id)} />
             ))}
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-start' }}>
+              <Button variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
+                Manage Tags
+              </Button>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -258,6 +265,14 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             <Button onClick={handleClose}>Yes, I want to close</Button>
           </DialogActions>
       </Dialog>
+      {/* <TagManagementModal open={isManageTagsOpen} onClose={() => setIsManageTagsOpen(false)} userId={userId} /> */}
+      <TagManagementModal
+        open={isManageTagsOpen}
+        onClose={() => setIsManageTagsOpen(false)}
+        userId={userId}
+        userTags={tags}
+        onTagCreated={() => dispatch(fetchTags(userId))} // TODO
+      />
     </>
   );
 }
