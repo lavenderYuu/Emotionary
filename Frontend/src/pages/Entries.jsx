@@ -13,6 +13,7 @@ import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
+import { Box } from "@mui/material";
 
 const Entries = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -20,7 +21,6 @@ const Entries = () => {
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.entries.pagination);
-
   const allEntries = useSelector((state) => state.entries.entries);
 
   useEffect(() => {
@@ -65,11 +65,14 @@ const Entries = () => {
       <h1>Journal Entries</h1>
       <FilterRow />
       <CreateButton onClick={handleCreateModal} />
-      <EntryCard
-        entries={allEntries}
-        onClick={handleOpenCard}
-        onEdit={handleEditEntry}
-      />
+      {pagination.totalEntries === 0 ?
+        <Box sx={{ margin: 4 }}>Whoops, that filter returned no results! Please try again.</Box> :
+        <EntryCard
+          entries={allEntries}
+          onClick={handleOpenCard}
+          onEdit={handleEditEntry}
+        />
+      }
       <ViewEntryModal
         isOpen={isViewModalOpen}
         onClose={handleCloseModal}
