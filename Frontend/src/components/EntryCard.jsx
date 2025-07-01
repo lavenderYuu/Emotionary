@@ -23,16 +23,14 @@ import Button from '@mui/material/Button';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
-  const allEntries = useSelector((state) => state.entries.entries);
-  const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
+
+const EntryCard = ({ entries, onClick, onEdit }) => {
   const tags = useSelector(selectSortedTags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
-  const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -84,7 +82,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.slice(0, displayNum).map((entry, index) => (
+        {entries.map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>

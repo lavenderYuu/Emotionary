@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { Entry } from "../models/entry.model.js";
+import { OAuth2Client } from "google-auth-library";
 
 const router = express.Router();
 
@@ -68,6 +69,49 @@ router.post("/login", async (req, res) => {
   }
 });
 
+const GOOGLE_CLIENT_ID = "735327731044-e6067uakpvoblp50ullcnaah2u7aaljv.apps.googleusercontent.com";
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+// https://developers.google.com/identity/sign-in/web/backend-auth#node.js
+
+// Creates new or fetches existing Google user
+// POST /users/google-auth
+router.post("/google-auth", async (req, res) => {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+        return res.status(400).json({ message: "No ID token" });
+    }
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const name = payload["name"].split(" ")[0];
+        const email = payload["email"];
+        const googleId = payload["sub"];
+
+        let user = await User.findOne({ email: email });
+
+        if (!user) {
+            user = new User({
+                name: name,
+                email: email,
+                googleId: googleId,
+            });
+            await user.save();
+        }
+
+        res.status(200).json({ message: "Login successful", user });
+    } catch (error) {
+        console.error("Google ID token verification failed:", error);
+        res.status(401).json({ message: "Invalid Google ID token" });
+    }
+});
+
 // Logs user out, handled client-side
 // POST /users/logout
 router.post("/logout", async (req, res) => {
@@ -85,6 +129,5 @@ router.get('/:userId/entries', async (req, res) => {
         res.status(400).json({ error: 'Failed to fetch entries' });
     }
 });
-
 
 export default router;

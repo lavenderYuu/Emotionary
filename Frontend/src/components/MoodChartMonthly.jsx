@@ -10,10 +10,11 @@ export default function MoodChartMonthly() {
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
     const monthlyEntries = entries
-    .filter(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate >= oneMonthAgo;
-    });
+        .filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= oneMonthAgo;
+            })
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const dates = monthlyEntries.map(entry => new Date(entry.date));
     const moodData = monthlyEntries.map(entry => moodToScore[entry.mood]);

@@ -40,16 +40,34 @@ const FilterRow = () => {
   };
 
   const handleDateChange = (field) => (newValue) => {
-    const date = newValue? dayjs(newValue).format('YYYY-MM-DD') : null;
+    if (!newValue) {
+      dispatch(
+        setFilter({
+          ...filters,
+          [field]: null,
+          page: 1,
+        })
+      );
+      return;
+    }
+
+    const date = dayjs(newValue);
+
+    const utcISOString =
+      field === "startDate"
+        ? date.startOf("day").toDate().toISOString() 
+        : date.add(1, "day").startOf("day").toDate().toISOString();
+
+    console.log(`Setting ${field} to:`, utcISOString);
 
     dispatch(
       setFilter({
         ...filters,
-        [field]: date,
+        [field]: utcISOString,
         page: 1,
       })
     );
-  }
+  };
 
   const handleMoodChange = (event, newValue) => {
     dispatch(
@@ -77,7 +95,6 @@ const FilterRow = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Start Date"
-          value={filters.startDate ? dayjs(filters.startDate) : null}
           onChange={handleDateChange("startDate")}
           disableFuture
           sx={{
@@ -86,7 +103,6 @@ const FilterRow = () => {
         />
         <DatePicker
           label="End Date"
-          value={filters.endDate ? dayjs(filters.endDate) : null}
           onChange={handleDateChange("endDate")}
           disableFuture
           sx={{ width: 180 }}
