@@ -20,7 +20,9 @@ router.get("/filter/:userId", async (req, res) => {
       filter.date = { $gte: new Date(startDate) };
     }
     if (endDate) {
-      filter.date = { ...filter.date, $lte: new Date(endDate) };
+      const nextDay = new Date(endDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      filter.date = { ...filter.date, $lt: nextDay };
     }
     if (mood) {
       filter.mood = mood;
