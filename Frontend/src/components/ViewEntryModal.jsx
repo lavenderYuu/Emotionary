@@ -12,11 +12,12 @@ import { getDate, getTags } from '../utils/helpers';
 import EditButton from './buttons/EditButton'
 import MoodButton from './buttons/MoodButton';
 import { fetchEntries } from '../features/entries/entriesSlice';
+import { selectSortedTags } from '../features/tags/tagsSelectors';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const entry = useSelector((state) => state.entries.activeEntry);
-  const tags = useSelector((state) => state.tags.tags);
+  const tags = useSelector(selectSortedTags);
   const tagMap = useMemo(() => getTags(tags), [tags]);
   const dispatch = useDispatch();
 
