@@ -63,7 +63,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
   const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
-    dispatch(deleteEntry(entry));
+    await dispatch(deleteEntry(entry)).unwrap();
     dispatch(resetEntry());
     dispatch(fetchEntries());
     handleClose();
