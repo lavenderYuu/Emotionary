@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
 import TagManagementModal from './TagManagementModal';
 import { sentimentEmojiMap } from '../utils/helpers';
+import { fetchTags } from '../features/tags/tagsSlice';
 
 const client = new InferenceClient('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');
 
@@ -54,6 +55,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       //   .catch(err => console.error('Failed to fetch entries:', err));
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isManageTagsOpen) {
+      dispatch(fetchTags());
+    }
+  }, [isManageTagsOpen, dispatch]);
   
   useEffect(() => {
     if (entry) {
@@ -234,10 +241,10 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
-                onClick={() => toggleTag(tag.id)} />
+              <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag._id) ? '2px solid #414141' : `2px solid ${tag.colour}` }}
+                onClick={() => toggleTag(tag._id)} />
             ))}
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-start' }}>
+            <Box sx={{ mt: 1.3, ml: 0.3, display: 'flex', justifyContent: 'flex-start' }}>
               <Button variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
                 Manage Tags
               </Button>
@@ -251,6 +258,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       <Dialog
         open={alert}
         onClose={() => setAlert(false)}
+        closeAfterTransition={false} // https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue
         slotProps={{
           paper: {
             sx: { 
@@ -265,13 +273,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             <Button onClick={handleClose}>Yes, I want to close</Button>
           </DialogActions>
       </Dialog>
-      {/* <TagManagementModal open={isManageTagsOpen} onClose={() => setIsManageTagsOpen(false)} userId={userId} /> */}
       <TagManagementModal
         open={isManageTagsOpen}
         onClose={() => setIsManageTagsOpen(false)}
         userId={userId}
         userTags={tags}
-        onTagCreated={() => dispatch(fetchTags(userId))} // TODO
+        onTagUpdated={() => dispatch(fetchTags())}
       />
     </>
   );
