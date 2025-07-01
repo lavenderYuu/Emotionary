@@ -20,10 +20,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import { selectSortedTags } from '../features/tags/tagsSelectors';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
+
 const EntryCard = ({ entries, onClick, onEdit }) => {
-  const tags = useSelector((state) => state.tags.tags);
+  const tags = useSelector(selectSortedTags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
