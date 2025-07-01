@@ -1,8 +1,8 @@
 import express from 'express';
 import { Entry } from '../models/entry.model.js';
-import dayjs from "dayjs";
 
 const router = express.Router();
+
 
 router.get("/filter/:userId", async (req, res) => {
   try {
@@ -20,8 +20,7 @@ router.get("/filter/:userId", async (req, res) => {
       filter.date = { $gte: new Date(startDate) };
     }
     if (endDate) {
-      const date = dayjs(endDate).add(1, 'day').startOf('day').toDate();
-      filter.date = { ...filter.date, $lt: date };
+      filter.date = { ...filter.date, $lte: new Date(endDate) };
     }
     if (mood) {
       filter.mood = mood;

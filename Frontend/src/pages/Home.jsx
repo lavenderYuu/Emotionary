@@ -15,8 +15,6 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
-  const entries = useSelector((state) => state.entries.entries);
-  const recentEntries = entries.slice(0,8);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
@@ -62,7 +60,7 @@ const Home = () => {
           <MoodChart />
         </Box>
         <h2>Recent Entries</h2>
-        <EntryCard entries={recentEntries} onClick={handleOpenCard} onEdit={handleEditEntry}/>
+        <EntryCard onClick={handleOpenCard} onEdit={handleEditEntry} num={8}/>
         <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
         <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
       </>
