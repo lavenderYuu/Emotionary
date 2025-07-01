@@ -385,7 +385,7 @@ describe("Entry Tests", function () {
       const entries = [
         {
           title: "Title 1",
-          date: new Date("2025-06-01T07:00:00Z"),
+          date: new Date("2025-06-01T07:00:00Z"), // PDT: June 1, 2025 12:00 AM (midnight)
           content: "Content 1",
           tags: [],
           favorite: false,
@@ -394,7 +394,7 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 2",
-          date: new Date("2025-06-02T19:00:00Z"),
+          date: new Date("2025-06-02T19:00:00Z"), // PDT: June 2, 2025 12:00 PM (noon)
           content: "Content 2",
           tags: [],
           favorite: true,
@@ -403,7 +403,7 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 3",
-          date: new Date("2025-06-03T07:00:00Z"),
+          date: new Date("2025-06-03T07:00:00Z"), // PDT: June 3, 2025 12:00 AM (midnight)
           content: "Content 3",
           tags: [],
           favorite: false,
@@ -412,7 +412,7 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 4",
-          date: new Date("2025-06-05T02:00:00Z"),
+          date: new Date("2025-06-05T02:00:00Z"),  // PDT: June 4, 2025 7:00 PM (evening)
           content: "Content 4",
           tags: [],
           favorite: true,
@@ -475,8 +475,21 @@ describe("Entry Tests", function () {
   );
 
   it("should filter entries by date range, mood, and favorite status", async function () {
+    const startDate = dayjs(new Date("2025-06-02T00:00:00"))
+      .startOf("day")
+      .toDate()
+      .toISOString();
+
+    const endDate = dayjs(new Date("2025-06-04T00:00:00"))
+      .add(1, "day")
+      .startOf("day")
+      .toDate()
+      .toISOString();
+
     const response = await request(app).get(
-      `/entries/filter/${user1}?startDate=2025-06-02&endDate=2025-06-04&mood=😢&favorite=false`
+      `/entries/filter/${user1}?startDate=${encodeURIComponent(
+        startDate
+      )}&endDate=${encodeURIComponent(endDate)}&mood=😢&favorite=false`
     );
     const entries = response.body.entries;
     expect(response.statusCode).to.equal(200);
