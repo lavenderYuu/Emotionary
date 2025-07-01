@@ -1,42 +1,34 @@
-import React, { useState } from 'react';
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, IconButton, TextField, Box, Typography, Chip
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {  Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, TextField, Box, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import { tagColours } from '../assets/data/tagColours';
-
-// export const tagColours = [
-//   "#e992d5", 
-//   "#b8a7ff", 
-//   "#7dda92", 
-//   "#c8bff7", 
-//   "#ffe599",
-//   "#5eaeff", 
-//   "#ffbde9", 
-//   "#04c589", 
-//   "#f2aa3e", 
-//   "#d5a6bd"
-// ];
+import { tagColours } from '../utils/helpers';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [name, setName] = useState('');
   const [editingTagId, setEditingTagId] = useState(null);
   const [editedName, setEditedName] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning' });
 
-  console.log('userTags: ', userTags);
+  // console.log('userTags: ', userTags);
 
   const handleCreateTag = async () => {
-    if (!name.trim()) return alert('Tag name is required');
-    if (userTags.length >= 10) return alert('You can only have up to 10 tags.');
+    if (!name.trim()) return showSnackbar('Please enter a tag name.');
+    if (userTags.length >= 10) return showSnackbar('You have reached the maximum number of tags allowed.');
+
+    const tagNameExists = userTags.find(tag => tag.name.toLowerCase() === name.trim().toLowerCase());
+    if (tagNameExists) {
+      return alert('A tag with this name already exists.');
+    }
 
     const usedColors = userTags.map(tag => tag.colour);
     const availableColor = tagColours.find(color => !usedColors.includes(color));
-    if (!availableColor) return alert('No more tag colors available.');
+    if (!availableColor) return alert('No more tag colours available.');
 
     try {
       const response = await fetch('http://localhost:3000/tags', {
@@ -55,7 +47,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   };
 
   const handleDeleteTag = async (tagId) => {
-    if (!window.confirm('Are you sure you want to delete this tag?')) return;
+    if (!window.confirm('Are you sure you want to delete this tag?')) return; // TODO: snackbar
 
     try {
       const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
@@ -93,23 +85,33 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
     setShowCreateForm(false);
   };
 
+  const showSnackbar = (message, severity = 'warning') => {
+    setSnackbar({ open: true, message, severity });
+  };
+
   return (
     <>
-    <Dialog open={open} onClose={onClose} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif' }}}}>
+    {/* https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue */}
+    <Dialog open={open} onClose={onClose} closeAfterTransition={false} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif', backgroundColor: 'rgb(251, 246, 239)', }}}}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Manage Tags
         <IconButton onClick={onClose}><CloseIcon /></IconButton>
       </DialogTitle>
 
       <DialogContent dividers sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant="body2" sx={{ fontFamily: 'Outfit, sans-serif' }}>
-          You currently have {userTags.length}/10 tags.
-        </Typography>
 
         {/* Existing tag list */}
         {userTags.map(tag => (
           <Box key={tag._id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Chip label={tag.colour} sx={{ bgcolor: tag.colour, color: 'black' }} />
+            <Box
+              sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                bgcolor: tag.colour,
+                mr: 1
+              }}
+            />
 
             {editingTagId === tag._id ? (
               <>
@@ -139,7 +141,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
           <Button
             variant="outlined"
             onClick={() => setShowCreateForm(true)}
-            disabled={userTags.length >= 10}
+            // disabled={userTags.length >= 10}
             sx={{ fontFamily: 'Outfit, sans-serif' }}
           >
             Create Tag
@@ -164,6 +166,22 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
+
+    {/* show snackbar alert if user attempts to create >10 tags */}
+    <Snackbar
+      open={snackbar.open}
+      autoHideDuration={3000}
+      onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    >
+      <MuiAlert
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        severity={snackbar.severity}
+        sx={{ width: '100%' }}
+      >
+        {snackbar.message}
+      </MuiAlert>
+    </Snackbar>
     </>
   );
 };
