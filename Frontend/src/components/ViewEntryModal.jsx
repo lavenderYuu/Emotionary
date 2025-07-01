@@ -5,31 +5,18 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { useDispatch, useSelector } from "react-redux"
-import { useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Chip } from '@mui/material';
-import { getDate, getTags } from '../utils/helpers';
+import { getDate } from '../utils/helpers';
 import EditButton from './buttons/EditButton'
 import MoodButton from './buttons/MoodButton';
 import { fetchEntries } from '../features/entries/entriesSlice';
-import { selectSortedTags } from '../features/tags/tagsSelectors';
-import { fetchTags } from '../features/tags/tagsSlice';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   const entry = useSelector((state) => state.entries.activeEntry);
-  const tags = useSelector(selectSortedTags);
-  const tagMap = useMemo(() => getTags(tags), [tags]);
   const dispatch = useDispatch();
-
-  // console.log('tagMap: ', tagMap);
-
-  useEffect(() => {
-    if (isOpen) {
-      dispatch(fetchTags());
-    }
-  }, [isOpen, dispatch]);
-
+  
   const handleSelectMood = async (selectedMood) => {
     try {
       const response = await fetch(`http://localhost:3000/entries/${entry._id}`, {
@@ -92,12 +79,9 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-            {entry.tags.map((id) => {
-              const tag = tagMap[id];
-              return tag ? (
-                <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, m: 1, border:`2px solid ${tag.colour}`, fontFamily: 'Outfit, sans-serif' }}/>
-              ) : null;
-            })}
+            {entry.tags.map((tag) => (
+              <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, m: 1, border:`2px solid ${tag.colour}`, fontFamily: 'Outfit, sans-serif' }}/>
+            ))}
           </Box>
           <EditButton onClick={() => onEdit()} />
         </DialogActions>
