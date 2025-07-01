@@ -1,6 +1,8 @@
 import express from 'express';
 import { Entry } from '../models/entry.model.js';
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+dayjs.extend(utc);
 
 const router = express.Router();
 
@@ -17,10 +19,10 @@ router.get("/filter/:userId", async (req, res) => {
     } = req.query;
     const filter = { user_id: userId };
     if (startDate) {
-      filter.date = { $gte: new Date(startDate) };
+      filter.date = { $gte: dayjs.utc(startDate).startOf('day').toDate() };
     }
     if (endDate) {
-      const date = dayjs(endDate).add(1, 'day').startOf('day').toDate();
+      const date = dayjs.utc(endDate).add(1, 'day').startOf('day').toDate();
       filter.date = { ...filter.date, $lt: date };
     }
     if (mood) {
