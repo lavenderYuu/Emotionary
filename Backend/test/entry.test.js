@@ -5,6 +5,7 @@ import sinon from "sinon";
 import { expect } from "chai";
 import { app } from "../server.js";
 import { Entry } from "../models/entry.model.js";
+import dayjs from "dayjs";
 
 // mongodb-memory-server for db testing: https://typegoose.github.io/mongodb-memory-server/docs/guides/quick-start-guide/#choose-the-right-package
 // supertest for api testing: https://www.npmjs.com/package/supertest, https://www.testim.io/blog/supertest-how-to-test-apis-like-a-pro/
@@ -381,10 +382,10 @@ describe("Entry Tests", function () {
     beforeEach(async () => {
       user1 = new mongoose.Types.ObjectId();
       await Entry.deleteMany();
-      await Entry.create([
+      const entries = [
         {
           title: "Title 1",
-          date: "2025-06-01",
+          date: new Date("2025-06-01T07:00:00Z"),
           content: "Content 1",
           tags: [],
           favorite: false,
@@ -393,7 +394,7 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 2",
-          date: "2025-06-02",
+          date: new Date("2025-06-02T19:00:00Z"),
           content: "Content 2",
           tags: [],
           favorite: true,
@@ -402,7 +403,7 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 3",
-          date: "2025-06-03",
+          date: new Date("2025-06-03T07:00:00Z"),
           content: "Content 3",
           tags: [],
           favorite: false,
@@ -411,26 +412,43 @@ describe("Entry Tests", function () {
         },
         {
           title: "Title 4",
-          date: "2025-06-04",
+          date: new Date("2025-06-05T02:00:00Z"),
           content: "Content 4",
           tags: [],
           favorite: true,
           user_id: user1,
           mood: "😃",
         },
-      ]);
+      ];
+
+      await Entry.create(entries);
     });
   
 
   // GET /entries/filter/:userId
   it("should filter entries by date range", async function () {
-    const response = await request(app).get(`/entries/filter/${user1}?startDate=2025-06-02&endDate=2025-06-03`);
+    const startDate = dayjs(new Date("2025-06-03T00:00:00"))
+      .startOf("day")
+      .toDate()
+      .toISOString(); 
+    
+    const endDate = dayjs(new Date("2025-06-04T00:00:00"))
+      .add(1, "day")
+      .startOf("day")
+      .toDate()
+      .toISOString();
 
+    const response = await request(app).get(
+      `/entries/filter/${user1}?startDate=${encodeURIComponent(
+        startDate
+      )}&endDate=${encodeURIComponent(endDate)}`
+    );
+  
     const entries = response.body.entries;
     expect(response.statusCode).to.equal(200);
     expect(entries).to.be.an("array").with.lengthOf(2);
-    expect(entries[0].title).to.equal("Title 3");
-    expect(entries[1].title).to.equal("Title 2");
+    expect(entries[0].title).to.equal("Title 4");
+    expect(entries[1].title).to.equal("Title 3");
     expect(response.body.totalEntries).to.equal(2);
     expect(response.body.totalPages).to.equal(1);
   }
