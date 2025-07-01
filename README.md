@@ -32,16 +32,23 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
     - 🥧 Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Milestone 3
-For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering and search. We also performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. In addition, we addressed crossplay feedback to make our app more accessible and user-friendly. 
-- 🔒 Encryption for user passwords using bcrypt
-- 🔑 Google OAuth - Users can log in with their Google credentials 
+For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly. 
+- 🔒 Encryption - User passwords are encrypted using bcrypt
+    - Database stores encrypted passwords
+- 🔑 Google OAuth - Users can log in with their Google credentials
+    - POST request is made when users sign in
+    - Database only stores the user's first name, email and id, no password
 - 📝 Entries - Users can edit the mood of an entry in case they disagree with sentiment analysis results
+    - Uses existing PUT request
+- 🏷️ Tags - Users can fully customize entry tags
+    - API calls are made when users create, edit, or delete tags
+    - Stored in database and Redux
 - 🔍 Search Page - Users can search for entries by title, content, and/or tags
     - Implemented in frontend to avoid code duplication and achieve better UI responsiveness
 - 📄 Entries Page - Users can filter entries by date, mood, favorites, and tags
     - Implemented in backend and stored in Redux
 - 👤 UI improvements
-    - Fully functional and accessible buttons and navbar links
+    - Fully functional buttons and navbar links
     - Updated styling and tooltips for charts
 
 ### Test Suite
@@ -49,7 +56,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     1. Clone this repo
     2. For backend tests, `cd backend` and run `npm test`
     3. For frontend tests, `cd frontend` and run `npm test`
-    4. Test reports should automatically open in  your browser
+    4. Test reports should automatically open in your browser
 - Link:
 
 ## Getting Started
