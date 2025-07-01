@@ -43,9 +43,14 @@ For Milestone 3, we continued to implement and improve the key functionalities o
 - 👤 UI improvements
     - Fully functional and accessible buttons and navbar links
     - Updated styling and tooltips for charts
-- 🧪 Test Suite
-    - Instructions to run:
-    - Link:
+
+### Test Suite
+- Instructions to run:
+    1. Clone this repo
+    2. For backend tests, `cd backend` and run `npm test`
+    3. For frontend tests, `cd frontend` and run `npm test`
+    4. Test reports should automatically open in  your browser
+- Link:
 
 ## Getting Started
 1. Clone this repo
