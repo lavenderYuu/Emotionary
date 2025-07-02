@@ -8,13 +8,14 @@ import Entries from "./pages/Entries";
 import SearchResults from "./pages/SearchResults";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setUserId } from "./features/users/usersSlice";
 import { Navigate } from "react-router-dom";
 import theme from "./utils/theme";
 import { ThemeProvider } from '@mui/material/styles';
+import { getKey } from "./utils/crypto";
 
-function MainLayout() {
+function MainLayout({ cryptoKey }) {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   if (!isLoggedIn) {
@@ -25,10 +26,10 @@ function MainLayout() {
     <>
       <NavigationBar />
       <Routes>
-        <Route path="/dashboard" element={<Home />} />
+        <Route path="/dashboard" element={<Home cryptoKey={cryptoKey} />} />
         <Route path="/insights" element={<Insights />} />
-        <Route path="/entries" element={<Entries />} />
-        <Route path="/search" element={<SearchResults />} />
+        <Route path="/entries" element={<Entries cryptoKey={cryptoKey} />} />
+        <Route path="/search" element={<SearchResults cryptoKey={cryptoKey} />} />
       </Routes>
     </>
   );
@@ -37,6 +38,7 @@ function MainLayout() {
 function App() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.userId);
+  const [cryptoKey, setCryptoKey] = useState(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -52,12 +54,20 @@ function App() {
     }
   }, [userId, dispatch]);
 
+  useEffect(() => {
+    async function loadKey() {
+      const key = await getKey();
+      setCryptoKey(key);
+    }
+    loadKey();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/*" element={<MainLayout />} />
+          <Route path="/" element={<Landing setCryptoKey={setCryptoKey} />} />
+          <Route path="/*" element={<MainLayout cryptoKey={cryptoKey} />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
+import { deriveKey } from "../utils/crypto";
 
 const style = {
   position: "absolute",
@@ -23,7 +24,7 @@ const style = {
   fontFamily: "Outfit, sans-serif",
 };
 
-export default function LoginModal({ open, onClose }) {
+export default function LoginModal({ open, onClose, setCryptoKey }) {
   const [showSignIn, setShowSignIn] = useState(true);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -56,6 +57,10 @@ export default function LoginModal({ open, onClose }) {
       if (!response.ok) {
         throw new Error(data.message || "Google authentication failed");
       }
+
+      // TODO: Prompt user to set a passphrase if not previously set
+      // const key = await deriveKey(passphrase, data.user._id);
+      // setCryptoKey(key);
 
       dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
       navigate("/dashboard");
@@ -126,6 +131,10 @@ export default function LoginModal({ open, onClose }) {
       if (!response.ok) {
         throw new Error(data.message);
       }
+
+      // Derive key from password and use user ID as salt
+      const key = await deriveKey(formData.password, data.user._id);
+      setCryptoKey(key);
 
       dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
       navigate("/dashboard");

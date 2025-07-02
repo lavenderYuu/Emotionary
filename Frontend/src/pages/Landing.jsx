@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-export default function Landing () {
+export default function Landing ({ setCryptoKey }) {
     const [open, setOpen] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const location = useLocation();
@@ -45,7 +45,7 @@ export default function Landing () {
             </Box>
           )}
           <LoginButton onClick={handleOpen} />
-          <LoginModal open={open} onClose={handleClose} />
+          <LoginModal open={open} onClose={handleClose} setCryptoKey={setCryptoKey} />
         </div>
       </div>
     )

@@ -44,8 +44,8 @@ export const deleteEntry = createAsyncThunk('entries/deleteEntry', async (entry)
 export const entriesSlice = createSlice({
   name: "entries",
   initialState: {
-    entries: [],
-    activeEntry: null,
+    entries: [], // encrypted entries
+    activeEntry: null, // just the ID of the active entry
     filters: {
       startDate: null,
       endDate: null,
@@ -63,7 +63,7 @@ export const entriesSlice = createSlice({
 
   reducers: {
     selectEntry(state, action) {
-      const selectEntry = state.entries.find((e) => e._id === action.payload);
+      const selectEntry = state.activeEntry = action.payload;
       state.activeEntry = selectEntry || null;
     },
     resetEntry(state, action) {
@@ -84,13 +84,6 @@ export const entriesSlice = createSlice({
     builder
       .addCase(fetchEntries.fulfilled, (state, action) => {
         state.entries = action.payload;
-
-        if (state.activeEntry) {
-          const update = action.payload.find(
-            (entry) => entry._id === state.activeEntry._id
-          );
-          state.activeEntry = update;
-        }
       })
       .addCase(filterEntries.fulfilled, (state, action) => {
         state.entries = action.payload.entries;
@@ -103,7 +96,6 @@ export const entriesSlice = createSlice({
       .addCase(favoriteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         const index = state.entries.findIndex((e) => e._id === entry._id);
-
         if (index !== -1) {
           state.entries[index] = entry;
         }
@@ -118,6 +110,6 @@ export const entriesSlice = createSlice({
   },
 });
 
-export const { selectEntry, resetEntry, createEntry, setFilter, setPage} = entriesSlice.actions;
+export const { selectEntry, resetEntry, createEntry, setFilter, setPage } = entriesSlice.actions;
 
 export default entriesSlice.reducer;

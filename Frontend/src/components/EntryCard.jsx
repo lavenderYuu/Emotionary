@@ -8,13 +8,12 @@ import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useSelector, useDispatch } from "react-redux"
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { getDate, getTags } from '../utils/helpers';
-import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -26,13 +25,27 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
   const allEntries = useSelector((state) => state.entries.entries);
   const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
   const tags = useSelector((state) => state.tags.tags);
-  const entry = useSelector((state) => state.entries.activeEntry);
+  const [selectedEntry, setSelectedEntry] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
   const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
 
+  const [showNoEntriesMsg, setShowNoEntriesMsg] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+
+    if (entries.length === 0) {
+      timeout = setTimeout(() => setShowNoEntriesMsg(true), 1000); // 1-second delay before showing the message
+    } else {
+      setShowNoEntriesMsg(false);
+    }
+
+    return () => clearTimeout(timeout); // Clear timeout if the component unmounts or entries change
+  }, [entries.length]);
+  
   const handleClose = () => {
     setAnchorEl(null);
     dispatch(resetEntry());
@@ -53,6 +66,8 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
   const handleKebab = (e, id) => {
     e.stopPropagation(); 
     setAnchorEl(e.currentTarget);
+    const entry = entries.find(e => e._id === id);
+    setSelectedEntry(entry);
     dispatch(selectEntry(id));
   }
 
@@ -64,13 +79,15 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
   const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
-    dispatch(deleteEntry(entry));
-    dispatch(resetEntry());
-    dispatch(fetchEntries());
-    handleClose();
+    if (selectedEntry) {
+      dispatch(deleteEntry(selectedEntry));
+      dispatch(resetEntry());
+      dispatch(fetchEntries());
+      handleClose();
+    }
   }
 
-  if (entries.length === 0) {
+  if (showNoEntriesMsg && entries.length === 0) {
     return <Box sx={{ margin: 4 }}>Whoops, you have no journal entries! Please create an entry.</Box>
   }
 
@@ -181,7 +198,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
           </Box>
         ))}
      </Box>
-     {entry &&
+     {selectedEntry &&
       <Menu
         anchorEl={anchorEl}
         open={open}

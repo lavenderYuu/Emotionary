@@ -19,12 +19,12 @@ import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
 import { sentimentEmojiMap } from '../utils/helpers';
+import { encryptContent } from "../utils/crypto";
 
 const client = new InferenceClient('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');
 
 // base component: https://mui.com/material-ui/react-dialog/
-const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
-  const entry = useSelector((state) => state.entries.activeEntry);
+const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry }) => {
   const tags = useSelector(selectSortedTags);
   const userId = useSelector((state) => state.auth.userId);
   const [formData, setFormData] = useState({
@@ -104,10 +104,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
       const sentiment = sentimentEmojiMap[sentimentLabel];
 
+      const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
+
       const entryData = {
         title,
         date: date.toISOString(),
-        content,
+        content: encryptedContent,
+        content_iv: iv,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: userId,

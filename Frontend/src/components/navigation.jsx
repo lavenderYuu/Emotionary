@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
+import { del } from 'idb-keyval';
 
 const NavMenu = styled("ul")({
   display: "flex",
@@ -111,6 +112,9 @@ const NavigationBar = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
+
+      await del('cryptoKey');
+      console.log('CryptoKey deleted from IndexedDB');
 
       dispatch(clearUserId());
       navigate("/", { state: { fromLogout: true } })
