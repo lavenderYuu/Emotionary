@@ -74,12 +74,14 @@ describe("Entry Tests", function () {
   // POST /entries
   it("should create a new entry with tags", async function () {
     const user1 = new mongoose.Types.ObjectId();
+    const tag1 = new mongoose.Types.ObjectId();
+    const tag2 = new mongoose.Types.ObjectId();
 
     const entry = {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
-      tags: ["tag1", "tag2", "tag3"],
+      tags: [tag1, tag2],
       favorite: false,
       user_id: user1,
       mood: "😊"
@@ -93,10 +95,9 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
-    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
-    expect(response.body.tags).to.include("tag1");
-    expect(response.body.tags).to.include("tag2");
-    expect(response.body.tags).to.include("tag3");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(2);
+    expect(response.body.tags).to.include(tag1.toString());
+    expect(response.body.tags).to.include(tag2.toString());
     expect(response.body.favorite).to.equal(false);
     expect(response.body.user_id).to.equal(user1.toString());
     expect(response.body.mood).to.equal("😊");
@@ -221,12 +222,15 @@ describe("Entry Tests", function () {
   // PUT /entries/:entryId
   it("should update an entry's title, date, content, and tags", async function () {
     const user1 = new mongoose.Types.ObjectId();
+    const tag1 = new mongoose.Types.ObjectId();
+    const tag2 = new mongoose.Types.ObjectId();
+    const updatedTag1 = new mongoose.Types.ObjectId();
     
     const entry = {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
-      tags: ["tag1", "tag2", "tag3"],
+      tags: [tag1],
       favorite: false,
       user_id: user1,
       mood: "😊"
@@ -240,17 +244,17 @@ describe("Entry Tests", function () {
         title: "Updated Title",
         date: "2025-06-02",
         content: "Updated Content",
-        tags: ["updatedTag1", "updatedTag2", "tag3"]
+        tags: [updatedTag1, tag2]
       });
 
     expect(response.statusCode).to.equal(200);
     expect(response.body.title).to.equal("Updated Title");
     expect(response.body.date).to.equal("2025-06-02T00:00:00.000Z");
     expect(response.body.content).to.equal("Updated Content");
-    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
-    expect(response.body.tags).to.include("updatedTag1");
-    expect(response.body.tags).to.include("updatedTag2");
-    expect(response.body.tags).to.include("tag3");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(2);
+    expect(response.body.tags).to.not.include(tag1.toString());
+    expect(response.body.tags).to.include(updatedTag1.toString());
+    expect(response.body.tags).to.include(tag2.toString());
     expect(response.body.favorite).to.equal(false);
     expect(response.body.user_id).to.equal(user1.toString());
     expect(response.body.mood).to.equal("😊");
@@ -305,12 +309,14 @@ describe("Entry Tests", function () {
   // PUT /entries/:entryId
   it("should not update an entry if no fields are provided", async function () {
     const user1 = new mongoose.Types.ObjectId();
+    const tag1 = new mongoose.Types.ObjectId();
+    const tag2 = new mongoose.Types.ObjectId();
     
     const entry = {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
-      tags: ["tag1", "tag2", "tag3"],
+      tags: [tag1, tag2],
       favorite: false,
       user_id: user1,
       mood: "😊"
@@ -326,10 +332,9 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
-    expect(response.body.tags).to.be.an("array").with.lengthOf(3);
-    expect(response.body.tags).to.include("tag1");
-    expect(response.body.tags).to.include("tag2");
-    expect(response.body.tags).to.include("tag3");
+    expect(response.body.tags).to.be.an("array").with.lengthOf(2);
+    expect(response.body.tags).to.include(tag1.toString());
+    expect(response.body.tags).to.include(tag2.toString());
     expect(response.body.favorite).to.equal(false);
     expect(response.body.user_id).to.equal(user1.toString());
     expect(response.body.mood).to.equal("😊");
@@ -345,7 +350,7 @@ describe("Entry Tests", function () {
         title: "Updated Title",
         date: "2025-06-02",
         content: "Updated Content",
-        tags: ["updatedTag1", "updatedTag2"]
+        tags: []
       });
     expect(response.statusCode).to.equal(404);
     expect(response.body.error).to.equal("Entry not found");

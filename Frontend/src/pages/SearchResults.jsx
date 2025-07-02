@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectEntry, resetEntry } from "../features/entries/entriesSlice";
@@ -19,6 +19,10 @@ export default function SearchResults() {
   const [mode, setMode] = useState("view");
 
   const searchResults = filterEntriesByQuery(entries, query);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [dispatch]);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);

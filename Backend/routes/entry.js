@@ -3,7 +3,6 @@ import { Entry } from '../models/entry.model.js';
 
 const router = express.Router();
 
-
 router.get("/filter/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -33,7 +32,11 @@ router.get("/filter/:userId", async (req, res) => {
       limit: parseInt(limit, 10),
       sort: { date: -1 },
     };
-    const entries = await Entry.find(filter, null, options);
+    const entries = await Entry
+      .find(filter)
+      .populate('tags')
+      .setOptions(options)
+      .exec();;
     const totalEntries = await Entry.countDocuments(filter);
     res.json({
       entries,
@@ -51,7 +54,10 @@ router.get("/filter/:userId", async (req, res) => {
 // GET /entries/:entryId
 router.get('/:entryId', async (req, res) => {
     try {
-        const entry = await Entry.findById(req.params.entryId)
+        const entry = await Entry
+          .findById(req.params.entryId)
+          .populate('tags')
+          .exec();
         res.json(entry);
     } catch (err) {
         console.error(`Error fetching entry ${req.params.entryId}:`, err);

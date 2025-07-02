@@ -8,7 +8,7 @@ export function filterEntriesByQuery(entries, query) {
     terms.every(term =>
       entry.title?.toLowerCase().includes(term) ||
       entry.content?.toLowerCase().includes(term) ||
-      (Array.isArray(entry.tags) && entry.tags.some(tag => tag.toLowerCase().includes(term)))
+      (Array.isArray(entry.tags) && entry.tags.some(tag => tag.name?.toLowerCase().includes(term)))
     )
   ).sort((a, b) => new Date(b.date) - new Date(a.date));
 }

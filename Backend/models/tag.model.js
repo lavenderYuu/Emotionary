@@ -9,14 +9,13 @@ const TagSchema = new Schema(
         },
 
         user_id : {
-            type: String,
-            // type: mongoose.Types.ObjectId,
-            // ref: "User",
+            type: mongoose.Types.ObjectId,
+            ref: "User",
             required: true,
         }, 
         
         colour: {
-            type: String, // TODO
+            type: String,
             required: true,
         }
     }

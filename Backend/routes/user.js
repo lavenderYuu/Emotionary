@@ -122,8 +122,12 @@ router.post("/logout", async (req, res) => {
 // GET /users/:userId/entries
 router.get('/:userId/entries', async (req, res) => {
     try {
-        const entries = await Entry.find({ user_id: req.params.userId }).sort({ date: -1 }); // always return sorted in descending order
-        res.json(entries);
+        const entries = await Entry
+          .find({ user_id: req.params.userId })
+          .populate('tags') // get tags
+          .sort({ date: -1 }) // always return sorted in descending order
+          .exec();
+          res.json(entries);
     } catch (err) {
         console.error("Error fetching entries:", err);
         res.status(400).json({ error: 'Failed to fetch entries' });

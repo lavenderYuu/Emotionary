@@ -6,19 +6,40 @@ describe('filterEntriesByQuery', () => {
     {
       title: "Happy Day",
       content: "I went to the park!",
-      tags: ["joy", "sun"],
+      tags: [
+        {
+          name:  "joy"
+        },
+        {
+          name: "sun"
+        }
+      ],
       date: "2025-06-28T12:00:00Z"
     },
     {
       title: "Sad Night",
       content: "It rained all day...",
-      tags: ["rain", "gloom"],
+      tags: [
+        {
+          name:  "rain"
+        },
+        {
+          name: "gloom"
+        }
+      ],
       date: "2025-06-27T12:00:00Z"
     },
     {
       title: "Neutral Entry",
       content: "Just another day...",
-      tags: ["routine", "rain"],
+      tags: [
+        {
+          name:  "routine"
+        },
+        {
+          name: "rain"
+        }
+      ],
       date: "2025-06-29T12:00:00Z"
     }
   ];

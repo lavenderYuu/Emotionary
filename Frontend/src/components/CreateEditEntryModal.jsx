@@ -44,28 +44,14 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
     if (isOpen) {
-      // fetch(`http://localhost:3000/tags/${userId}`)
-      //   .then(res => res.json())
-      //   .then(data => setTags(data))
-      //   .catch(err => console.error('Failed to fetch tags for user:', err));
-
-      // fetch(`http://localhost:3000/entries/${entry._id}`)
-      //   .then(res => res.json())
-      //   .then(data => setEntry(data))
-      //   .catch(err => console.error('Failed to fetch entries:', err));
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isManageTagsOpen) {
       dispatch(fetchTags());
     }
-  }, [isManageTagsOpen, dispatch]);
+  }, [isOpen]);
   
   useEffect(() => {
     if (entry) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
-      setActiveTags(entry.tags);
+      setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
     }
   }, [entry]);
@@ -76,7 +62,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       setActiveTags([]);
     } else if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
-      setActiveTags(entry.tags);
+      setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
     }
   }, [mode]);
