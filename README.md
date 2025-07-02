@@ -32,15 +32,20 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
     - 🥧 Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Milestone 3
-For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly. 
+For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (these are denoted below with CP).
 - 🔒 Encryption - User passwords are encrypted using bcrypt
-    - Database stores encrypted passwords
+    - Database only stores encrypted passwords
 - 🔑 Google OAuth - Users can log in with their Google credentials
     - POST request is made when users sign in
     - Database only stores the user's first name, email and id, no password
-- 📝 Entries - Users can edit the mood of an entry in case they disagree with sentiment analysis results
-    - Uses existing PUT request
-- 🏷️ Tags - Users can fully customize entry tags
+- 📝 Entries
+    - Users can edit the mood of an entry in case they disagree with sentiment analysis results (CP) - uses existing PUT request
+    - Users can choose the time of day for their entries (CP)
+    - Tag dots are replaced with mood emojis (CP)
+    - "Create an entry" button is a fixed and floating button that is available on all relevant pages (Dashboard and Entries) (CP)
+- 🏷️ Tags - Users can fully customize tag names
+    - Users can create up to 10 unique tags and add up to 3 tags per entry
+    - Unused tags are slightly transparent (CP)
     - API calls are made when users create, edit, or delete tags
     - Stored in database and Redux
 - 🔍 Search Page - Users can search for entries by title, content, and/or tags
@@ -49,15 +54,18 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Implemented in backend and stored in Redux
 - 👤 UI improvements
     - Fully functional buttons and navbar links
-    - Updated styling and tooltips for charts
+    - Updated styling and tooltips for charts (CP)
 
 ### Test Suite
-- Instructions to run:
-    1. Clone this repo
-    2. For backend tests, `cd backend` and run `npm test`
-    3. For frontend tests, `cd frontend` and run `npm test`
-    4. Test reports should automatically open in your browser
-- Link:
+Instructions to run:
+1. Clone this repo
+2. For backend tests, `cd backend` and run `npm test`
+3. For frontend tests, `cd frontend` and run `npm test`
+4. Test reports should automatically open in your browser
+
+Links:
+- Backend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test
+- Frontend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test
 
 ## Getting Started
 1. Clone this repo

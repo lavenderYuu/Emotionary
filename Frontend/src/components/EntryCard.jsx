@@ -219,7 +219,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={handleNevermind}>Nevermind</Button>
-            <Button onClick={handleDelete}>Yes, delete</Button>
+            <Button onClick={handleDelete} color="error">Yes, delete</Button>
           </DialogActions>
       </Dialog>
     </>

@@ -19,7 +19,7 @@ router.get('/', async (request, response) => {
 // GET /tags/:userId
 router.get('/:userId', async (request, response) => {
   try {
-    const tags = await Tag.find({ user_id: request.params.userId });
+    const tags = await Tag.find({ user_id: request.params.userId }).sort({ name: 1 });
 
     if (!tags) {
       return response.status(404).json({ message: 'Tags not found for the given user' });
@@ -42,6 +42,16 @@ router.post('/', async (request, response) => {
       return response.status(404).json({ message: 'Missing required field(s) for tag creation'});
     }
 
+    const existingTags = await Tag.find({ user_id });
+    if (existingTags.length >= 10) {
+      return response.status(400).json({ message: "Maximum tag limit reached"});
+    }
+
+    const duplicateTag = existingTags.find(tag => tag.name.toLowerCase() === name.trim().toLowerCase());
+    if (duplicateTag) {
+      return response.status(400).json({ message: "Tag name already exists"});
+    }
+
     const newTag = new Tag({ name, user_id, colour });
     await newTag.save();
     response.status(201).json(newTag);
@@ -55,15 +65,26 @@ router.post('/', async (request, response) => {
 // PUT /tags/:tagId
 router.put('/:tagId', async (req, res) => {
   try {
-    const updatedTag = await Tag.findByIdAndUpdate(
-      req.params.tagId,
-      req.body,
-      { new: true}
-    );
+    const { tagId } = req.params;
+    const { name } = req.body;
 
-    if (!updatedTag) {
+    const tagToUpdate = await Tag.findById(tagId);
+    if (!tagToUpdate) {
       return res.status(404).json({error: 'tag not found'});
     }
+
+    const duplicate = await Tag.findOne({
+      _id: { $ne: tagId },
+      name: name,
+      user_id: tagToUpdate.user_id
+    });
+
+    if (duplicate) {
+      return res.status(400).json({error: 'tag name already exists for this user'});
+    }
+
+    tagToUpdate.name = name;
+    const updatedTag = await tagToUpdate.save();
 
     res.json(updatedTag);
   } catch (error) {

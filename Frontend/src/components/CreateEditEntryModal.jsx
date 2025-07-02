@@ -21,6 +21,8 @@ import { InferenceClient } from '@huggingface/inference';
 import TagManagementModal from './TagManagementModal';
 import { sentimentEmojiMap } from '../utils/helpers';
 import { fetchTags } from '../features/tags/tagsSlice';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const client = new InferenceClient('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');
 
@@ -38,6 +40,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [isManageTagsOpen, setIsManageTagsOpen] = useState(false);
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning'});
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -85,7 +88,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     const isValid = (title.trim() !== '') && date && (content.trim() !== '');
 
     if (!isValid) {
-      window.alert("Journal title, date, and content are required.");
+      showSnackbar("Journal title, date, and content are required.");
     } else {
       onSave();
 
@@ -149,20 +152,20 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
   const toggleTag = (id) => {
     const exists = activeTags.some((tid) => tid === id );
-    
-    if (activeTags.length < 3) { // max 3 tags per entry
-      if (exists) {
-        const filteredTags = activeTags.filter((tid) => tid !== id );
-        setActiveTags(filteredTags);
-      } else {
-        setActiveTags([...activeTags, id])
-      }
+
+    if (exists) {
+      setActiveTags(activeTags.filter(tid => tid !== id));
     } else {
-      if (exists) {
-        const filteredTags = activeTags.filter((tid) => tid !== id );
-        setActiveTags(filteredTags);
+      if (activeTags.length >= 3) { // max 3 tags per entry
+        showSnackbar("You can only select up to 3 tags at a time.");
+        return;
       }
-    }    
+      setActiveTags([...activeTags, id]);
+    }
+  };
+
+  const showSnackbar = (message, severity = 'warning') => {
+    setSnackbar({ open: true, message, severity });
   };
 
   return (
@@ -224,7 +227,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag._id) ? '2px solid #414141' : `2px solid ${tag.colour}` }}
+              <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag._id) ? '2px solid #414141' : `2px solid ${tag.colour}`, opacity: activeTags.includes(tag._id) ? 1 : 0.5, }}
                 onClick={() => toggleTag(tag._id)} />
             ))}
             <Box sx={{ mt: 1.3, ml: 0.3, display: 'flex', justifyContent: 'flex-start' }}>
@@ -253,7 +256,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           <DialogContent>Any changes you have made will not be saved.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button onClick={() => setAlert(false)}>Continue editing</Button>
-            <Button onClick={handleClose}>Yes, I want to close</Button>
+            <Button onClick={handleClose} color="error">Yes, I want to close</Button>
           </DialogActions>
       </Dialog>
       <TagManagementModal
@@ -263,6 +266,21 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         userTags={tags}
         onTagUpdated={() => dispatch(fetchTags())}
       />
+      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={3000}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <MuiAlert
+              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+              severity={snackbar.severity}
+              sx={{ width: '100%' }}
+            >
+              {snackbar.message}
+            </MuiAlert>
+          </Snackbar>
     </>
   );
 }
