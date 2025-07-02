@@ -27,7 +27,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
       setSnackbar({ open: false, message: '', severity: 'warning'});
       setTagToDelete(null);
     }
-  });
+  }, [open]);
 
   const handleCreateTag = async () => {
     if (!name.trim()) return showSnackbar('Please enter a tag name.');
