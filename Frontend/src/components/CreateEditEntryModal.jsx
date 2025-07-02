@@ -39,9 +39,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
   const dispatch = useDispatch();
-  // const [tags, setTags] = useState([]); // TODO: User-specific tags
 
-  // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
     if (isOpen) {
       dispatch(fetchTags());
@@ -178,8 +176,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
             sx: { 
             width: '80vw',
             borderRadius: 4,
-            backgroundColor: 'rgb(251, 246, 239)',
-          }
+            }
           }
         }}
       >

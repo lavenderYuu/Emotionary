@@ -14,7 +14,7 @@ export default function Landing () {
     const navigate = useNavigate();
     const theme = useTheme();
     const logo = theme.palette.mode === 'light' ? light_logo : dark_logo;
-    const backgroundColor = theme.palette.mode === 'light' ? '#fefcfa' : '#3d3d3d';
+    const backgroundColor = theme.palette.mode === 'light' ? '#fefcfa' : '#242424';
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

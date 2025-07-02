@@ -92,7 +92,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   return (
     <>
     {/* https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue */}
-    <Dialog open={open} onClose={onClose} closeAfterTransition={false} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif', backgroundColor: 'rgb(251, 246, 239)', }}}}>
+    <Dialog open={open} onClose={onClose} closeAfterTransition={false} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif' }}}}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Manage Tags
         <IconButton onClick={onClose}><CloseIcon /></IconButton>

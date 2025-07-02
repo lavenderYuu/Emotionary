@@ -50,6 +50,13 @@ export const lightTheme = createTheme({
                 },
             },
         },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    backgroundColor: '#fbf6ef',
+                },
+            },
+        },
     },
 });
 
@@ -65,6 +72,13 @@ export const darkTheme = createTheme({
             styleOverrides: {
                 root: {
                     backgroundColor: '#1e1e1e',
+                },
+            },
+        },
+        MuiChip: {
+            styleOverrides: {
+                label: {
+                    color: 'black',
                 },
             },
         },
