@@ -14,6 +14,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   const [editingTagId, setEditingTagId] = useState(null);
   const [editedName, setEditedName] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning' });
+  const [tagToDelete, setTagToDelete] = useState(null);
 
   // console.log('userTags: ', userTags);
 
@@ -24,6 +25,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
       setName('');
       setShowCreateForm(false);
       setSnackbar({ open: false, message: '', severity: 'warning'});
+      setTagToDelete(null);
     }
   });
 
@@ -57,7 +59,6 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   };
 
   const handleDeleteTag = async (tagId) => {
-    if (!window.confirm('Are you sure you want to delete this tag?')) return; // TODO: snackbar
 
     try {
       const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
@@ -148,7 +149,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
               </>
             )}
 
-            <IconButton onClick={() => handleDeleteTag(tag._id)}><DeleteIcon /></IconButton>
+            <IconButton onClick={() => setTagToDelete(tag)}><DeleteIcon /></IconButton>
           </Box>
         ))}
 
@@ -198,6 +199,33 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
         {snackbar.message}
       </MuiAlert>
     </Snackbar>
+
+    {/* delete tag confirmation window */}
+    <Dialog
+      open={Boolean(tagToDelete)}
+      onClose={() => setTagToDelete(null)}
+      slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, }}}}
+    >
+      <DialogTitle>Delete Tag</DialogTitle>
+      <DialogContent>
+        <Typography>
+          Are you sure you want to delete the tag{' '}
+          <strong>{tagToDelete?.name}</strong>?
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
+        <Button
+          onClick={() => {
+            handleDeleteTag(tagToDelete._id);
+            setTagToDelete(null);
+          }}
+          color="error"
+        >
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };
