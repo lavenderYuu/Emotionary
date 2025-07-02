@@ -1,12 +1,27 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useSelector } from 'react-redux';
 import { moodToScore } from '../utils/helpers';
+import { useState, useEffect } from 'react';
 
 export default function MoodPieChart() {
     const entries = useSelector((state) => state.entries.entries);
 
     const oneMonthAgo = new Date();
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
+
+    const [showNoDataMsg, setShowNoDataMsg] = useState(false);
+    
+    useEffect(() => {
+      let timeout;
+  
+      if (entries.length === 0) {
+        timeout = setTimeout(() => setShowNoDataMsg(true), 1000); // 1-second delay before showing the message
+      } else {
+        setShowNoDataMsg(false);
+      }
+  
+      return () => clearTimeout(timeout); // Clear timeout if the component unmounts or entries change
+    }, [entries.length]);
 
     // console.log('oneWeekAgo: ', oneMonthAgo);
 
@@ -23,7 +38,7 @@ export default function MoodPieChart() {
         label: mood,
     }));
 
-    if (entries.length === 0) {
+    if (showNoDataMsg && entries.length === 0) {
         return <div>No data to display</div>;
     }
 
