@@ -41,7 +41,7 @@ describe("Tag Tests", function () {
 
         const response = await request(app).get('/tags');
         expect(response.body).to.be.an("array").with.lengthOf(3);
-        
+
         const names = response.body.map(tag => tag.name).sort();
         expect(names).to.deep.equal(["Tag 1", "Tag 2", "Tag 3"]);
     });
@@ -188,6 +188,32 @@ describe("Tag Tests", function () {
 
         expect(response.statusCode).to.equal(404);
         expect(response.body.error).to.equal('tag not found');
+    });
+
+    // PUT /tags/:tagId
+    it("should fail to update a tag with tag name already existing", async function () {
+        const user1 = new mongoose.Types.ObjectId();
+
+        await Tag.create([
+            { name: "Tag 1", user_id: user1, colour: "#e992d5" },
+            { name: "Tag 2", user_id: user1, colour: "#b8a7ff" },
+        ]);
+
+        const tag = {
+            name: "Tag 3",
+            user_id: user1,
+            colour: "#e992d7"
+        }
+
+        const tagObject = await Tag.create(tag);
+        const tagId = tagObject._id;
+
+        let response = await request(app).put(`/tags/${tagId}`).send({
+            name: "Tag 1"
+        });
+
+        expect(response.statusCode).to.equal(400);
+        expect(response.body.error).to.equal('tag name already exists for this user');
     });
 
     // DELETE /tags/:tagId

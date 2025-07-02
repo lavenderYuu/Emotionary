@@ -23,7 +23,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
     const tagNameExists = userTags.find(tag => tag.name.toLowerCase() === name.trim().toLowerCase());
     if (tagNameExists) {
-      return alert('A tag with this name already exists.');
+      return showSnackbar('A tag with this name already exists.');
     }
 
     const usedColors = userTags.map(tag => tag.colour);
@@ -63,6 +63,12 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
   const handleEditTag = async (tagId) => {
     if (!editedName.trim()) return;
+
+    const tagNameExists = userTags.find(tag => tag.name.toLowerCase() === editedName.trim().toLowerCase() && tag._id !== tagId);
+    if (tagNameExists) {
+      showSnackbar('A tag with this name already exists.');
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:3000/tags/${tagId}`, {

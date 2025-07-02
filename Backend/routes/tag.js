@@ -65,15 +65,26 @@ router.post('/', async (request, response) => {
 // PUT /tags/:tagId
 router.put('/:tagId', async (req, res) => {
   try {
-    const updatedTag = await Tag.findByIdAndUpdate(
-      req.params.tagId,
-      req.body,
-      { new: true}
-    );
+    const { tagId } = req.params;
+    const { name } = req.body;
 
-    if (!updatedTag) {
+    const tagToUpdate = await Tag.findById(tagId);
+    if (!tagToUpdate) {
       return res.status(404).json({error: 'tag not found'});
     }
+
+    const duplicate = await Tag.findOne({
+      _id: { $ne: tagId },
+      name: name,
+      user_id: tagToUpdate.user_id
+    });
+
+    if (duplicate) {
+      return res.status(400).json({error: 'tag name already exists for this user'});
+    }
+
+    tagToUpdate.name = name;
+    const updatedTag = await tagToUpdate.save();
 
     res.json(updatedTag);
   } catch (error) {
