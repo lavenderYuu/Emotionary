@@ -14,8 +14,20 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   const [editingTagId, setEditingTagId] = useState(null);
   const [editedName, setEditedName] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning' });
+  const [tagToDelete, setTagToDelete] = useState(null);
 
   // console.log('userTags: ', userTags);
+
+  useEffect(() => {
+    if (!open) {
+      setEditingTagId(null);
+      setEditedName('');
+      setName('');
+      setShowCreateForm(false);
+      setSnackbar({ open: false, message: '', severity: 'warning'});
+      setTagToDelete(null);
+    }
+  }, [open]);
 
   const handleCreateTag = async () => {
     if (!name.trim()) return showSnackbar('Please enter a tag name.');
@@ -23,7 +35,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
     const tagNameExists = userTags.find(tag => tag.name.toLowerCase() === name.trim().toLowerCase());
     if (tagNameExists) {
-      return alert('A tag with this name already exists.');
+      return showSnackbar('A tag with this name already exists.');
     }
 
     const usedColors = userTags.map(tag => tag.colour);
@@ -47,7 +59,6 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   };
 
   const handleDeleteTag = async (tagId) => {
-    if (!window.confirm('Are you sure you want to delete this tag?')) return; // TODO: snackbar
 
     try {
       const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
@@ -63,6 +74,12 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
   const handleEditTag = async (tagId) => {
     if (!editedName.trim()) return;
+
+    const tagNameExists = userTags.find(tag => tag.name.toLowerCase() === editedName.trim().toLowerCase() && tag._id !== tagId);
+    if (tagNameExists) {
+      showSnackbar('A tag with this name already exists.');
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
@@ -132,7 +149,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
               </>
             )}
 
-            <IconButton onClick={() => handleDeleteTag(tag._id)}><DeleteIcon /></IconButton>
+            <IconButton onClick={() => setTagToDelete(tag)}><DeleteIcon /></IconButton>
           </Box>
         ))}
 
@@ -182,6 +199,33 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
         {snackbar.message}
       </MuiAlert>
     </Snackbar>
+
+    {/* delete tag confirmation window */}
+    <Dialog
+      open={Boolean(tagToDelete)}
+      onClose={() => setTagToDelete(null)}
+      slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, }}}}
+    >
+      <DialogTitle>Delete Tag</DialogTitle>
+      <DialogContent>
+        <Typography>
+          Are you sure you want to delete the tag{' '}
+          <strong>{tagToDelete?.name}</strong>?
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
+        <Button
+          onClick={() => {
+            handleDeleteTag(tagToDelete._id);
+            setTagToDelete(null);
+          }}
+          color="error"
+        >
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 };
