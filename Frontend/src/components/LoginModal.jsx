@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
+import { useTheme } from '@mui/material';
 
 const style = {
   position: "absolute",
@@ -33,6 +34,7 @@ export default function LoginModal({ open, onClose }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleClose = () => {
     setShowSignIn(true);
@@ -267,7 +269,7 @@ export default function LoginModal({ open, onClose }) {
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Not a member yet?
@@ -300,7 +302,7 @@ export default function LoginModal({ open, onClose }) {
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Already a member?
