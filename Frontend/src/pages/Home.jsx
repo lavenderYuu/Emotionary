@@ -48,6 +48,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchEntries());
+    window.scrollTo(0, 0);
   }, [dispatch]);
 
   return (

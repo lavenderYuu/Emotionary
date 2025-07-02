@@ -1,12 +1,16 @@
 import MoodChart from "../components/MoodChart";
 import MoodCalendar from "../components/MoodCalendar";
 import MoodPieChart from "../components/MoodPieChart";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import MoodHeatmap from "../components/MoodHeatmap";
 import MoodGauge from "../components/MoodGauge";
+import { useEffect } from "react";
 
 const Insights = () => {
-  
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
       <>

@@ -25,6 +25,7 @@ const Entries = () => {
 
   useEffect(() => {
     dispatch(filterEntries());
+    window.scrollTo(0, 0);
   }, [dispatch]);
 
   const handleOpenCard = (id) => {
