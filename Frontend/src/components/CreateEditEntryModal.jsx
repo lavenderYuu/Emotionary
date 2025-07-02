@@ -90,7 +90,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     const isValid = (title.trim() !== '') && date && (content.trim() !== '');
 
     if (!isValid) {
-      window.alert("Journal title, date, and content are required.");
+      showSnackbar("Journal title, date, and content are required.");
     } else {
       onSave();
 
@@ -259,7 +259,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           <DialogContent>Any changes you have made will not be saved.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button onClick={() => setAlert(false)}>Continue editing</Button>
-            <Button onClick={handleClose}>Yes, I want to close</Button>
+            <Button onClick={handleClose} color="error">Yes, I want to close</Button>
           </DialogActions>
       </Dialog>
       <TagManagementModal
@@ -269,7 +269,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         userTags={tags}
         onTagUpdated={() => dispatch(fetchTags())}
       />
-      {/* Show alert if user attempts to add >3 tags */}
+      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
           <Snackbar
             open={snackbar.open}
             autoHideDuration={3000}

@@ -172,8 +172,8 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
               fullWidth
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button onClick={handleCreateTag} variant="contained">Save Tag</Button>
               <Button onClick={handleCancelCreate}>Cancel</Button>
+              <Button onClick={handleCreateTag} variant="contained">Save Tag</Button>
             </Box>
           </Box>
         )}
@@ -213,7 +213,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
           <strong>{tagToDelete?.name}</strong>?
         </Typography>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
         <Button
           onClick={() => {
