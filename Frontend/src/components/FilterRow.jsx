@@ -11,10 +11,12 @@ import { setFilter } from "../features/entries/entriesSlice";
 import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import dayjs from "dayjs";
+import { useTheme } from "@mui/material/styles";
 
 const FilterRow = () => {
     const dispatch = useDispatch();
     const filters = useSelector((state) => state.entries.filters);
+    const theme = useTheme();
 
   const moodOptions = Object.entries(sentimentEmojiMap).map(
     ([label, emoji]) => ({
@@ -122,8 +124,10 @@ const FilterRow = () => {
         sx={{
           borderRadius: "12px",
           padding: "8px",
+          display: 'flex',
+          gap: '8px'
         }}
-      >
+      > <div style={{ fontSize: '18px', color: theme.palette.text.primary }}>Favorites</div>
         {filters.favorite === true ? (
           <FavoriteIcon color="error" />
         ) : (

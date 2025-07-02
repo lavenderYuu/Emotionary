@@ -57,6 +57,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Updated styling and tooltips for charts (CP)
 
 ### Test Suite
+___
 Instructions to run:
 1. Clone this repo
 2. For backend tests, `cd backend` and run `npm test`
