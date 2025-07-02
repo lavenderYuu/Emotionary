@@ -31,7 +31,9 @@ export default function Landing () {
           alignItems: 'flex-start',
           justifyContent: 'center', 
           flexDirection: 'column', 
-          marginTop: '-60px'
+          marginTop: '-60px',
+          maxWidth: '350px',
+          margin: '0 auto',
         }}>
           <img
             src={logo}
