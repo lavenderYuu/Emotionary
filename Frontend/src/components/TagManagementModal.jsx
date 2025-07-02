@@ -17,6 +17,16 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
   // console.log('userTags: ', userTags);
 
+  useEffect(() => {
+    if (!open) {
+      setEditingTagId(null);
+      setEditedName('');
+      setName('');
+      setShowCreateForm(false);
+      setSnackbar({ open: false, message: '', severity: 'warning'});
+    }
+  });
+
   const handleCreateTag = async () => {
     if (!name.trim()) return showSnackbar('Please enter a tag name.');
     if (userTags.length >= 10) return showSnackbar('You have reached the maximum number of tags allowed.');
