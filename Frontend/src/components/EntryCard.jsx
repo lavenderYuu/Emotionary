@@ -21,6 +21,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
+import { useTheme } from '@mui/material';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 
@@ -31,6 +32,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
+  const theme = useTheme();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -97,19 +99,18 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                   alignItems: 'flex-start',
                   textAlign: 'left',
                   borderRadius: 4,
-                  border: '1px solid #e2d2be',
-                  backgroundColor: '#fbf6ef',
+                  border: `1px solid ${theme.palette.divider}`,
                   boxShadow: 'none',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  '&:hover': { backgroundColor: '#f5eee4' }
+                  '&:hover': { backgroundColor: theme.palette.action.hover }
                 }}>
                 <CardHeader
                   title={
                     <Typography
                       noWrap
                       sx={{
-                        width: '224px',
+                        width: '222px',
                         fontSize: '20px',
                       }}
                     >
@@ -127,7 +128,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                       onClick={(e) => handleKebab(e, entry._id)}
                       sx={{
                         top: -2,
-                        right: 30
+                        right: 8
                       }}
                     >
                       <MoreVertIcon />
@@ -158,7 +159,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                 <CardActions
                   disableSpacing
                   sx={{
-                    width: '90%',
+                    width: '100%',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
@@ -172,7 +173,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ fontSize: 18 }}>
+                  <Box sx={{ fontSize: 18, padding: '8px' }}>
                     {entry.mood}
                   </Box>
                 </CardActions>
@@ -190,8 +191,8 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           paper: {
             style: {
               width: '14ch',
-              boxShadow: 'none',
-              border: '1px solid #e2d2be',
+              boxShadow: 1,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: 6,
             },
           }

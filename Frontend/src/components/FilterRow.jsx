@@ -120,12 +120,8 @@ const FilterRow = () => {
       <IconButton
         onClick={handleFavorite}
         sx={{
-          backgroundColor: "white",
           borderRadius: "12px",
           padding: "8px",
-          "&:hover": {
-            backgroundColor: "#f5f5f5",
-          },
         }}
       >
         {filters.favorite === true ? (
