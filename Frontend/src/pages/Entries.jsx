@@ -21,7 +21,7 @@ const Entries = () => {
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.entries.pagination);
-  const allEntries = useSelector((state) => state.entries.entries);
+  const allEntries = useSelector((state) => state.entries.filteredEntries || state.entries.entries);
 
   useEffect(() => {
     dispatch(filterEntries());

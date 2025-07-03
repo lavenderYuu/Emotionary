@@ -18,10 +18,10 @@ export const filterEntries = createAsyncThunk('entries/filterEntries', async (_,
     const res = await fetch(`http://localhost:3000/entries/filter/${userId}?${params.toString()}`);
     const data = await res.json();
     return {
-        entries: data.entries,
-        totalEntries: data.totalEntries,
-        totalPages: data.totalPages,
-        currentPage: data.currentPage,
+      filteredEntries: data.entries,
+      totalEntries: data.totalEntries,
+      totalPages: data.totalPages,
+      currentPage: data.currentPage,
     };
 });
 
@@ -45,6 +45,7 @@ export const entriesSlice = createSlice({
   name: "entries",
   initialState: {
     entries: [],
+    filteredEntries: [],
     activeEntry: null,
     filters: {
       startDate: null,
@@ -93,7 +94,7 @@ export const entriesSlice = createSlice({
         }
       })
       .addCase(filterEntries.fulfilled, (state, action) => {
-        state.entries = action.payload.entries;
+        state.filteredEntries = action.payload.filteredEntries;
         state.pagination = {
           totalEntries: action.payload.totalEntries,
           totalPages: action.payload.totalPages,
