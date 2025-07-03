@@ -15,17 +15,17 @@ import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
 
-const NavMenu = styled("ul")({
+const NavMenu = styled("ul")(({ theme }) => ({
   display: "flex",
   listStyle: "none",
   alignItems: "center",
   gap: "50px",
   fontSize: "18px",
   fontWeight: "500",
-  color: "#333",
+  color: theme.palette.text.primary,
   padding: 0,
   margin: 0,
-});
+}));
 
 const DrawerMenu = styled(NavMenu)({
   flexDirection: "column",
@@ -34,22 +34,22 @@ const DrawerMenu = styled(NavMenu)({
   padding: "20px",
 });
 
-const NavItem = styled("a")({
+const NavItem = styled("a")(({ theme }) => ({
   cursor: "pointer",
   fontSize: "18px",
   fontWeight: "500",
-  color: "#333",
+  color: theme.palette.text.primary,
   fontFamily: "Outfit, sans-serif",
   "&:hover": {
-    color: "#1976d2",
+    color: theme.palette.primary.main,
   },
-});
+}));
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   "&:hover": {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.palette.background.default,
     boxShadow: "0 0 0 2px rgba(246, 230, 208, 0.74)",
     borderRadius: "20px",
   },
@@ -69,11 +69,11 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "black",
+  color: theme.palette.text.primary,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "black",
+  color: theme.palette.text.primary,
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -171,7 +171,7 @@ const NavigationBar = () => {
           zIndex: (theme) => theme.zIndex.drawer,
         }}
       >
-        <AppBar sx={{ bgcolor: "#fbf6ef" }}>
+        <AppBar>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <img
@@ -215,7 +215,7 @@ const NavigationBar = () => {
                   aria-label="open drawer"
                   edge="end"
                   onClick={handleDrawerToggle}
-                  sx={{ color: "black" }}
+                  sx={{ color: theme.palette.text.primary }}
                 >
                   <MenuIcon />
                 </IconButton>
@@ -236,11 +236,6 @@ const NavigationBar = () => {
           anchor="right"
           open={mobileOpen}
           onClose={handleDrawerToggle}
-          sx={{
-            "& .MuiDrawer-paper": {
-              bgcolor: "#fbf6ef",
-            },
-          }}
         >
           {drawer}
         </Drawer>

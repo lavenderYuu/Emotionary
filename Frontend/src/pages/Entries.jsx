@@ -14,6 +14,7 @@ import CreateButton from "../components/buttons/CreateButton";
 import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
 import { Box } from "@mui/material";
+import { useTheme } from '@mui/material';
 
 const Entries = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -22,6 +23,7 @@ const Entries = () => {
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.entries.pagination);
   const allEntries = useSelector((state) => state.entries.filteredEntries || state.entries.entries);
+  const theme = useTheme();
 
   useEffect(() => {
     dispatch(filterEntries());
@@ -95,7 +97,6 @@ const Entries = () => {
             style={{ marginLeft: "auto" }}
             sx={{
               width: "fit-content",
-              backgroundColor: "white",
               borderRadius: "15px",
               padding: "8px 16px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",

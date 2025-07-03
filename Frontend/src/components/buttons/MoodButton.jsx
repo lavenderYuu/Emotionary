@@ -3,10 +3,12 @@ import { sentimentEmojiMap } from '../../utils/helpers';
 import { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/material';
 
 const MoodButton = ({ mood, onSelectMood }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const theme = useTheme();
 
   const handleClick = (e) => {
     setAnchorEl(e.currentTarget);
@@ -31,9 +33,9 @@ const MoodButton = ({ mood, onSelectMood }) => {
           fontWeight: 500,
           fontSize: 16,
           textTransform: 'none',
-          color: '#3d3d3d',
+          color: theme.palette.text.primary,
           "&:hover": {
-            backgroundColor: "#f5eee4",
+            backgroundColor: theme.palette.action.hover,
           }
         }}
         onClick={handleClick}
@@ -48,7 +50,7 @@ const MoodButton = ({ mood, onSelectMood }) => {
         slotProps={{
           paper: {
             style: {
-              border: '1px solid #e2d2be',
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: 6,
               boxShadow: 1,
             },
