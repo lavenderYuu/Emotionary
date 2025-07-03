@@ -1,5 +1,6 @@
-import express, { request } from 'express';
+import express from 'express';
 import { Tag } from '../models/tag.model.js';
+import { Entry } from '../models/entry.model.js';
 
 const router = express.Router();
 
@@ -97,7 +98,17 @@ router.put('/:tagId', async (req, res) => {
 // DELETE /tags/:tagId
 router.delete('/:tagId', async (req, res) => {
   try {
-    const tag = await Tag.findByIdAndDelete(req.params.tagId);
+    const tagId = req.params.tagId;
+
+    await Entry.updateMany(
+      { tags: tagId }, // filter
+      { $pull: { // update
+          tags: tagId
+        }
+      }
+    )
+    
+    const tag = await Tag.findByIdAndDelete(tagId);
     res.json(tag);
   } catch (error) {
     console.error('error deleting tag: ', error);
