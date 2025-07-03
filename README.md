@@ -57,8 +57,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Updated styling and tooltips for charts (CP)
 
 ### Test Suite
-___
-We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality.
+We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. We used mochawesome to generate our test reports.
 
 **Instructions to run:**
 1. Clone this repo
