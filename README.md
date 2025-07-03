@@ -57,13 +57,16 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Updated styling and tooltips for charts (CP)
 
 ### Test Suite
-Instructions to run:
+___
+We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality.
+
+**Instructions to run:**
 1. Clone this repo
 2. For backend tests, `cd backend` and run `npm test`
 3. For frontend tests, `cd frontend` and run `npm test`
 4. Test reports should automatically open in your browser
 
-Links:
+**Links:**
 - [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
 - [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test) 
 
@@ -76,6 +79,7 @@ The following API keys are required to be passed as environment variables:
 
 We will send you a `.env` file. Please use this in Step #2 below.
 
+**Instructions to run:**
 1. Clone this repo
 2. Replace the `.env.example` file in the root directory with the provided `.env` file. Make sure the file is named `.env`
 3. Run `docker-compose up`
