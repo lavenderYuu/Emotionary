@@ -5,6 +5,7 @@ import sinon from "sinon";
 import { expect } from "chai";
 import { app } from "../server.js";
 import { Tag } from "../models/tag.model.js";
+import { Entry } from "../models/entry.model.js";
 
 let mongod;
 
@@ -237,4 +238,37 @@ describe("Tag Tests", function () {
         expect(response.body[0].name).to.equal("Tag 2");
     });
 
+    it("should delete a tag and remove it from all entries", async function () {
+        const user = new mongoose.Types.ObjectId();
+
+        const tags = await Tag.create([
+            { name: "Tag 1", user_id: user, colour: "#e992d5" },
+            { name: "Tag 2", user_id: user, colour: "#b8a7ff" },
+        ]);
+
+        const entries = await Entry.create([
+            { title: "Title 1", date: "2025-06-01", content: "Content 1", tags: [tags[0]._id, tags[1]._id], favorite: false, user_id: user, mood: "😊" },
+            { title: "Title 2", date: "2025-06-02", content: "Content 2", tags: [tags[0]._id], favorite: true, user_id: user, mood: "😭" },
+        ]);
+
+        const tagId = tags[0]._id;
+
+        let response = await request(app).delete(`/tags/${tagId}`);
+        expect(response.body.name).to.equal("Tag 1");
+        expect(response.body.user_id).to.equal(user.toString());
+        expect(response.body.colour).to.equal("#e992d5");
+
+        response = await request(app).get(`/tags/${user}`);
+        expect(response.body).to.be.an("array").with.lengthOf(1);
+        expect(response.body[0].name).to.equal("Tag 2");
+        
+        response = await request(app).get(`/users/${user}/entries`); // returned in date descending order
+        expect(response.statusCode).to.equal(200);
+        expect(response.body).to.be.an("array").with.lengthOf(2);
+        expect(response.body[0].tags).to.be.an("array").empty;
+        expect(response.body[1].tags).to.be.an("array").with.lengthOf(1);
+        expect(response.body[1].tags[0].name).to.equal("Tag 2");
+        expect(response.body[1].tags[0].user_id).to.equal(user.toString());
+        expect(response.body[1].tags[0].colour).to.equal("#b8a7ff");
+    });
 });

@@ -11,10 +11,14 @@ import { setFilter } from "../features/entries/entriesSlice";
 import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import dayjs from "dayjs";
+import { fetchTags } from "../features/tags/tagsSlice";
+import { useTheme } from "@mui/material/styles";
 
 const FilterRow = () => {
     const dispatch = useDispatch();
     const filters = useSelector((state) => state.entries.filters);
+    const tags = useSelector((state) => state.tags.items);
+    const theme = useTheme();
 
   const moodOptions = Object.entries(sentimentEmojiMap).map(
     ([label, emoji]) => ({
@@ -23,9 +27,19 @@ const FilterRow = () => {
     })
   );
 
+  const tagsOptions = tags.map((tag) => ({
+    label: tag.name,
+    value: tag._id,
+  }));
+
   useEffect(() => {
     dispatch(filterEntries());
   }, [dispatch, filters]);
+
+  useEffect(() => {
+      dispatch(fetchTags());
+  }, []);
+
 
   const handleFavorite = () => {
     const newFavoriteValue = filters.favorite === undefined ? true : undefined;
@@ -79,6 +93,16 @@ const FilterRow = () => {
     );
   };
 
+  const handleTagChange = (event, newValue) => {
+    dispatch(
+      setFilter({
+        ...filters,
+        tagId: newValue ? newValue.value : null,
+        page: 1,
+      })
+    );
+  }
+
   
 
   return (
@@ -117,15 +141,22 @@ const FilterRow = () => {
         }}
         renderInput={(params) => <TextField {...params} label="Mood" />}
       />
+      <Autocomplete
+        disablePortal
+        options={tagsOptions}
+        onChange={handleTagChange}
+        sx={{
+          width: 180,
+        }}
+        renderInput={(params) => <TextField {...params} label="Tags" />}
+      />
       <IconButton
         onClick={handleFavorite}
         sx={{
-          backgroundColor: "white",
           borderRadius: "12px",
           padding: "8px",
-          "&:hover": {
-            backgroundColor: "#f5f5f5",
-          },
+          display: 'flex',
+          gap: '8px'
         }}
       >
         {filters.favorite === true ? (

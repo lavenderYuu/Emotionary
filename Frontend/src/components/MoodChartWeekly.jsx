@@ -1,10 +1,11 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useSelector } from 'react-redux';
 import { moodToScore, scoreToMood } from '../utils/helpers';
-import { Box } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 export default function MoodChartWeekly() {
     const entries = useSelector((state) => state.entries.entries);
+    const theme = useTheme();
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -50,7 +51,7 @@ export default function MoodChartWeekly() {
                 }]}
                 series={[{
                     data: moodData,
-                    color: '#b8a7ff',
+                    color: theme.palette.secondary.main,
                     valueFormatter: (value) => scoreToMood[value],
                 }]}
                 height={320}

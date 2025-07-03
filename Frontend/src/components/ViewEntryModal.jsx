@@ -44,7 +44,6 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
             width: '80vw',
             maxHeight: '60vh',
             borderRadius: 4,
-            backgroundColor: 'rgb(251, 246, 239)',
             fontFamily: 'Outfit, sans-serif' 
           }
           }

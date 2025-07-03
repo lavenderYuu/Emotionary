@@ -27,7 +27,7 @@ const MonthlyMoodGauge = () => {
     return (
         <div style={{ textAlign: 'center', maxWidth: '300px', margin: '0 auto' }}>
             <div style={{ fontSize: '4rem' }}>{moodEmoji}</div>
-            <div style={{ fontSize: '1.5rem', color: '#555' }}>
+            <div style={{ fontSize: '1.5rem' }}>
                 Average Mood: {averageMood}
             </div>
             <div style={{

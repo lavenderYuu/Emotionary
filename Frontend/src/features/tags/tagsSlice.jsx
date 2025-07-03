@@ -6,7 +6,8 @@ export const fetchTags = createAsyncThunk('tags/fetchTags', async (_, { getState
   if (!response.ok) {
     throw new Error('failed to fetch tags');
   }
-  return await response.json();
+  const data = await response.json();
+  return data;
 });
 
 const tagsSlice = createSlice({
