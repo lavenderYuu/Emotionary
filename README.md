@@ -34,10 +34,10 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
 ## Milestone 3
 For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (denoted below with CP).
 - 🔒 Encryption - User passwords are encrypted using bcrypt
-    - Database only stores encrypted passwords
+    - Database stores encrypted passwords
 - 🔑 Google OAuth - Users can log in with their Google credentials
     - POST request is made when users sign in
-    - Database only stores the user's first name, email and id, no password
+    - Database does not store passwords
 - 📝 Entries
     - Users can edit the mood of an entry in case they disagree with sentiment analysis results (CP) - uses existing PUT request
     - Users can choose the time of day for their entries (CP)
@@ -55,9 +55,10 @@ For Milestone 3, we continued to implement and improve the key functionalities o
 - 👤 UI improvements
     - Fully functional buttons and navbar links
     - Updated styling and tooltips for charts (CP)
+    - Dark mode
 
 ### Test Suite
-We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. We used mochawesome to generate our test reports.
+We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
 **Instructions to run:**
 1. Clone this repo
@@ -70,17 +71,17 @@ We implemented a comprehensive test suite using the Mocha and Chai testing frame
 - [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test) 
 
 ## Getting Started
-The following API keys are required to be passed as environment variables:
+The following credentials need to be passed as environment variables:
 - `GOOGLE_ID`
 - `MONGODB_ID`
 - `VITE_GOOGLE_ID`
 - `VITE_HUGGINGFACE_ID`
 
-We will send you a `.env` file. Please use this in Step #2 below.
+We will send you a `.env` file to use for Step #2 below.
 
 **Instructions to run:**
 1. Clone this repo
-2. Replace the `.env.example` file in the root directory with the provided `.env` file. Make sure the file is named `.env`
+2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you; make sure the file is named `.env`
 3. Run `docker-compose up`
 4. Frontend will be available at: http://localhost
 5. Backend API runs at: http://localhost:5000
