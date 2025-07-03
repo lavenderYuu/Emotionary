@@ -24,7 +24,7 @@ import { fetchTags } from '../features/tags/tagsSlice';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-const client = new InferenceClient('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');
+const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {

@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import { app } from './server.js';
+import 'dotenv/config';
 
 // connects to db
 
 mongoose
   .connect(
-    "mongodb+srv://slack:emotionary@emotionary.qhnktaq.mongodb.net/emotionarydb?retryWrites=true&w=majority&appName=Emotionary"
+    process.env.MONGODB_ID
   )
   .then(() => {
     console.log("Connected to db!");

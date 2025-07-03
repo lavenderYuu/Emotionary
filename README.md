@@ -32,7 +32,7 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
     - 🥧 Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Milestone 3
-For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (these are denoted below with CP).
+For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (denoted below with CP).
 - 🔒 Encryption - User passwords are encrypted using bcrypt
     - Database only stores encrypted passwords
 - 🔑 Google OAuth - Users can log in with their Google credentials
@@ -64,14 +64,23 @@ Instructions to run:
 4. Test reports should automatically open in your browser
 
 Links:
-- Backend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test
-- Frontend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test
+- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
+- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test) 
 
 ## Getting Started
+The following API keys are required to be passed as environment variables:
+- `GOOGLE_ID`
+- `MONGODB_ID`
+- `VITE_GOOGLE_ID`
+- `VITE_HUGGINGFACE_ID`
+
+We will send you a `.env` file. Please use this in Step #2 below.
+
 1. Clone this repo
-2. Run `docker-compose up`
-3. Frontend will be available at: http://localhost
-4. Backend API runs at: http://localhost:5000
+2. Replace the `.env.example` file in the root directory with the provided `.env` file. Make sure the file is named `.env`
+3. Run `docker-compose up`
+4. Frontend will be available at: http://localhost
+5. Backend API runs at: http://localhost:5000
 
 Alternatively:
 1. Pull from Docker Hub:

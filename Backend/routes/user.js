@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { Entry } from "../models/entry.model.js";
 import { OAuth2Client } from "google-auth-library";
+import 'dotenv/config';
 
 const router = express.Router();
 
@@ -69,7 +70,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-const GOOGLE_CLIENT_ID = "735327731044-e6067uakpvoblp50ullcnaah2u7aaljv.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // https://developers.google.com/identity/sign-in/web/backend-auth#node.js
