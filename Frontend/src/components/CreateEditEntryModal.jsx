@@ -85,6 +85,31 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     }));
   };
 
+  const getSentiment = async (content) => {
+    const sentimentAnalysis = client.textClassification({ // returns an array of predictions (label + score)
+      model: 'tabularisai/multilingual-sentiment-analysis',
+      inputs: content,
+    });
+
+    const time = 6000;
+    const timeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Sentiment analysis timed out after ${time/1000} seconds`));
+      }, time);
+    });
+
+    try {
+      const sentimentAnalysisResult = await Promise.race([sentimentAnalysis, timeout]);
+
+      const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
+      return sentimentEmojiMap[sentimentLabel];
+    } catch (err) {
+      console.log('Error during sentiment analysis:', err.message);
+      showSnackbar("Whoops, sentiment analysis isn't working at the moment. You can always update your mood by viewing an entry.");
+      return null;
+    }
+  }
+
   const handleSubmit = async () => {
     const { title, date, content } = formData;
     const isValid = (title.trim() !== '') && date && (content.trim() !== '');
@@ -94,13 +119,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     } else {
       onSave();
 
-      const sentimentAnalysisResult = await client.textClassification({ // returns an array of predictions (label + score)
-        model: 'tabularisai/multilingual-sentiment-analysis',
-        inputs: content,
-      });
-
-      const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
-      const sentiment = sentimentEmojiMap[sentimentLabel];
+      const mood = await getSentiment(content);
 
       const entryData = {
         title,
@@ -109,7 +128,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: userId,
-        mood: sentiment,
+        mood: mood ? mood : "😐",
       };
 
       try {
@@ -165,6 +184,11 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       setActiveTags([...activeTags, id]);
     }
   };
+
+  const handleTags = () => {
+    dispatch(fetchTags());
+    dispatch(fetchEntries());
+  }
 
   const showSnackbar = (message, severity = 'warning') => {
     setSnackbar({ open: true, message, severity });
@@ -267,19 +291,19 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         onClose={() => setIsManageTagsOpen(false)}
         userId={userId}
         userTags={tags}
-        onTagUpdated={() => dispatch(fetchTags())}
+        onTagUpdated={handleTags}
       />
       {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
           <Snackbar
             open={snackbar.open}
-            autoHideDuration={3000}
+            autoHideDuration={5000}
             onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
             <MuiAlert
               onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
               severity={snackbar.severity}
-              sx={{ width: '100%' }}
+              sx={{ width: '100%', boxShadow: 2 }}
             >
               {snackbar.message}
             </MuiAlert>
