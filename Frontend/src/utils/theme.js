@@ -7,13 +7,13 @@ export const lightTheme = createTheme({
     palette: {
         mode: 'light',
         secondary: {
-            main: '#b8a7ff',
+            main: '#b8a7ff', // light purple for graphs
         },
         background: {
             default: '#ffffff',
             paper: '#ffffff',
         },
-        divider: '#e2d2be',
+        divider: '#e2d2be', // borders
         text: {
             primary: '#3d3d3d',
         },
@@ -22,35 +22,35 @@ export const lightTheme = createTheme({
         },
     },
     components: {
-        MuiCard: {
+        MuiCard: { // entry cards
             styleOverrides: {
                 root: {
                     backgroundColor: '#fbf6ef',
                 },
             },
         },
-        MuiAppBar: {
+        MuiAppBar: { // horizonal navbar
             styleOverrides: {
                 root: {
                     backgroundColor: '#fbf6ef',
                 },
             },
         },
-        MuiDrawer: {
+        MuiDrawer: { // vertical navbar drawer
             styleOverrides: {
                 paper: {
                     backgroundColor: '#fbf6ef',
                 },
             },
         },
-        MuiPagination: {
+        MuiPagination: { // pagination on Entries page
             styleOverrides: {
                 root: {
                     backgroundColor: '#fbf6ef',
                 },
             },
         },
-        MuiDialog: {
+        MuiDialog: { // dialogs
             styleOverrides: {
                 paper: {
                     backgroundColor: '#fbf6ef',
@@ -68,14 +68,14 @@ export const darkTheme = createTheme({
         mode: 'dark',
     },
     components: {
-        MuiPagination: {
+        MuiPagination: { // pagination on Entries page
             styleOverrides: {
                 root: {
                     backgroundColor: '#1e1e1e',
                 },
             },
         },
-        MuiChip: {
+        MuiChip: { // tag labels
             styleOverrides: {
                 label: {
                     color: 'black',
