@@ -11,6 +11,7 @@ router.get("/filter/:userId", async (req, res) => {
       endDate,
       mood,
       favorite,
+      tagId,
       page = 1,
       limit = 8,
     } = req.query;
@@ -27,6 +28,11 @@ router.get("/filter/:userId", async (req, res) => {
     if (favorite) {
       filter.favorite = favorite === "true";
     }
+
+    if (tagId) {
+      filter.tags = { $in: [tagId] };
+    }
+    
     const options = {
       skip: (page - 1) * limit,
       limit: parseInt(limit, 10),
