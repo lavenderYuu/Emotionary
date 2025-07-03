@@ -153,12 +153,12 @@ const FilterRow = () => {
       <IconButton
         onClick={handleFavorite}
         sx={{
-          borderRadius: "12px",
+          borderRadius: "50%",
           padding: "8px",
           display: 'flex',
           gap: '8px'
         }}
-      > <div style={{ fontSize: '18px', color: theme.palette.text.primary }}>Favorites</div>
+      >
         {filters.favorite === true ? (
           <FavoriteIcon color="error" />
         ) : (
