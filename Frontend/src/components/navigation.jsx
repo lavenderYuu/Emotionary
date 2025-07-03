@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
+import { RESET_APP } from "../app/rootReducer";
 
 const NavMenu = styled("ul")(({ theme }) => ({
   display: "flex",
@@ -113,6 +114,7 @@ const NavigationBar = () => {
       }
 
       dispatch(clearUserId());
+      dispatch({ type: RESET_APP });
       navigate("/", { state: { fromLogout: true } })
     } catch (error) {
       console.error("Error during logout:", error);

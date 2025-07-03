@@ -1,12 +1,6 @@
 import { configureStore }  from "@reduxjs/toolkit";
-import entries from '../features/entries/entriesSlice'
-import tags from '../features/tags/tagsSlice'
-import authReducer from '../features/users/usersSlice'
+import rootReducer from "./rootReducer";
 
 export const store = configureStore({
-  reducer: {
-    entries: entries,
-    tags: tags,
-    auth: authReducer,
-  },
+  reducer: rootReducer,
 });
