@@ -153,7 +153,7 @@ const FilterRow = () => {
       <IconButton
         onClick={handleFavorite}
         sx={{
-          borderRadius: "50%",
+          borderRadius: "12px",
           padding: "8px",
           display: 'flex',
           gap: '8px'
