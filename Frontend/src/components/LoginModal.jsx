@@ -296,7 +296,9 @@ export default function LoginModal({ open, onClose }) {
                 >
                   or
                 </Typography>
-                <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                </Box>
               </div>
             ) : (
               <div>
