@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report.html,autoOpen=true",
+    "test-and-report": "mocha --reporter mochawesome --reporter-options reportDir=/app/test-results,reportFilename=backend-test-report --exit",
     "start": "node index.js",
     "serve": "node index.js",
     "dev": "nodemon index.js"

@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "mocha --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report.html,autoOpen=true"
+    "test": "mocha --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report.html,autoOpen=true",
+    "test-and-report": "mocha --reporter mochawesome --reporter-options reportDir=/app/test-results,reportFilename=frontend-test-report --exit"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

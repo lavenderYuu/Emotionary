@@ -14,7 +14,7 @@ import { Tag } from "../models/tag.model.js";
 let mongod;
 
 describe("Entry Tests", function () {
-  this.timeout(5000);
+  this.timeout(15000);
 
   before(async () => {
     mongod = await MongoMemoryServer.create();

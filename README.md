@@ -61,10 +61,10 @@ For Milestone 3, we continued to implement and improve the key functionalities o
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
 **Instructions to run:**
-1. Please follow Steps #1 and #2 from the "Getting Started" section > "Instructions to run", i.e., clone this repo and add the `.env` file
-2. For backend tests, `cd backend` and run `npm test`
-3. For frontend tests, `cd ../frontend` and run `npm test`
-4. Test results will appear in the IDE terminal, and test reports will automatically open in your browser
+1. Please follow Steps #1 and #2 below from the "Getting Started" section > "Instructions to run"
+    - Clone this repo, go to `Milestone3` branch, and add `.env` file
+2. If you would like to run the test suite image separately, run `docker compose up --build test`
+4. Otherwise, follow the remaining instructions below, and test reports will be automatically generated in Step #6
 
 **Links:**
 - [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
@@ -80,8 +80,12 @@ The following credentials need to be passed as environment variables:
 We will send you a `.env` file to use for Step #2 below.
 
 **Instructions to run:**
-1. Clone this repo
-2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you; make sure the file is named `.env`
+1. Clone this repo and go to the `Milestone3` branch
+2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
+    - Make sure the file is named `.env`
 3. Run `docker compose up --build`
 4. Frontend will be available at: http://localhost
 5. Backend API runs at: http://localhost:5000
+6. Tests reports are automatically generated in the project's root directory in the `test-results` folder and can be opened in your browser of choice:
+    - `backend-test-report.html`
+    - `frontend-test-report.html`
