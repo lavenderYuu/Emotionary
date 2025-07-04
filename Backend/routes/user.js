@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { Entry } from "../models/entry.model.js";
 import { OAuth2Client } from "google-auth-library";
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' }); 
 
 const router = express.Router();
 

@@ -61,10 +61,10 @@ For Milestone 3, we continued to implement and improve the key functionalities o
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
 **Instructions to run:**
-1. Clone this repo
+1. Please follow Steps #1 and #2 from the "Getting Started" section > "Instructions to run", i.e., clone this repo and add the `.env` file
 2. For backend tests, `cd backend` and run `npm test`
-3. For frontend tests, `cd frontend` and run `npm test`
-4. Test reports should automatically open in your browser
+3. For frontend tests, `cd ../frontend` and run `npm test`
+4. Test results will appear in the IDE terminal, and test reports will automatically open in your browser
 
 **Links:**
 - [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
@@ -82,14 +82,6 @@ We will send you a `.env` file to use for Step #2 below.
 **Instructions to run:**
 1. Clone this repo
 2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you; make sure the file is named `.env`
-3. Run `docker-compose up`
+3. Run `docker compose up --build`
 4. Frontend will be available at: http://localhost
 5. Backend API runs at: http://localhost:5000
-
-Alternatively:
-1. Pull from Docker Hub:
-`docker pull aaachung/team15-frontend`
-`docker pull aaachung/team15-backend`
-2. Run containers: 
-`docker run -p 3000:3000 aaachung/team15-frontend`
-`docker run -p 80:80 aaachung/team15-backend`
