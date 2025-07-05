@@ -13,25 +13,26 @@ import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } fro
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import CircleIcon from '@mui/icons-material/Circle';
 import { getDate, getTags } from '../utils/helpers';
 import { useState } from 'react';
-import { selectSortedEntries } from '../features/entries/entriesSelectors';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import { selectSortedTags } from '../features/tags/tagsSelectors';
+import { useTheme } from '@mui/material';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ onClick, onEdit }) => {
-  const entries = useSelector(selectSortedEntries);
-  const tags = useSelector((state) => state.tags.tags);
+
+const EntryCard = ({ entries, onClick, onEdit }) => {
+  const tags = useSelector(selectSortedTags);
   const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
+  const theme = useTheme();
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -64,7 +65,7 @@ const EntryCard = ({ onClick, onEdit }) => {
   const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
-    dispatch(deleteEntry(entry));
+    await dispatch(deleteEntry(entry)).unwrap();
     dispatch(resetEntry());
     dispatch(fetchEntries());
     handleClose();
@@ -98,27 +99,25 @@ const EntryCard = ({ onClick, onEdit }) => {
                   alignItems: 'flex-start',
                   textAlign: 'left',
                   borderRadius: 4,
-                  border: '1px solid #e2d2be',
-                  backgroundColor: '#fbf6ef',
+                  border: `1px solid ${theme.palette.divider}`,
                   boxShadow: 'none',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  '&:hover': { backgroundColor: '#f5eee4' }
+                  '&:hover': { backgroundColor: theme.palette.action.hover }
                 }}>
                 <CardHeader
                   title={
                     <Typography
+                      noWrap
                       sx={{
-                        maxWidth: '100%',
+                        width: '222px',
                         fontSize: '20px',
-                        fontFamily: 'Outfit, sans-serif' 
                       }}
                     >
                       {entry.title}
                     </Typography>
                   }
                   subheader={getDate(entry.date)}
-                  subheaderTypographyProps={{ sx: { fontFamily: 'Outfit, sans-serif' } }}
                   action={
                     <IconButton
                       aria-label="more"
@@ -129,7 +128,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       onClick={(e) => handleKebab(e, entry._id)}
                       sx={{
                         top: -2,
-                        right: 30
+                        right: 8
                       }}
                     >
                       <MoreVertIcon />
@@ -139,7 +138,6 @@ const EntryCard = ({ onClick, onEdit }) => {
                     width: '100%',
                     display:'flex',
                     justifyContent: 'space-between',
-                    fontFamily: 'Outfit, sans-serif'
                 }}/>
                 <CardContent sx={{
                   pt: 0,
@@ -153,7 +151,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
                       textOverflow: 'ellipsis',
-                      fontFamily: 'Outfit, sans-serif' 
+                      fontSize: 16,
                     }}>
                     {entry.content}
                   </Typography>
@@ -161,7 +159,7 @@ const EntryCard = ({ onClick, onEdit }) => {
                 <CardActions
                   disableSpacing
                   sx={{
-                    width: '90%',
+                    width: '100%',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
@@ -175,13 +173,8 @@ const EntryCard = ({ onClick, onEdit }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    {entry.tags.map((id) => {
-                      const tag = tagMap[id];
-                      return tag ? (
-                        <CircleIcon key={tag.id} sx={{ color: tag.color, fontSize: 12 }} />
-                      ) : null;
-                    })}
+                  <Box sx={{ fontSize: 18, padding: '8px' }}>
+                    {entry.mood}
                   </Box>
                 </CardActions>
               </Card>
@@ -198,8 +191,8 @@ const EntryCard = ({ onClick, onEdit }) => {
           paper: {
             style: {
               width: '14ch',
-              boxShadow: 'none',
-              border: '1px solid #e2d2be',
+              boxShadow: 1,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: 6,
             },
           }
@@ -226,7 +219,7 @@ const EntryCard = ({ onClick, onEdit }) => {
           <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={handleNevermind}>Nevermind</Button>
-            <Button onClick={handleDelete}>Yes, delete</Button>
+            <Button onClick={handleDelete} color="error">Yes, delete</Button>
           </DialogActions>
       </Dialog>
     </>

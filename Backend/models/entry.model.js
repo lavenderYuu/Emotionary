@@ -19,7 +19,12 @@ const EntrySchema = new Schema(
         },
         
         tags: {
-            type: [String],
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: "Tag"
+                }
+            ],
         },
 
         favorite: {
@@ -34,8 +39,6 @@ const EntrySchema = new Schema(
 
         mood: {
             type: String,
-            // type: mongoose.Types.ObjectId,
-            // ref: "Mood"
             required: true,
         }
     }

@@ -1,52 +1,54 @@
-import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { moodToScore, sentimentEmojiMap } from '../utils/helpers';
 
 export default function MoodPieChart() {
     const entries = useSelector((state) => state.entries.entries);
 
-    const moods = ['😭', '☹️', '😐', '😊', '😀'];
-
     const oneMonthAgo = new Date();
-            oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
+    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
-            console.log('oneWeekAgo: ', oneMonthAgo);
+    // console.log('oneWeekAgo: ', oneMonthAgo);
 
-            const monthlyEntries = entries
-            .filter(entry => {
-                const entryDate = new Date(entry.date);
-                return entryDate >= oneMonthAgo;
-            });
+    const monthlyEntries = entries
+        .filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= oneMonthAgo;
+        });
 
-            // count occurrences of each mood
-            const counts = moods.map((mood) => ({
-                id: mood,
-                value: monthlyEntries.filter((entry) => entry.mood === mood).length,
-                label: mood,
-            }));
+    const getKey = (val) => {
+        return Object.entries(sentimentEmojiMap).find(([key, value]) => val === value)[0];
+    }
+
+    // count occurrences of each mood
+    const counts = Object.keys(moodToScore).map((mood) => ({
+        id: mood,
+        value: monthlyEntries.filter((entry) => entry.mood === mood).length,
+        label: mood + " " + getKey(mood),
+    }));
+
+    if (entries.length === 0) {
+        return <div>No data to display</div>;
+    }
 
     return (
         <>
-        {/* <h2>Mood Count Over the Past Month</h2> */}
-        <PieChart
-            colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
-            series={[
-                {
-                    data: counts,
-                    innerRadius: 50,
-                    outerRadius: 100,
-                    paddingAngle: 5,
-                    cornerRadius: 5
-                }
-            ]}
-            width={200}
-            height={200}
-        
-        />      
-        
+            {/* <h2>Mood Count Over the Past Month</h2> */}
+            <PieChart
+                sx={{ "& .MuiChartsLegend-label": { fontSize: 16 } }}
+                colors={['#f02828', '#ec9b06', '#679fde', '#68c686', '#10a9a7']}
+                series={[
+                    {
+                        data: counts,
+                        innerRadius: 50,
+                        outerRadius: 100,
+                        paddingAngle: 5,
+                        cornerRadius: 5
+                    }
+                ]}
+                width={250}
+                height={200}
+            />
         </>
-        
     );
 }

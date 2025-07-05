@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
+import { useTheme } from '@mui/material';
 
 const style = {
   position: "absolute",
@@ -33,14 +34,37 @@ export default function LoginModal({ open, onClose }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleClose = () => {
     setShowSignIn(true);
     onClose();
   };
 
-  const handleSuccess = (response) => {
-    navigate("/dashboard");
+  const handleSuccess = async (response) => {
+    const idToken = response.credential;
+
+    try {
+      const response = await fetch("http://localhost:3000/users/google-auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Google authentication failed");
+      }
+
+      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during Google authentication:", error);
+      alert("Google authentication failed: " + error.message);
+    }
   };
 
   const handleChange = (e) => {
@@ -52,7 +76,8 @@ export default function LoginModal({ open, onClose }) {
   };
 
   const handleError = (error) => {
-    // placeholder function
+    console.log("Google login error:", error);
+    window.alert("Google login failed. Please try again.");
   };
 
   const handleSignUp = async (e) => {
@@ -104,7 +129,7 @@ export default function LoginModal({ open, onClose }) {
         throw new Error(data.message);
       }
 
-      dispatch(setUserId(data.user._id));
+      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
@@ -244,7 +269,7 @@ export default function LoginModal({ open, onClose }) {
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Not a member yet?
@@ -271,13 +296,15 @@ export default function LoginModal({ open, onClose }) {
                 >
                   or
                 </Typography>
-                <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                </Box>
               </div>
             ) : (
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Already a member?

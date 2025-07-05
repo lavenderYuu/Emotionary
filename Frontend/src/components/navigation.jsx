@@ -10,37 +10,47 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useMediaQuery, useTheme } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { clearUserId } from "../features/users/usersSlice";
+import { useDispatch } from "react-redux";
+import { fetchEntries } from "../features/entries/entriesSlice";
+import { RESET_APP } from "../app/rootReducer";
 
-const NavMenu = styled("ul")({
+const NavMenu = styled("ul")(({ theme }) => ({
   display: "flex",
   listStyle: "none",
   alignItems: "center",
   gap: "50px",
   fontSize: "18px",
   fontWeight: "500",
-  color: "#333",
+  color: theme.palette.text.primary,
   padding: 0,
   margin: 0,
+}));
+
+const DrawerMenu = styled(NavMenu)({
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "20px",
+  padding: "20px",
 });
 
-const NavItem = styled("a")({
+const NavItem = styled("a")(({ theme }) => ({
   cursor: "pointer",
-  color: "#333",
-  fontFamily: "Roboto",
+  fontSize: "18px",
+  fontWeight: "500",
+  color: theme.palette.text.primary,
+  fontFamily: "Outfit, sans-serif",
   "&:hover": {
-    color: "#1976d2",
+    color: theme.palette.primary.main,
   },
-});
+}));
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   "&:hover": {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.palette.background.default,
     boxShadow: "0 0 0 2px rgba(246, 230, 208, 0.74)",
     borderRadius: "20px",
   },
@@ -60,11 +70,11 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "black",
+  color: theme.palette.text.primary,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "black",
+  color: theme.palette.text.primary,
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -83,20 +93,71 @@ const NavigationBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/users/logout", {
+        method: "POST"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      dispatch(clearUserId());
+      dispatch({ type: RESET_APP });
+      navigate("/", { state: { fromLogout: true } })
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  const handleSearchKeyDown = (event) => {
+
+    if (event.key === "Enter" && searchQuery.trim()) {
+      
+      dispatch(fetchEntries());
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  const navLinks = [
+    { label: "Home", path: "/dashboard" },
+    { label: "Insights", path: "/insights" },
+    { label: "Entries", path: "/entries" },
+  ]
+
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
-      <List>
-        {["Home", "Insights", "Entries","Log out"].map((text) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
+       <DrawerMenu>
+        {navLinks.map(({ label, path }) => (
+          <NavItem
+            key={label}
+            as={Link}
+            to={path}
+          >
+            {label}
+          </NavItem>
         ))}
-      </List>
+          <NavItem
+            onClick={handleLogout}
+            key="logout"
+            as={Link}
+            to={"/"}
+          >
+            Logout
+          </NavItem>
+      </DrawerMenu>
     </Box>
   );
 
@@ -112,7 +173,7 @@ const NavigationBar = () => {
           zIndex: (theme) => theme.zIndex.drawer,
         }}
       >
-        <AppBar sx={{ bgcolor: "#fbf6ef" }}>
+        <AppBar>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <img
@@ -121,33 +182,18 @@ const NavigationBar = () => {
                 height="50"
                 style={{ marginRight: "40px" }}
               />
+              {/* Desktop */}
               {!isMobile && (
                 <NavMenu className="nav_menu">
-                  <NavItem
-                    as={Link}
-                    to="/dashboard"
-                    style={{ fontFamily: "Outfit, sans-serif" }}
-                  >
-                    Home
-                  </NavItem>
-                  <NavItem
-                    as={Link}
-                    to="/insights"
-                    style={{
-                      fontFamily: "Outfit, sans-serif",
-                    }}
-                  >
-                    Insights
-                  </NavItem>
-                  <NavItem
-                    as={Link}
-                    to="/entries"
-                    style={{
-                      fontFamily: "Outfit, sans-serif",
-                    }}
-                  >
-                    Entries
-                  </NavItem>
+                  {navLinks.map(({ label, path }) => (
+                    <NavItem
+                      key={label}
+                      as={Link}
+                      to={path}
+                    >
+                      {label}
+                    </NavItem>
+                  ))}
                 </NavMenu>
               )}
             </Box>
@@ -159,29 +205,31 @@ const NavigationBar = () => {
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
+                  value={searchQuery}
+                  onChange={event => setSearchQuery(event.target.value)}
+                  onKeyDown={handleSearchKeyDown}
                 />
               </Search>
-
+              {/* Mobile */}
               {isMobile ? (
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
                   edge="end"
                   onClick={handleDrawerToggle}
-                  sx={{ color: "black" }}
+                  sx={{ color: theme.palette.text.primary }}
                 >
                   <MenuIcon />
                 </IconButton>
               ) : (
-                <IconButton
-                  sx={{
-                    color: "black",
-                    fontSize: "18px",
-                    fontFamily: "Outfit, sans-serif",
-                  }}
+                <NavItem
+                  onClick={handleLogout}
+                  key="logout"
+                  as={Link}
+                  to={"/"}
                 >
                   Logout
-                </IconButton>
+                </NavItem>
               )}
             </Box>
           </Toolbar>
@@ -190,11 +238,6 @@ const NavigationBar = () => {
           anchor="right"
           open={mobileOpen}
           onClose={handleDrawerToggle}
-          sx={{
-            "& .MuiDrawer-paper": {
-              bgcolor: "#fbf6ef",
-            },
-          }}
         >
           {drawer}
         </Drawer>

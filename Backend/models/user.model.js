@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
@@ -23,16 +24,30 @@ const UserSchema = new Schema({
 
   password: {
     type: String,
-    required: true,
+    required: function() { return !this.googleId; },
     minlength: [8, "Password should be at least 8 characters long"],
   },
 
-  entries: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Entry",
-    },
-  ],
+  googleId: {
+    type: String,
+    unique: true,
+    required: false,
+  }
+});
+
+// Hash password before User document is saved
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  next();  
 });
 
 const User = model("User", UserSchema);

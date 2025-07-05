@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
-// import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip'
 import 'react-calendar-heatmap/dist/styles.css';
 import { useSelector } from 'react-redux';
+import { getDate, moodToScore, scoreToMood } from '../utils/helpers';
 
 const MoodHeatmap = () => {
   const entries = useSelector((state) => state.entries.entries);
-
-  const moodToScore = {
-    '😭': 1,
-    '☹️': 2,
-    '😐': 3,
-    '😊': 4,
-    '😀': 5,
-  };
 
   const moodData = entries.map(entry => ({
     date: entry.date,
@@ -34,17 +26,19 @@ const MoodHeatmap = () => {
           if (!value) return 'color-empty';
           return `color-scale-${value.count}`; // use mood score to set colours
         }}
-        tooltipDataAttrs={(value) => { // TODO: tooltip
-          if (!value || !value.date) return null;
+        tooltipDataAttrs={(value) => {
+          const date = value?.date ? getDate(value.date) : null;
+          const mood = value?.count ? scoreToMood[value.count] : null;
+
           return {
-            'data-tip': `Date: ${value.date}, Mood Score: ${value.count}`,
+            'data-tooltip-id': 'tooltip',
+            'data-tooltip-content': `${(!date || !mood) ? 'No entry' : (`Date: ${date}, Mood: ${mood}`)}`,
           };
         }}
         showWeekdayLabels={true}
         horizontal={true}
       />
-      {/* <ReactTooltip /> */}
-      
+      <Tooltip id="tooltip"/>
     </div>
     
   );

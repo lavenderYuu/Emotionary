@@ -1,0 +1,11 @@
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+
+COPY Backend ./Backend
+COPY Frontend ./Frontend
+
+RUN cd Backend && npm install
+RUN cd Frontend && npm install
+
+CMD ["sh", "-c", "cd Backend && npm run test-and-report ; cd ../Frontend && npm run test-and-report"]
