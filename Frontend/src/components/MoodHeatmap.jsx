@@ -27,14 +27,12 @@ const MoodHeatmap = () => {
           return `color-scale-${value.count}`; // use mood score to set colours
         }}
         tooltipDataAttrs={(value) => {
-          if (!value || !value.date) return null;
-
-          const date = getDate(value.date);
-          const mood = scoreToMood[value.count];
+          const date = value?.date ? getDate(value.date) : null;
+          const mood = value?.count ? scoreToMood[value.count] : null;
 
           return {
             'data-tooltip-id': 'tooltip',
-            'data-tooltip-content': `Date: ${date}, Mood: ${mood}`,
+            'data-tooltip-content': `${(!date || !mood) ? 'No entry' : (`Date: ${date}, Mood: ${mood}`)}`,
           };
         }}
         showWeekdayLabels={true}

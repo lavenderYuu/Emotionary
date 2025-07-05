@@ -32,12 +32,12 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
     - 🥧 Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Milestone 3
-For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (these are denoted below with CP).
+For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (denoted below with CP).
 - 🔒 Encryption - User passwords are encrypted using bcrypt
-    - Database only stores encrypted passwords
+    - Database stores encrypted passwords
 - 🔑 Google OAuth - Users can log in with their Google credentials
     - POST request is made when users sign in
-    - Database only stores the user's first name, email and id, no password
+    - Database does not store passwords
 - 📝 Entries
     - Users can edit the mood of an entry in case they disagree with sentiment analysis results (CP) - uses existing PUT request
     - Users can choose the time of day for their entries (CP)
@@ -55,29 +55,37 @@ For Milestone 3, we continued to implement and improve the key functionalities o
 - 👤 UI improvements
     - Fully functional buttons and navbar links
     - Updated styling and tooltips for charts (CP)
+    - Dark mode
 
 ### Test Suite
-___
-Instructions to run:
-1. Clone this repo
-2. For backend tests, `cd backend` and run `npm test`
-3. For frontend tests, `cd frontend` and run `npm test`
-4. Test reports should automatically open in your browser
+We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
-Links:
-- Backend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test
-- Frontend tests: https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test
+**Instructions to run:**
+1. Please follow Steps #1 and #2 below from the "Getting Started" section > "Instructions to run"
+    - Clone this repo, go to `Milestone3` branch, and add `.env` file
+2. If you would like to run the test suite image separately, run `docker compose up --build test`
+4. Otherwise, follow the remaining instructions below, and test reports will be automatically generated in Step #6
+
+**Links:**
+- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
+- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test) 
 
 ## Getting Started
-1. Clone this repo
-2. Run `docker-compose up`
-3. Frontend will be available at: http://localhost
-4. Backend API runs at: http://localhost:5000
+The following credentials need to be passed as environment variables:
+- `GOOGLE_ID`
+- `MONGODB_ID`
+- `VITE_GOOGLE_ID`
+- `VITE_HUGGINGFACE_ID`
 
-Alternatively:
-1. Pull from Docker Hub:
-`docker pull aaachung/team15-frontend`
-`docker pull aaachung/team15-backend`
-2. Run containers: 
-`docker run -p 3000:3000 aaachung/team15-frontend`
-`docker run -p 80:80 aaachung/team15-backend`
+We will send you a `.env` file to use for Step #2 below.
+
+**Instructions to run:**
+1. Clone this repo and go to the `Milestone3` branch
+2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
+    - Make sure the file is named `.env`
+3. Run `docker compose up --build`
+4. Frontend will be available at: http://localhost
+5. Backend API runs at: http://localhost:5000
+6. Tests reports are automatically generated in the project's root directory in the `test-results` folder and can be opened in your browser of choice:
+    - `backend-test-report.html`
+    - `frontend-test-report.html`
