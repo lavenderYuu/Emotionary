@@ -84,8 +84,11 @@ We will send you a `.env` file to use for Step #2 below.
 2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
     - Make sure the file is named `.env`
 3. Run `docker compose up --build`
-4. Frontend will be available at: http://localhost
-5. Backend API runs at: http://localhost:5000
+4. Backend API runs at: http://localhost:5000
+5. Frontend will be available at: http://localhost
+    - Please login using our test user:
+        - Email: test@gmail.com
+        - Password: 12345678
 6. Tests reports are automatically generated in the project's root directory in the `test-results` folder and can be opened in your browser of choice:
     - `backend-test-report.html`
     - `frontend-test-report.html`
