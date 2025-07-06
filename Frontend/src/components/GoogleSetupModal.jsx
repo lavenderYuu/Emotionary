@@ -55,7 +55,7 @@ export default function GoogleSetupModal({ user, open, hide }) {
       body: JSON.stringify({ userId: user.id }),
     });
   
-    // TODO: add deriveKey
+    // TODO: verify passkey meets requirements and deriveKey
 
     dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
@@ -64,7 +64,7 @@ export default function GoogleSetupModal({ user, open, hide }) {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    // TODO: add getKey and verify passkey
+    // TODO: verify passkey meets requirements and getKey
     
     dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
