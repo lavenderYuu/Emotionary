@@ -18,10 +18,14 @@ import SaveButton from './buttons/SaveButton'
 import { fetchEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
+import TagManagementModal from './TagManagementModal';
 import { sentimentEmojiMap } from '../utils/helpers';
+import { fetchTags } from '../features/tags/tagsSlice';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { encryptContent } from "../utils/crypto";
 
-const client = new InferenceClient('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');
+const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
 
 // base component: https://mui.com/material-ui/react-dialog/
 const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry }) => {
@@ -33,30 +37,22 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
     content: ''
   });
   const [activeTags, setActiveTags] = useState([]); // this is a list of tag ids
+  const [isManageTagsOpen, setIsManageTagsOpen] = useState(false);
   const [id, setId] = useState('');
   const [alert, setAlert] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning'});
   const dispatch = useDispatch();
-  // const [tags, setTags] = useState([]); // TODO: User-specific tags
 
-  // Fetch user-specific tags and entry data from backend when modal opens
   useEffect(() => {
     if (isOpen) {
-      // fetch(`http://localhost:3000/tags/${userId}`)
-      //   .then(res => res.json())
-      //   .then(data => setTags(data))
-      //   .catch(err => console.error('Failed to fetch tags for user:', err));
-
-      // fetch(`http://localhost:3000/entries/${entry._id}`)
-      //   .then(res => res.json())
-      //   .then(data => setEntry(data))
-      //   .catch(err => console.error('Failed to fetch entries:', err));
+      dispatch(fetchTags());
     }
   }, [isOpen]);
   
   useEffect(() => {
     if (entry) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
-      setActiveTags(entry.tags);
+      setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
     }
   }, [entry]);
@@ -67,7 +63,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
       setActiveTags([]);
     } else if (mode === 'edit') {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
-      setActiveTags(entry.tags);
+      setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
     }
   }, [mode]);
@@ -87,22 +83,41 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
     }));
   };
 
+  const getSentiment = async (content) => {
+    const sentimentAnalysis = client.textClassification({ // returns an array of predictions (label + score)
+      model: 'tabularisai/multilingual-sentiment-analysis',
+      inputs: content,
+    });
+
+    const time = 6000;
+    const timeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Sentiment analysis timed out after ${time/1000} seconds`));
+      }, time);
+    });
+
+    try {
+      const sentimentAnalysisResult = await Promise.race([sentimentAnalysis, timeout]);
+
+      const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
+      return sentimentEmojiMap[sentimentLabel];
+    } catch (err) {
+      console.log('Error during sentiment analysis:', err.message);
+      showSnackbar("Whoops, sentiment analysis isn't working at the moment. You can always update your mood by viewing an entry.");
+      return null;
+    }
+  }
+
   const handleSubmit = async () => {
     const { title, date, content } = formData;
     const isValid = (title.trim() !== '') && date && (content.trim() !== '');
 
     if (!isValid) {
-      window.alert("Journal title, date, and content are required.");
+      showSnackbar("Journal title, date, and content are required.");
     } else {
       onSave();
 
-      const sentimentAnalysisResult = await client.textClassification({ // returns an array of predictions (label + score)
-        model: 'tabularisai/multilingual-sentiment-analysis',
-        inputs: content,
-      });
-
-      const sentimentLabel = sentimentAnalysisResult?.[0]?.label; // gets the label with the highest scoring prediction
-      const sentiment = sentimentEmojiMap[sentimentLabel];
+      const mood = await getSentiment(content);
 
       const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
 
@@ -114,7 +129,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: userId,
-        mood: sentiment,
+        mood: mood ? mood : "😐",
       };
 
       try {
@@ -159,20 +174,25 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
 
   const toggleTag = (id) => {
     const exists = activeTags.some((tid) => tid === id );
-    
-    if (activeTags.length < 3) { // max 3 tags per entry
-      if (exists) {
-        const filteredTags = activeTags.filter((tid) => tid !== id );
-        setActiveTags(filteredTags);
-      } else {
-        setActiveTags([...activeTags, id])
-      }
+
+    if (exists) {
+      setActiveTags(activeTags.filter(tid => tid !== id));
     } else {
-      if (exists) {
-        const filteredTags = activeTags.filter((tid) => tid !== id );
-        setActiveTags(filteredTags);
+      if (activeTags.length >= 3) { // max 3 tags per entry
+        showSnackbar("You can only select up to 3 tags at a time.");
+        return;
       }
-    }    
+      setActiveTags([...activeTags, id]);
+    }
+  };
+
+  const handleTags = () => {
+    dispatch(fetchTags());
+    dispatch(fetchEntries());
+  }
+
+  const showSnackbar = (message, severity = 'warning') => {
+    setSnackbar({ open: true, message, severity });
   };
 
   return (
@@ -186,8 +206,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
             sx: { 
             width: '80vw',
             borderRadius: 4,
-            backgroundColor: 'rgb(251, 246, 239)',
-          }
+            }
           }
         }}
       >
@@ -235,9 +254,14 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
           />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', mt: 0.5}}>
             {tags.map((tag) => (
-              <Chip key={tag.id} label={tag.id} sx={{ bgcolor: tag.color, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag.id) ? '2px solid #414141' : `2px solid ${tag.color}` }}
-                onClick={() => toggleTag(tag.id)} />
+              <Chip key={tag._id} label={tag.name} sx={{ bgcolor: tag.colour, mt: 1, mr: 1, cursor: 'pointer', border: activeTags.some((tid) => tid === tag._id) ? '2px solid #414141' : `2px solid ${tag.colour}`, opacity: activeTags.includes(tag._id) ? 1 : 0.5, }}
+                onClick={() => toggleTag(tag._id)} />
             ))}
+            <Box sx={{ mt: 1.3, ml: 0.3, display: 'flex', justifyContent: 'flex-start' }}>
+              <Button variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
+                Manage Tags
+              </Button>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -247,6 +271,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
       <Dialog
         open={alert}
         onClose={() => setAlert(false)}
+        closeAfterTransition={false} // https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue
         slotProps={{
           paper: {
             sx: { 
@@ -258,9 +283,31 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
           <DialogContent>Any changes you have made will not be saved.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button onClick={() => setAlert(false)}>Continue editing</Button>
-            <Button onClick={handleClose}>Yes, I want to close</Button>
+            <Button onClick={handleClose} color="error">Yes, I want to close</Button>
           </DialogActions>
       </Dialog>
+      <TagManagementModal
+        open={isManageTagsOpen}
+        onClose={() => setIsManageTagsOpen(false)}
+        userId={userId}
+        userTags={tags}
+        onTagUpdated={handleTags}
+      />
+      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={5000}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <MuiAlert
+              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+              severity={snackbar.severity}
+              sx={{ width: '100%', boxShadow: 2 }}
+            >
+              {snackbar.message}
+            </MuiAlert>
+          </Snackbar>
     </>
   );
 }

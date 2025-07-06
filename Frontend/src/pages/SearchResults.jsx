@@ -48,6 +48,10 @@ export default function SearchResults({ cryptoKey }) {
 
   const searchResults = filterEntriesByQuery(decryptedEntries, query);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [dispatch]);
+
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
     dispatch(selectEntry(id));

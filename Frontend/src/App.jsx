@@ -8,11 +8,12 @@ import Entries from "./pages/Entries";
 import SearchResults from "./pages/SearchResults";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { setUserId } from "./features/users/usersSlice";
 import { Navigate } from "react-router-dom";
-import theme from "./utils/theme";
+import { lightTheme, darkTheme } from "./utils/theme";
 import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, useMediaQuery } from "@mui/material";
 import { getKey } from "./utils/crypto";
 
 function MainLayout({ cryptoKey }) {
@@ -38,6 +39,8 @@ function MainLayout({ cryptoKey }) {
 function App() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.userId);
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const theme = useMemo(() => (prefersDarkMode ? darkTheme : lightTheme), [prefersDarkMode]);
   const [cryptoKey, setCryptoKey] = useState(null);
 
   useEffect(() => {
@@ -64,6 +67,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing setCryptoKey={setCryptoKey} />} />

@@ -13,6 +13,8 @@ import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
+import { Box } from "@mui/material";
+import { useTheme } from '@mui/material';
 import { decryptContent } from "../utils/crypto";
 
 const Entries = ({ cryptoKey }) => {
@@ -21,8 +23,8 @@ const Entries = ({ cryptoKey }) => {
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.entries.pagination);
-
-  const allEntries = useSelector((state) => state.entries.entries);
+  const allEntries = useSelector((state) => state.entries.filteredEntries || state.entries.entries);
+  const theme = useTheme();
   const [decryptedEntries, setDecryptedEntries] = useState([]);
 
   const activeEntryId = useSelector((state) => state.entries.activeEntry);
@@ -30,6 +32,7 @@ const Entries = ({ cryptoKey }) => {
 
   useEffect(() => {
     dispatch(filterEntries());
+    window.scrollTo(0, 0);
   }, [dispatch]);
 
   useEffect(() => {
@@ -93,11 +96,14 @@ const Entries = ({ cryptoKey }) => {
       <h1>Journal Entries</h1>
       <FilterRow />
       <CreateButton onClick={handleCreateModal} />
-      <EntryCard
-        entries={decryptedEntries}
-        onClick={handleOpenCard}
-        onEdit={handleEditEntry}
-      />
+      {pagination.totalEntries === 0 ?
+        <Box sx={{ margin: 4 }}>Whoops, that filter returned no results! Please try again.</Box> :
+        <EntryCard
+          entries={decryptedEntries}
+          onClick={handleOpenCard}
+          onEdit={handleEditEntry}
+        />
+      }
       <ViewEntryModal
         isOpen={isViewModalOpen}
         onClose={handleCloseModal}
@@ -122,7 +128,6 @@ const Entries = ({ cryptoKey }) => {
             style={{ marginLeft: "auto" }}
             sx={{
               width: "fit-content",
-              backgroundColor: "white",
               borderRadius: "15px",
               padding: "8px 16px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",

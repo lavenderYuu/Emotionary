@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { Entry } from "../models/entry.model.js";
 import { OAuth2Client } from "google-auth-library";
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' }); 
 
 const router = express.Router();
 
@@ -69,7 +71,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-const GOOGLE_CLIENT_ID = "735327731044-e6067uakpvoblp50ullcnaah2u7aaljv.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // https://developers.google.com/identity/sign-in/web/backend-auth#node.js
@@ -122,8 +124,12 @@ router.post("/logout", async (req, res) => {
 // GET /users/:userId/entries
 router.get('/:userId/entries', async (req, res) => {
     try {
-        const entries = await Entry.find({ user_id: req.params.userId }).sort({ date: -1 }); // always return sorted in descending order
-        res.json(entries);
+        const entries = await Entry
+          .find({ user_id: req.params.userId })
+          .populate('tags') // get tags
+          .sort({ date: -1 }) // always return sorted in descending order
+          .exec();
+          res.json(entries);
     } catch (err) {
         console.error("Error fetching entries:", err);
         res.status(400).json({ error: 'Failed to fetch entries' });

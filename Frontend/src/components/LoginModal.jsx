@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
+import { useTheme } from '@mui/material';
 import { deriveKey } from "../utils/crypto";
 
 const style = {
@@ -34,6 +35,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleClose = () => {
     setShowSignIn(true);
@@ -276,7 +278,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Not a member yet?
@@ -303,13 +305,15 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
                 >
                   or
                 </Typography>
-                <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                </Box>
               </div>
             ) : (
               <div>
                 <Typography
                   align="center"
-                  color="#3d3d3d"
+                  color={theme.palette.text.primary}
                   fontFamily="Outfit, sans-serif"
                 >
                   Already a member?

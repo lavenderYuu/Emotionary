@@ -1,19 +1,21 @@
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useSelector } from 'react-redux';
 import { moodToScore, scoreToMood } from '../utils/helpers';
-import { Box } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 export default function MoodChartMonthly() {
     const entries = useSelector((state) => state.entries.entries);
+    const theme = useTheme();
 
     const oneMonthAgo = new Date();
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
     const monthlyEntries = entries
-    .filter(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate >= oneMonthAgo;
-    });
+        .filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= oneMonthAgo;
+            })
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const dates = monthlyEntries.map(entry => new Date(entry.date));
     const moodData = monthlyEntries.map(entry => moodToScore[entry.mood]);
@@ -39,7 +41,7 @@ export default function MoodChartMonthly() {
                 }]}
                 series={[{
                     data: moodData,
-                    color: '#b8a7ff',
+                    color: theme.palette.secondary.main,
                     valueFormatter: (value) => scoreToMood[value],
                 }]}
                 height={320}

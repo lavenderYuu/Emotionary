@@ -1,6 +1,10 @@
 # https://www.docker.com/blog/how-to-dockerize-react-app/
 # Build Stage
 FROM node:18-alpine AS build
+ARG VITE_GOOGLE_ID
+ARG VITE_HUGGINGFACE_ID
+ENV VITE_GOOGLE_ID=$VITE_GOOGLE_ID
+ENV VITE_HUGGINGFACE_ID=$VITE_HUGGINGFACE_ID
 WORKDIR /app
 COPY package*.json ./
 RUN npm install

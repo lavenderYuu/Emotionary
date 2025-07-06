@@ -24,7 +24,12 @@ const EntrySchema = new Schema(
         },
         
         tags: {
-            type: [String],
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: "Tag"
+                }
+            ],
         },
 
         favorite: {

@@ -7,7 +7,6 @@ import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entri
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { useEffect } from "react";
-import { Box } from "@mui/material";
 import { decryptContent } from "../utils/crypto";
 
 const Home = ({ cryptoKey }) => {
@@ -26,6 +25,7 @@ const Home = ({ cryptoKey }) => {
 
   useEffect(() => {
     dispatch(fetchEntries());
+    window.scrollTo(0, 0);
   }, [dispatch]);
 
   useEffect(() => {
@@ -84,18 +84,13 @@ const Home = ({ cryptoKey }) => {
         <h1>Hello, {userName} 👋🏻</h1>
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
-        <Box sx={{ 
-          width: '100vw',
-          maxWidth: 1280,
-        }}>
-          <MoodChart />
-        </Box>
+        <MoodChart />
         <h2>Recent Entries</h2>
         <EntryCard
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
           num={8}
-          entries={decryptedEntries}
+          entries={decryptedEntries.slice(0,8)}
         />
         <ViewEntryModal
           isOpen={isViewModalOpen}

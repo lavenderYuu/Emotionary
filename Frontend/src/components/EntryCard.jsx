@@ -19,18 +19,19 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import { selectSortedTags } from '../features/tags/tagsSelectors';
+import { useTheme } from '@mui/material';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
-const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
-  const allEntries = useSelector((state) => state.entries.entries);
-  const entries = searchResults || allEntries; // Use search results if provided, otherwise use all user entries
-  const tags = useSelector((state) => state.tags.tags);
+
+const EntryCard = ({ entries, onClick, onEdit }) => {
+  const tags = useSelector(selectSortedTags);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
-  const displayNum = typeof num === 'number' ? num : entries.length; // the number of entries to display
+  const theme = useTheme();
 
   const [showNoEntriesMsg, setShowNoEntriesMsg] = useState(false);
 
@@ -80,7 +81,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
     setAnchorEl(null);
     setAlert(false);
     if (selectedEntry) {
-      dispatch(deleteEntry(selectedEntry));
+      await dispatch(deleteEntry(selectedEntry)).unwrap();
       dispatch(resetEntry());
       dispatch(fetchEntries());
       handleClose();
@@ -100,7 +101,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.slice(0, displayNum).map((entry, index) => (
+        {entries.map((entry, index) => (
           <Box
             key={index}
             sx={{ margin: '8px' }}>
@@ -115,19 +116,18 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
                   alignItems: 'flex-start',
                   textAlign: 'left',
                   borderRadius: 4,
-                  border: '1px solid #e2d2be',
-                  backgroundColor: '#fbf6ef',
+                  border: `1px solid ${theme.palette.divider}`,
                   boxShadow: 'none',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  '&:hover': { backgroundColor: '#f5eee4' }
+                  '&:hover': { backgroundColor: theme.palette.action.hover }
                 }}>
                 <CardHeader
                   title={
                     <Typography
                       noWrap
                       sx={{
-                        width: '224px',
+                        width: '222px',
                         fontSize: '20px',
                       }}
                     >
@@ -145,7 +145,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
                       onClick={(e) => handleKebab(e, entry._id)}
                       sx={{
                         top: -2,
-                        right: 30
+                        right: 8
                       }}
                     >
                       <MoreVertIcon />
@@ -176,7 +176,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
                 <CardActions
                   disableSpacing
                   sx={{
-                    width: '90%',
+                    width: '100%',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
@@ -190,7 +190,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
                       <FavoriteIcon color="error" /> : 
                       <FavoriteBorderOutlinedIcon />}
                   </IconButton>
-                  <Box sx={{ fontSize: 18 }}>
+                  <Box sx={{ fontSize: 18, padding: '8px' }}>
                     {entry.mood}
                   </Box>
                 </CardActions>
@@ -208,8 +208,8 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
           paper: {
             style: {
               width: '14ch',
-              boxShadow: 'none',
-              border: '1px solid #e2d2be',
+              boxShadow: 1,
+              border: `1px solid ${theme.palette.divider}`,
               borderRadius: 6,
             },
           }
@@ -236,7 +236,7 @@ const EntryCard = ({ entries: searchResults, onClick, onEdit, num }) => {
           <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={handleNevermind}>Nevermind</Button>
-            <Button onClick={handleDelete}>Yes, delete</Button>
+            <Button onClick={handleDelete} color="error">Yes, delete</Button>
           </DialogActions>
       </Dialog>
     </>

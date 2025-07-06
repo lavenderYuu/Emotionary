@@ -1,6 +1,6 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useSelector } from 'react-redux';
-import { moodToScore } from '../utils/helpers';
+import { moodToScore, sentimentEmojiMap } from '../utils/helpers';
 import { useState, useEffect } from 'react';
 
 export default function MoodPieChart() {
@@ -31,11 +31,15 @@ export default function MoodPieChart() {
             return entryDate >= oneMonthAgo;
         });
 
+    const getKey = (val) => {
+        return Object.entries(sentimentEmojiMap).find(([key, value]) => val === value)[0];
+    }
+
     // count occurrences of each mood
     const counts = Object.keys(moodToScore).map((mood) => ({
         id: mood,
         value: monthlyEntries.filter((entry) => entry.mood === mood).length,
-        label: mood,
+        label: mood + " " + getKey(mood),
     }));
 
     if (showNoDataMsg && entries.length === 0) {
