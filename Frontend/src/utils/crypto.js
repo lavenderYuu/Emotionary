@@ -1,7 +1,7 @@
-import { set, get } from 'idb-keyval';
+import { set as idbSet, get as idbGet } from 'idb-keyval';
 
 // Adapted from https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey
-export async function deriveKey(password, salt) {
+export async function deriveKey(password, salt, set = idbSet) {
   const encoder = new TextEncoder();
 
   const keyMaterial = await window.crypto.subtle.importKey(
@@ -30,7 +30,7 @@ export async function deriveKey(password, salt) {
   return key;
 }
 
-export async function getKey() {
+export async function getKey(get = idbGet) {
   const key = await get("cryptoKey");
 
   if (!key) {
