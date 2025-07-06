@@ -33,7 +33,7 @@ export default function LoginModal({ open, onClose }) {
     password: "",
   });
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -248,7 +248,7 @@ export default function LoginModal({ open, onClose }) {
                 <Typography variant="body2">
                   I agree to the {" "}
                   <Link 
-                    onClick={() => setShowTerms(true)} 
+                    onClick={() => setShowPolicy(true)} 
                     sx={{ textDecoration: 'underline', cursor: 'pointer' }}
                   >
                     privacy policy
@@ -341,7 +341,7 @@ export default function LoginModal({ open, onClose }) {
           </Box>
         </Box>
       </Modal>
-      <PrivacyPolicyModal show={showTerms} hide={() => setShowTerms(false)} />
+      <PrivacyPolicyModal show={showPolicy} hide={() => setShowPolicy(false)} />
     </div>
   );
 }
