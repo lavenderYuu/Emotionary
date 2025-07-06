@@ -9,7 +9,9 @@ import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
-import { useTheme } from '@mui/material';
+import { Checkbox, useTheme } from '@mui/material';
+import { Link } from "@mui/material";
+import PrivacyPolicyModal from "./PrivacyPolicyModal";
 
 const style = {
   position: "absolute",
@@ -21,7 +23,6 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: "20px",
-  fontFamily: "Outfit, sans-serif",
 };
 
 export default function LoginModal({ open, onClose }) {
@@ -31,6 +32,8 @@ export default function LoginModal({ open, onClose }) {
     email: "",
     password: "",
   });
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,7 +41,12 @@ export default function LoginModal({ open, onClose }) {
 
   const handleClose = () => {
     setShowSignIn(true);
+    setAgreedToPolicy(false);
     onClose();
+  };
+
+  const handleAgreeToTerms = (e) => {
+    setAgreedToPolicy(e.target.checked);
   };
 
   const handleSuccess = async (response) => {
@@ -144,9 +152,6 @@ export default function LoginModal({ open, onClose }) {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{
-          fontFamily: "Outfit, sans-serif",
-        }}
       >
         <Box sx={style}>
           <Typography
@@ -154,7 +159,6 @@ export default function LoginModal({ open, onClose }) {
             variant="h5"
             component="h2"
             align="center"
-            fontFamily="Outfit, sans-serif"
           >
             {showSignIn ? "Sign In" : "Sign Up"}
           </Typography>
@@ -182,19 +186,13 @@ export default function LoginModal({ open, onClose }) {
                   value={formData.firstName}
                   onChange={handleChange}
                   sx={{
-                    fontFamily: "Outfit, sans-serif",
                     "& .MuiOutlinedInput-root": {
-                      fontFamily: "Outfit, sans-serif",
                       "&.Mui-focused fieldset": {
                         borderColor: "#fbbbeb",
                       },
                     },
-                    "& .MuiInputLabel-root": {
-                      fontFamily: "Outfit, sans-serif",
-                    },
                     "& label.Mui-focused": {
                       color: "#3d3d3d",
-                      fontFamily: "Outfit, sans-serif",
                     },
                   }}
                 />
@@ -209,19 +207,13 @@ export default function LoginModal({ open, onClose }) {
               value={formData.email}
               onChange={handleChange}
               sx={{
-                fontFamily: "Outfit, sans-serif",
                 "& .MuiOutlinedInput-root": {
-                  fontFamily: "Outfit, sans-serif",
                   "&.Mui-focused fieldset": {
                     borderColor: "#fbbbeb",
                   },
                 },
-                "& .MuiInputLabel-root": {
-                  fontFamily: "Outfit, sans-serif",
-                },
                 "& label.Mui-focused": {
                   color: "#3d3d3d",
-                  fontFamily: "Outfit, sans-serif",
                 },
               }}
             />
@@ -235,30 +227,44 @@ export default function LoginModal({ open, onClose }) {
               value={formData.password}
               onChange={handleChange}
               sx={{
-                fontFamily: "Outfit, sans-serif",
                 "& .MuiOutlinedInput-root": {
-                  fontFamily: "Outfit, sans-serif",
                   "&.Mui-focused fieldset": {
                     borderColor: "#fbbbeb",
                   },
                 },
-                "& .MuiInputLabel-root": {
-                  fontFamily: "Outfit, sans-serif",
-                },
                 "& label.Mui-focused": {
                   color: "#3d3d3d",
-                  fontFamily: "Outfit, sans-serif",
                 },
               }}
             />
+            {showSignIn ? "" : (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox 
+                  checked={agreedToPolicy} 
+                  onChange={handleAgreeToTerms} 
+                  required
+                  sx={{ p: 0, paddingRight: '8px' }}
+                />
+                <Typography variant="body2">
+                  I agree to the {" "}
+                  <Link 
+                    onClick={() => setShowTerms(true)} 
+                    sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    privacy policy
+                  </Link>
+                  .*
+                </Typography>
+              </Box>
+            )}
             <Button
               type="submit"
+              disabled={!showSignIn && !agreedToPolicy}
               variant="contained"
               sx={{
                 backgroundColor: "#ffe59a",
                 color: "#3d3d3d",
                 borderRadius: "30px",
-                fontFamily: "Outfit, sans-serif",
                 fontWeight: 500,
                 textTransform: "none",
               }}
@@ -270,7 +276,6 @@ export default function LoginModal({ open, onClose }) {
                 <Typography
                   align="center"
                   color={theme.palette.text.primary}
-                  fontFamily="Outfit, sans-serif"
                 >
                   Not a member yet?
                   <span
@@ -290,7 +295,6 @@ export default function LoginModal({ open, onClose }) {
                 </Typography>
                 <Typography
                   align="center"
-                  fontFamily="Outfit, sans-serif"
                   marginTop="10px"
                   marginBottom="12px"
                 >
@@ -305,11 +309,13 @@ export default function LoginModal({ open, onClose }) {
                 <Typography
                   align="center"
                   color={theme.palette.text.primary}
-                  fontFamily="Outfit, sans-serif"
                 >
                   Already a member?
                   <span
-                    onClick={() => setShowSignIn(true)}
+                    onClick={() => {
+                      setShowSignIn(true);
+                      setAgreedToPolicy(false);
+                    }}
                     style={{
                       color: "#a98ca7",
                       marginLeft: "6px",
@@ -322,18 +328,20 @@ export default function LoginModal({ open, onClose }) {
                 </Typography>
                 <Typography
                   align="center"
-                  fontFamily="Outfit, sans-serif"
                   marginTop="10px"
                   marginBottom="12px"
                 >
                   or
                 </Typography>
-                <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                <Box style={{ display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                </Box>
               </div>
             )}
           </Box>
         </Box>
       </Modal>
+      <PrivacyPolicyModal show={showTerms} hide={() => setShowTerms(false)} />
     </div>
   );
 }
