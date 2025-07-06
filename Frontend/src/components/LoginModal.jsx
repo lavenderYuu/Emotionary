@@ -12,6 +12,7 @@ import { setUserId } from "../features/users/usersSlice";
 import { Checkbox, useTheme } from '@mui/material';
 import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
+import GoogleSetupModal from "./GoogleSetUpModal";
 
 const style = {
   position: "absolute",
@@ -27,6 +28,8 @@ const style = {
 
 export default function LoginModal({ open, onClose }) {
   const [showSignIn, setShowSignIn] = useState(true);
+  const [googleUser, setGoogleUser] = useState(null);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     email: "",
@@ -43,6 +46,11 @@ export default function LoginModal({ open, onClose }) {
     setShowSignIn(true);
     setAgreedToPolicy(false);
     onClose();
+  };
+
+  const handleGoogleSetUpClose = () => {
+    setGoogleUser(null);
+    setShowGoogleModal(false);
   };
 
   const handleAgreeToTerms = (e) => {
@@ -67,8 +75,8 @@ export default function LoginModal({ open, onClose }) {
         throw new Error(data.message || "Google authentication failed");
       }
 
-      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
-      navigate("/dashboard");
+      setGoogleUser({ id: data.user._id, name: data.user.name, setupComplete: data.user.setupComplete });
+      setShowGoogleModal(true);
     } catch (error) {
       console.error("Error during Google authentication:", error);
       alert("Google authentication failed: " + error.message);
@@ -341,6 +349,7 @@ export default function LoginModal({ open, onClose }) {
           </Box>
         </Box>
       </Modal>
+      <GoogleSetupModal user={googleUser} open={showGoogleModal} hide={handleGoogleSetUpClose} />
       <PrivacyPolicyModal show={showPolicy} hide={() => setShowPolicy(false)} />
     </div>
   );

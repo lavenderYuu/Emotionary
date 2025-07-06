@@ -86,32 +86,66 @@ router.post("/google-auth", async (req, res) => {
     }
 
     try {
-        const ticket = await client.verifyIdToken({
-            idToken: idToken,
-            audience: GOOGLE_CLIENT_ID,
+      const ticket = await client.verifyIdToken({
+          idToken: idToken,
+          audience: GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      const name = payload["name"].split(" ")[0];
+      const email = payload["email"];
+      const googleId = payload["sub"];
+
+      let existingUser = await User.findOne({ email: email });
+
+      if (!existingUser) {
+        const newUser = new User({
+          name: name,
+          email: email,
+          googleId: googleId,
+          setupComplete: false,
         });
 
-        const payload = ticket.getPayload();
-        const name = payload["name"].split(" ")[0];
-        const email = payload["email"];
-        const googleId = payload["sub"];
+        await newUser.save();
 
-        let user = await User.findOne({ email: email });
-
-        if (!user) {
-            user = new User({
-                name: name,
-                email: email,
-                googleId: googleId,
-            });
-            await user.save();
-        }
-
-        res.status(200).json({ message: "Login successful", user });
+        return res.status(200).json({
+          user: {
+            _id: newUser._id,
+            name: newUser.name,
+            setupComplete: newUser.setupComplete,
+          },
+        });
+      } else {
+        return res.status(200).json({
+          user: {
+            _id: existingUser._id,
+            name: existingUser.name,
+            setupComplete: existingUser.setupComplete,
+          },
+        });
+      }
     } catch (error) {
         console.error("Google ID token verification failed:", error);
         res.status(401).json({ message: "Invalid Google ID token" });
     }
+});
+
+// Updates existing Google user setupComplete field
+// POST /users/complete-setup
+router.post("/complete-setup", async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "Missing user ID" });
+  }
+
+  try {
+    await User.findByIdAndUpdate(userId, { setupComplete: true });
+    res.status(200).json({ message: "Marking setup as complete" });
+  } catch (err) {
+    console.error("Error marking setup as complete:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Logs user out, handled client-side
