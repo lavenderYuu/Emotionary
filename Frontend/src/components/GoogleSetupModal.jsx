@@ -55,19 +55,18 @@ export default function GoogleSetupModal({ user, open, hide }) {
       body: JSON.stringify({ userId: user.id }),
     });
   
-    dispatch(setUserId({ userId: user.id, userName: user.name }));
-    
     // TODO: add deriveKey
 
+    dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    dispatch(setUserId({ userId: user.id, userName: user.name }));
-    
-    // TODO: add getKey
 
+    // TODO: add getKey and verify passkey
+    
+    dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
   };
 
