@@ -64,7 +64,7 @@ export default function GoogleSetupModal({ user, open, hide }) {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    // TODO: verify passkey meets requirements and getKey
+    // TODO: verify passkey and getKey
     
     dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
