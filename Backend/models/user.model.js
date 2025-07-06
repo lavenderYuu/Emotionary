@@ -32,6 +32,11 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: false,
+  },
+
+  setupComplete: {
+    type: Boolean,
+    required: function() { return this.googleId; },
   }
 });
 

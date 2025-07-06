@@ -42,7 +42,7 @@ router.get("/filter/:userId", async (req, res) => {
       .find(filter)
       .populate('tags')
       .setOptions(options)
-      .exec();;
+      .exec();
     const totalEntries = await Entry.countDocuments(filter);
     res.json({
       entries,

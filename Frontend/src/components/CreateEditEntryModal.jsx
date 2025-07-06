@@ -85,6 +85,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
 
   const getSentiment = async (content) => {
     const sentimentAnalysis = client.textClassification({ // returns an array of predictions (label + score)
+      provider: 'hf-inference',
       model: 'tabularisai/multilingual-sentiment-analysis',
       inputs: content,
     });
