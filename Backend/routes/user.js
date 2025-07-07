@@ -71,6 +71,24 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Updates existing user onboarded field
+// PUT /users/complete-onboarding
+router.put("/complete-onboarding", async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "Missing user ID" });
+  }
+
+  try {
+    await User.findByIdAndUpdate(userId, { onboarded: true });
+    res.status(200).json({ message: "Marking onboarded as complete" });
+  } catch (err) {
+    console.error("Error marking onboarded as complete:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 

@@ -8,8 +8,10 @@ import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { useContext, useEffect } from "react";
 import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
+import { createTourSteps } from "../utils/tour/tourSteps";
 
 const Home = () => {
+  const userId = useSelector((state) => state.auth.userId);
   const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,13 +57,32 @@ const Home = () => {
     }
   }
 
+  const handleTourComplete = async () => {
+    localStorage.setItem("onboarded", "true");
+    if (tour?.isActive()) {
+      tour.cancel();
+    }
+    
+    await fetch("http://localhost:3000/users/complete-onboarding", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+  }
+
   useEffect(() => {
     dispatch(fetchEntries());
     window.scrollTo(0, 0);
-    tour.start();
+    
+    const onboarded = localStorage.getItem("onboarded");
+    if (onboarded !== "true") {
+      const steps = createTourSteps(handleTourComplete);
+      tour.addSteps(steps);
+      tour.start();
+    }
   }, [dispatch, tour]);
 
-    useEffect(() => {
+  useEffect(() => {
     return () => {
       if (tour?.isActive()) {
         tour.cancel();

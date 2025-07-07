@@ -32,6 +32,12 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: false,
+  },
+
+  onboarded: {
+    type: Boolean,
+    required: true,
+    default: false,
   }
 });
 

@@ -2,10 +2,10 @@ import { offset } from '@floating-ui/dom';
 
 // Adapted from: https://docs.shepherdjs.dev/recipes/cookbook/
 
-export const tourSteps = [
+export const createTourSteps = (onTourComplete) => [
   {
     id: 'intro',
-    text: 'Welcome to emotionary! Let\'s take a quick tour.',
+    text: 'Welcome to emotionary! Click "Next" to start a quick tour. Click "Skip" to onboard later.',
     classes: '-intro',
     buttons: [
       {
@@ -149,13 +149,17 @@ export const tourSteps = [
       },
     ],
   },
-  {
+   {
     id: 'complete',
-    text: 'Hooray! You\'re all set!',
+    text: "Hooray! You're all set! 🎉",
+    classes: '-intro',
     buttons: [
       {
         text: 'Done',
-        action: function () { this.complete(); },
+        action: function () {
+          onTourComplete();
+          this.cancel();
+        },
       },
     ],
   },

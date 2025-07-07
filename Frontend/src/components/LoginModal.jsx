@@ -130,6 +130,7 @@ export default function LoginModal({ open, onClose }) {
       }
 
       dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
+      localStorage.setItem("onboarded", data.user.onboarded);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
