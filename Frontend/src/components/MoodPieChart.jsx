@@ -7,21 +7,7 @@ export default function MoodPieChart() {
     const entries = useSelector((state) => state.entries.entries);
 
     const oneMonthAgo = new Date();
-    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
-
-    const [showNoDataMsg, setShowNoDataMsg] = useState(false);
-    
-    useEffect(() => {
-      let timeout;
-  
-      if (entries.length === 0) {
-        timeout = setTimeout(() => setShowNoDataMsg(true), 1000); // 1-second delay before showing the message
-      } else {
-        setShowNoDataMsg(false);
-      }
-  
-      return () => clearTimeout(timeout); // Clear timeout if the component unmounts or entries change
-    }, [entries.length]);
+    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);  
 
     // console.log('oneWeekAgo: ', oneMonthAgo);
 
@@ -42,7 +28,7 @@ export default function MoodPieChart() {
         label: mood + " " + getKey(mood),
     }));
 
-    if (showNoDataMsg && entries.length === 0) {
+    if (entries.length === 0) {
         return <div>No data to display</div>;
     }
 

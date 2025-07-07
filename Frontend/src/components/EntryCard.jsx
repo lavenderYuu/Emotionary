@@ -32,20 +32,6 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
   const theme = useTheme();
-
-  const [showNoEntriesMsg, setShowNoEntriesMsg] = useState(false);
-
-  useEffect(() => {
-    let timeout;
-
-    if (entries.length === 0) {
-      timeout = setTimeout(() => setShowNoEntriesMsg(true), 1000); // 1-second delay before showing the message
-    } else {
-      setShowNoEntriesMsg(false);
-    }
-
-    return () => clearTimeout(timeout); // Clear timeout if the component unmounts or entries change
-  }, [entries.length]);
   
   const handleClose = () => {
     setAnchorEl(null);
@@ -88,7 +74,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     }
   }
 
-  if (showNoEntriesMsg && entries.length === 0) {
+  if (entries.length === 0) {
     return <Box sx={{ margin: 4 }}>Whoops, you have no journal entries! Please create an entry.</Box>
   }
 
