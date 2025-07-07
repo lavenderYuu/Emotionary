@@ -25,7 +25,7 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: function() { return !this.googleId; },
-    minlength: [8, "Password should be at least 8 characters long"],
+    minlength: [12, "Password should be at least 12 characters long"],
   },
 
   googleId: {

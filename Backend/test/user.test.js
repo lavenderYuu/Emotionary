@@ -27,7 +27,7 @@ describe("User Tests", function () {
 
   // POST /users/register
   it("should create a new user", async function () {
-    const plaintextPassword = "password123";
+    const plaintextPassword = "password1234";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -49,7 +49,7 @@ describe("User Tests", function () {
   });
 
   it("should not create a user with an existing email", async function () {
-    const plaintextPassword = "password123";
+    const plaintextPassword = "password1234";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -61,7 +61,7 @@ describe("User Tests", function () {
   });
 
   it("should not create a user with invalid email format", async function () {
-    const plaintextPassword = "password123";
+    const plaintextPassword = "password1234";
     const userData = {
       email: "invalid-email",
       password: plaintextPassword,
@@ -75,7 +75,7 @@ describe("User Tests", function () {
     );
   });
 
-  it("should not create a user with password less than 8 characters", async function () {
+  it("should not create a user with password less than 12 characters", async function () {
     const userData = {
       email: "Adam@gmail.com",
       password: "short",
@@ -85,13 +85,13 @@ describe("User Tests", function () {
     expect(res.status).to.equal(400);
     expect(res.body).to.have.property(
       "message",
-      "Password must be at least 8 characters long"
+      "Password must be at least 12 characters long"
     );
   });
 
   // POST /users/login
   it("should log in an existing user", async function () {
-    const plaintextPassword = "password123";
+    const plaintextPassword = "password1234";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -120,7 +120,7 @@ describe("User Tests", function () {
   it("should not log in with non-existent user", async function () {
     const userData = {
       email: "Adam@outlook.com",
-      password: "password123",
+      password: "password1234",
       name: "Adam",
     };
     const res = await request(app).post("/users/login").send(userData);
