@@ -76,10 +76,6 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
         throw new Error(data.message || "Google authentication failed");
       }
 
-      // TODO: Prompt user to set a passphrase if not previously set
-      // const key = await deriveKey(passphrase, data.user._id);
-      // setCryptoKey(key);
-
       setGoogleUser({ id: data.user._id, name: data.user.name, setupComplete: data.user.setupComplete });
       setShowGoogleModal(true);
     } catch (error) {
@@ -358,7 +354,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
           </Box>
         </Box>
       </Modal>
-      <GoogleSetupModal user={googleUser} open={showGoogleModal} hide={handleGoogleSetUpClose} />
+      <GoogleSetupModal user={googleUser} open={showGoogleModal} hide={handleGoogleSetUpClose} setCryptoKey={setCryptoKey} />
       <PrivacyPolicyModal show={showPolicy} hide={() => setShowPolicy(false)} />
     </div>
   );

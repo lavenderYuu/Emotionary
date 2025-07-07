@@ -6,11 +6,19 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
 import { Checkbox, useTheme } from '@mui/material';
 import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
+import PasskeyRequirements, { getPasskeyRequirements } from "./PasskeyRequirements";
+import { deriveKey, encryptContent, decryptContent } from "../utils/crypto";
 
 const style = {
   position: "absolute",
@@ -24,14 +32,17 @@ const style = {
   borderRadius: "20px",
 };
 
-export default function GoogleSetupModal({ user, open, hide }) {
+export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
   const [passkey, setPasskey] = useState("");
+  const [showPasskey, setShowPasskey] = useState(false);
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const requirements = getPasskeyRequirements(passkey);
 
   const handleClose = () => {
     setAgreedToPolicy(false);
@@ -48,14 +59,26 @@ export default function GoogleSetupModal({ user, open, hide }) {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    // Verify whether passkey meets requirements
+    if (!requirements.length || !requirements.uppercase || !requirements.number || !requirements.symbol) {
+      window.alert("Your passkey must meet all requirements.");
+      return;
+    }
+
+    // Derive key from passkey and use user ID as salt
+    const key = await deriveKey(passkey, user.id);
+    setCryptoKey(key);
+
+    // Encrypts the string "verified" with the derived key
+    // This will be used to verify the passkey during login
+    const { iv, content } = await encryptContent("verified", key);
     
     await fetch("http://localhost:3000/users/complete-setup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id }),
+      body: JSON.stringify({ userId: user.id, verifyPasskey_content: content, verifyPasskey_iv: iv }),
     });
-  
-    // TODO: verify passkey meets requirements and deriveKey
 
     dispatch(setUserId({ userId: user.id, userName: user.name }));
     navigate("/dashboard");
@@ -64,10 +87,32 @@ export default function GoogleSetupModal({ user, open, hide }) {
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    // TODO: verify passkey and getKey
-    
-    dispatch(setUserId({ userId: user.id, userName: user.name }));
-    navigate("/dashboard");
+    // Derive key from passkey and use user ID as salt
+    const key = await deriveKey(passkey, user.id);
+
+    // Fetch the encrypted verification value and IV from the server
+    const response = await fetch(`http://localhost:3000/users/verify-passkey/${user.id}`);
+    if (!response.ok) {
+      window.alert("Could not verify user.");
+      return;
+    }
+    const { iv, content } = await response.json();
+
+    try {
+      // Try to decrypt the verification value using the derived key
+      const decryptedValue = await decryptContent(content, iv, key);
+      if (decryptedValue !== "verified") {
+        window.alert("Invalid passkey. Please try again.");
+        return;
+      }
+
+      // Verification successful
+      setCryptoKey(key);
+      dispatch(setUserId({ userId: user.id, userName: user.name }));
+      navigate("/dashboard");
+    } catch (err) {
+      window.alert("Invalid passkey. Please try again.");
+    }
   };
 
   return (
@@ -102,7 +147,7 @@ export default function GoogleSetupModal({ user, open, hide }) {
             <TextField
               name="Passkey"
               label="Passkey"
-              type="password"
+              type={showPasskey ? "text" : "password"}
               variant="outlined"
               fullWidth
               required
@@ -118,7 +163,24 @@ export default function GoogleSetupModal({ user, open, hide }) {
                   color: "#3d3d3d",
                 },
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPasskey ? "Hide passkey" : "Show passkey"}
+                      onClick={() => setShowPasskey((show) => !show)}
+                      edge="end"
+                    >
+                      {showPasskey ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            {/* Passkey requirements */}
+            {!user?.setupComplete && (
+              <PasskeyRequirements requirements={requirements} />
+            )}
             {user?.setupComplete ? "" : (
               <>
                 <Typography variant="caption">

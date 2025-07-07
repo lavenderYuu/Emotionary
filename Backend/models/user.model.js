@@ -37,6 +37,16 @@ const UserSchema = new Schema({
   setupComplete: {
     type: Boolean,
     required: function() { return this.googleId; },
+  },
+
+  verifyPasskey_content: {
+    type: String,
+    required: false,
+  },
+
+  verifyPasskey_iv: {
+    type: String,
+    required: false,
   }
 });
 
