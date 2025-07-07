@@ -7,19 +7,54 @@ import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entri
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { useContext, useEffect } from "react";
+import { decryptContent } from "../utils/crypto";
 import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
 import { createTourSteps } from "../utils/tour/tourSteps";
 
-const Home = () => {
+const Home = ({ cryptoKey }) => {
   const userId = useSelector((state) => state.auth.userId);
   const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
+
+  const allEntries = useSelector((state) => state.entries.entries);
+  const [decryptedEntries, setDecryptedEntries] = useState([]);
+  const recentEntries = decryptedEntries.slice(0, 8);
+
+  const activeEntryId = useSelector((state) => state.entries.activeEntry);
+  const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
+
   const dispatch = useDispatch();
-  const entries = useSelector((state) => state.entries.entries);
-  const recentEntries = entries.slice(0,8);
   const tour = useContext(ShepherdTourContext);
+
+  useEffect(() => {
+    dispatch(fetchEntries());
+    window.scrollTo(0, 0);
+  }, [dispatch]);
+
+  useEffect(() => {
+    async function decryptAndStore() {
+      if (!cryptoKey || !allEntries.length) {
+        setDecryptedEntries([]);
+        return;
+      }
+
+      const decrypted = await Promise.all(
+        allEntries.map(async (entry) => {
+          try {
+            const content = await decryptContent(entry.content, entry.content_iv, cryptoKey);
+            return { ...entry, content };
+          } catch {
+            return { ...entry, content: "[Unable to decrypt]" };
+          }
+        })
+      );
+      
+      setDecryptedEntries(decrypted);
+    }
+    decryptAndStore();
+  }, [cryptoKey, allEntries, dispatch]);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
@@ -51,6 +86,7 @@ const Home = () => {
   const handleSaveEntry = async () => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
+    dispatch(resetEntry());
 
     if (tour?.isActive() && tour?.getCurrentStep()?.id === 'click-save-entry') {
       tour.next();
@@ -119,9 +155,26 @@ const Home = () => {
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
         <h2>Recent Entries</h2>
-        <EntryCard entries={recentEntries} onClick={handleOpenCard} onEdit={handleEditEntry}/>
-        <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
-        <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
+        <EntryCard
+          onClick={handleOpenCard}
+          onEdit={handleEditEntry}
+          num={8}
+          entries={recentEntries}
+        />
+        <ViewEntryModal
+          isOpen={isViewModalOpen}
+          onClose={handleCloseModal}
+          onEdit={handleEditEntry}
+          entry={activeEntry}
+        />
+        <CreateEditEntryModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSave={handleSaveEntry}
+          mode={mode}
+          cryptoKey={cryptoKey}
+          entry={activeEntry}
+        />
       </>
   )
 }

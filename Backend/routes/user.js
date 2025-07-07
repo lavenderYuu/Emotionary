@@ -24,9 +24,9 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    if (password.length < 8) {
+    if (password.length < 12) {
       return res.status(400).json({
-        message: "Password must be at least 8 characters long",
+        message: "Password must be at least 12 characters long",
       });
     }
 
@@ -59,11 +59,18 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email" });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: "Wrong password" });
+    // Only check password if account is not associated with Google
+    if (!user.googleId) {
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Wrong password" });
+      }
+    } else {
+      return res.status(400).json({
+        message: "This account is associated with Google. Please sign in with Google instead.",
+      });
     }
-
+    
     res.status(200).json({ message: "Login successful", user });
   } catch (error) {
     console.error("Error logging in user:", error);
@@ -104,32 +111,102 @@ router.post("/google-auth", async (req, res) => {
     }
 
     try {
-        const ticket = await client.verifyIdToken({
-            idToken: idToken,
-            audience: GOOGLE_CLIENT_ID,
+      const ticket = await client.verifyIdToken({
+          idToken: idToken,
+          audience: GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      const name = payload["name"].split(" ")[0];
+      const email = payload["email"];
+      const googleId = payload["sub"];
+
+      let existingUser = await User.findOne({ email: email });
+
+      if (!existingUser) {
+        const newUser = new User({
+          name: name,
+          email: email,
+          googleId: googleId,
+          setupComplete: false,
         });
 
-        const payload = ticket.getPayload();
-        const name = payload["name"].split(" ")[0];
-        const email = payload["email"];
-        const googleId = payload["sub"];
+        await newUser.save();
 
-        let user = await User.findOne({ email: email });
-
-        if (!user) {
-            user = new User({
-                name: name,
-                email: email,
-                googleId: googleId,
-            });
-            await user.save();
-        }
-
-        res.status(200).json({ message: "Login successful", user });
+        return res.status(200).json({
+          message: "Login successful",
+          user: {
+            _id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            googleId: newUser.googleId,
+            setupComplete: newUser.setupComplete,
+          },
+        });
+      } else {
+        return res.status(200).json({
+          message: "Login successful",
+          user: {
+            _id: existingUser._id,
+            name: existingUser.name,
+            email: existingUser.email,
+            googleId: existingUser.googleId,
+            setupComplete: existingUser.setupComplete,
+          },
+        });
+      }
     } catch (error) {
         console.error("Google ID token verification failed:", error);
         res.status(401).json({ message: "Invalid Google ID token" });
     }
+});
+
+// Updates existing Google user setupComplete field
+// POST /users/complete-setup
+router.post("/complete-setup", async (req, res) => {
+  const { userId, verifyPasskey_content, verifyPasskey_iv } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "Missing user ID" });
+  }
+
+  if (!verifyPasskey_content || !verifyPasskey_iv) {
+    return res.status(400).json({ message: "Missing passkey verification data" });
+  }
+
+  try {
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        setupComplete: true,
+        verifyPasskey_content,
+        verifyPasskey_iv,
+      }
+    );
+    res.status(200).json({ message: "Marking setup as complete" });
+  } catch (err) {
+    console.error("Error marking setup as complete:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Gets the user's passkey verification data
+// GET /users/verify-passkey/:userId
+router.get('/verify-passkey/:userId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({
+      iv: user.verifyPasskey_iv,
+      content: user.verifyPasskey_content,
+    })
+  } catch (err) {
+    console.error("Error fetching passkey verification data:", err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Logs user out, handled client-side

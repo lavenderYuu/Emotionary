@@ -8,13 +8,12 @@ import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useSelector, useDispatch } from "react-redux"
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { getDate, getTags } from '../utils/helpers';
-import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -27,13 +26,13 @@ import { useTheme } from '@mui/material';
 
 const EntryCard = ({ entries, onClick, onEdit }) => {
   const tags = useSelector(selectSortedTags);
-  const entry = useSelector((state) => state.entries.activeEntry);
+  const [selectedEntry, setSelectedEntry] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
   const theme = useTheme();
-
+  
   const handleClose = () => {
     setAnchorEl(null);
     dispatch(resetEntry());
@@ -54,6 +53,8 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
   const handleKebab = (e, id) => {
     e.stopPropagation(); 
     setAnchorEl(e.currentTarget);
+    const entry = entries.find(e => e._id === id);
+    setSelectedEntry(entry);
     dispatch(selectEntry(id));
   }
 
@@ -65,10 +66,12 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
   const handleDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
-    await dispatch(deleteEntry(entry)).unwrap();
-    dispatch(resetEntry());
-    dispatch(fetchEntries());
-    handleClose();
+    if (selectedEntry) {
+      await dispatch(deleteEntry(selectedEntry)).unwrap();
+      dispatch(resetEntry());
+      dispatch(fetchEntries());
+      handleClose();
+    }
   }
 
   if (entries.length === 0) {
@@ -86,7 +89,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
       p: 2 }}>
         {entries.map((entry, index) => (
           <Box
-            key={index}
+            key={entry._id}
             sx={{ margin: '8px' }}>
               <Card 
                 onClick={() => onClick(entry._id)}
@@ -181,7 +184,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           </Box>
         ))}
      </Box>
-     {entry &&
+     {selectedEntry &&
       <Menu
         anchorEl={anchorEl}
         open={open}

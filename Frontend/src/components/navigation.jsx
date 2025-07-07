@@ -15,6 +15,7 @@ import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
 import { RESET_APP } from "../app/rootReducer";
+import { del } from 'idb-keyval';
 
 const NavMenu = styled("ul")(({ theme }) => ({
   display: "flex",
@@ -112,6 +113,9 @@ const NavigationBar = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
+
+      await del('cryptoKey');
+      console.log('CryptoKey deleted from IndexedDB');
 
       dispatch(clearUserId());
       dispatch({ type: RESET_APP });
