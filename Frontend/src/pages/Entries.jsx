@@ -14,7 +14,6 @@ import CreateButton from "../components/buttons/CreateButton";
 import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
 import { Box } from "@mui/material";
-import { useTheme } from '@mui/material';
 import { decryptContent } from "../utils/crypto";
 
 const Entries = ({ cryptoKey }) => {
@@ -23,8 +22,8 @@ const Entries = ({ cryptoKey }) => {
   const [mode, setMode] = useState(null);
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.entries.pagination);
-  const allEntries = useSelector((state) => state.entries.filteredEntries || state.entries.entries);
-  const theme = useTheme();
+  const entries = useSelector((state) => state.entries.entries);
+  const allEntries = useSelector((state) => state.entries.filteredEntries || entries);
   const [decryptedEntries, setDecryptedEntries] = useState([]);
 
   const activeEntryId = useSelector((state) => state.entries.activeEntry);
@@ -34,6 +33,10 @@ const Entries = ({ cryptoKey }) => {
     dispatch(filterEntries());
     window.scrollTo(0, 0);
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(filterEntries());
+  }, [dispatch, entries]);
 
   useEffect(() => {
     async function decryptAndStore() {
