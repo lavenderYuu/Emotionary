@@ -7,6 +7,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
 import { Checkbox, useTheme } from '@mui/material';
@@ -14,6 +18,7 @@ import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import GoogleSetupModal from "./GoogleSetUpModal";
 import { deriveKey } from "../utils/crypto";
+import PasskeyRequirements, { getPasskeyRequirements } from "./PasskeyRequirements";
 
 const style = {
   position: "absolute",
@@ -38,6 +43,8 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
   });
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const requirements = getPasskeyRequirements(formData.password);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -99,6 +106,13 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    // Verify whether password meets requirements
+    if (!requirements.length || !requirements.uppercase || !requirements.number || !requirements.symbol) {
+      window.alert("Your password must meet all requirements.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/users/register", {
         method: "POST",
@@ -233,7 +247,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
             <TextField
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               required
@@ -249,7 +263,23 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
                   color: "#3d3d3d",
                 },
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      onClick={() => setShowPassword((show) => !show)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            {showSignIn ? "" : (
+              <PasskeyRequirements requirements={requirements} />
+            )}
             {showSignIn ? "" : (
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Checkbox 
@@ -294,7 +324,6 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
                   <span
                     onClick={() => {
                       setShowSignIn(false);
-                      handleSignUp();
                     }}
                     style={{
                       color: "#a98ca7",
