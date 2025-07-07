@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 const SaveButton = ({ onClick }) => {
   return (
     <Button
+      id='save-entry-button'
       variant="contained"
       sx={{ 
           backgroundColor: '#ffbde9',

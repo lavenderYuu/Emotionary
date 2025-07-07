@@ -14,6 +14,9 @@ import { Navigate } from "react-router-dom";
 import { lightTheme, darkTheme } from "./utils/theme";
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from "@mui/material";
+import { ShepherdTourContext, shepherdTourInstance } from "./utils/tour/ShepherdContext";
+import 'shepherd.js/dist/css/shepherd.css';
+import './utils/tour/shepherd.css';
 
 function MainLayout() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -24,16 +27,18 @@ function MainLayout() {
 
   return (
     <>
-      <NavigationBar />
-      <Routes>
-        <Route path="/dashboard" element={<Home />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="/entries" element={<Entries />} />
-        <Route path="/search" element={<SearchResults />} />
-      </Routes>
+      <ShepherdTourContext.Provider value={shepherdTourInstance}>
+        <NavigationBar />
+        <Routes>
+          <Route path="/dashboard" element={<Home />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/entries" element={<Entries />} />
+          <Route path="/search" element={<SearchResults />} />
+        </Routes>
+      </ShepherdTourContext.Provider>
     </>
   );
-}
+};
 
 function App() {
   const dispatch = useDispatch();

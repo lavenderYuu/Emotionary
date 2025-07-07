@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
 
 const Home = () => {
   const userName = useSelector((state) => state.auth.userName);
@@ -16,6 +17,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const entries = useSelector((state) => state.entries.entries);
   const recentEntries = entries.slice(0,8);
+  const tour = useContext(ShepherdTourContext);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
@@ -32,6 +34,10 @@ const Home = () => {
     setIsViewModalOpen(false);
     setIsModalOpen(true);
     setMode('create');
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'click-create-entry') {
+      tour.next();
+    }
   };
 
   const handleEditEntry = () => {
@@ -43,12 +49,17 @@ const Home = () => {
   const handleSaveEntry = async () => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'click-save-entry') {
+      tour.next();
+    }
   }
 
   useEffect(() => {
     dispatch(fetchEntries());
     window.scrollTo(0, 0);
-  }, [dispatch]);
+    tour.start();
+  }, [dispatch, tour]);
 
   return (
       <>
