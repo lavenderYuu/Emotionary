@@ -116,17 +116,23 @@ router.post("/google-auth", async (req, res) => {
         await newUser.save();
 
         return res.status(200).json({
+          message: "Login successful",
           user: {
             _id: newUser._id,
             name: newUser.name,
+            email: newUser.email,
+            googleId: newUser.googleId,
             setupComplete: newUser.setupComplete,
           },
         });
       } else {
         return res.status(200).json({
+          message: "Login successful",
           user: {
             _id: existingUser._id,
             name: existingUser.name,
+            email: existingUser.email,
+            googleId: existingUser.googleId,
             setupComplete: existingUser.setupComplete,
           },
         });
