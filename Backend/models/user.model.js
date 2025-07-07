@@ -32,6 +32,7 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: false,
+    sparse: true, // enforce unique only if googleId exists
   },
 
   setupComplete: {

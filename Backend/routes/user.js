@@ -162,8 +162,8 @@ router.post("/google-auth", async (req, res) => {
 });
 
 // Updates existing Google user setupComplete field
-// POST /users/complete-setup
-router.post("/complete-setup", async (req, res) => {
+// PUT /users/complete-setup
+router.put("/complete-setup", async (req, res) => {
   const { userId, verifyPasskey_content, verifyPasskey_iv } = req.body;
 
   if (!userId) {

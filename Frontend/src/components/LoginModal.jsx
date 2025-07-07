@@ -61,7 +61,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
     setShowGoogleModal(false);
   };
 
-  const handleAgreeToTerms = (e) => {
+  const handleAgreeToPolicy = (e) => {
     setAgreedToPolicy(e.target.checked);
   };
 
@@ -285,7 +285,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Checkbox 
                   checked={agreedToPolicy} 
-                  onChange={handleAgreeToTerms} 
+                  onChange={handleAgreeToPolicy} 
                   required
                   sx={{ p: 0, paddingRight: '8px' }}
                 />

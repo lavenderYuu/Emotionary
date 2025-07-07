@@ -117,6 +117,28 @@ describe("User Tests", function () {
     expect(res.body).to.have.property("message", "Wrong password");
   });
 
+  // PUT /users/complete-onboarding
+  it("should mark onboarding true for user who completed onboarding", async function () {
+    const user = new User({
+        name: "User",
+        email: "user@example1.com",
+        password: "password1234",
+    });
+
+    await user.save();
+
+    let res = await request(app).put("/users/complete-onboarding").send({ userId: user._id});
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property("message", "Marking onboarded as complete");
+    
+    res = await request(app).post("/users/login").send({
+      email: user.email,
+      password: "password1234",
+    });
+    expect(res.status).to.equal(200);
+    expect(res.body.user).to.have.property("onboarded", true);
+  });
+
   it("should not log in with non-existent user", async function () {
     const userData = {
       email: "Adam@outlook.com",
@@ -185,6 +207,43 @@ describe("User Tests", function () {
       const res = await request(app).post("/users/google-auth").send({ idToken });
       expect(res.status).to.equal(401);
       expect(res.body).to.have.property("message", "Invalid Google ID token");
+    });
+
+    // PUT /users/complete-setup
+    it("should mark setupComplete true for existing user", async function () {
+      const user = new User({
+          name: "User",
+          email: "user@gmail.com",
+          googleId: "googleId1234",
+          setupComplete: false,
+          verifyPasskey_content: "encrypted_verified_string",
+          verifyPasskey_iv: "dummy_iv"
+      });
+
+      await user.save();
+
+      let res = await request(app).put("/users/complete-setup").send({
+        userId: user._id,
+        verifyPasskey_content: user.verifyPasskey_content,
+        verifyPasskey_iv: user.verifyPasskey_iv,
+      });
+      expect(res.status).to.equal(200);
+      expect(res.body).to.have.property("message", "Marking setup as complete");
+      
+      const idToken = "verifiedToken";
+      const payload = {
+        name: user.name,
+        email: user.email,
+        sub: user.googleId
+      };
+
+      clientStub.returns(Promise.resolve({
+        getPayload: () => payload
+      }));
+
+      res = await request(app).post("/users/google-auth").send({ idToken });
+      expect(res.status).to.equal(200);
+      expect(res.body.user).to.have.property("setupComplete", true);
     });
 
     describe("verifyPasskey", function () {
