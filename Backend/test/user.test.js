@@ -187,5 +187,43 @@ describe("User Tests", function () {
       expect(res.body).to.have.property("message", "Invalid Google ID token");
     });
 
+    describe("verifyPasskey", function () {
+      let user;
+
+      beforeEach(async function () {
+        user = new User({
+          name: "User 1",
+          email: "user@example.com",
+          googleId: "googleId12345",
+          setupComplete: true,
+          verifyPasskey_content: "encrypted_verified_string",
+          verifyPasskey_iv: "dummy_iv"
+        });
+
+        await user.save();
+      });
+
+      afterEach(async function () {
+        await User.deleteMany({});
+      });
+
+      // GET /users/verify-passkey/:userId
+      it("should return the user's passkey verification data if the user exists", async function () {
+        const res = await request(app).get(`/users/verify-passkey/${user._id}`);
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("iv", "dummy_iv");
+        expect(res.body).to.have.property("content", "encrypted_verified_string");
+      });
+
+      // GET /users/verify-passkey/:userId
+      it("should return a 404 error if the user does not exist", async function () {
+        const wrongId = new mongoose.Types.ObjectId();
+        const res = await request(app).get(`/users/verify-passkey/${wrongId}`);
+
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("error", "User not found");
+      });
+    });
   });
 });
