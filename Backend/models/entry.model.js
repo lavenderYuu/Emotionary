@@ -17,6 +17,11 @@ const EntrySchema = new Schema(
             type: String,
             required: true,
         },
+
+        content_iv: {
+            type: String,
+            required: true,
+        },
         
         tags: {
             type: [

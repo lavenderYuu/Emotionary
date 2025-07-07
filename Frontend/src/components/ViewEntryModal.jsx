@@ -13,8 +13,8 @@ import MoodButton from './buttons/MoodButton';
 import { fetchEntries } from '../features/entries/entriesSlice';
 
 // base component: https://mui.com/material-ui/react-dialog/
-const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
-  const entry = useSelector((state) => state.entries.activeEntry);
+const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
+  const tags = useSelector((state) => state.tags.tags);
   const dispatch = useDispatch();
   
   const handleSelectMood = async (selectedMood) => {
@@ -35,6 +35,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
   return (
     <>
       <Dialog
+        key={entry._id} // Ensures that the dialog updates when the entry changes
         disableScrollLock
         onClose={onClose}
         open={isOpen}

@@ -1,12 +1,13 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useSelector } from 'react-redux';
 import { moodToScore, sentimentEmojiMap } from '../utils/helpers';
+import { useState, useEffect } from 'react';
 
 export default function MoodPieChart() {
     const entries = useSelector((state) => state.entries.entries);
 
     const oneMonthAgo = new Date();
-    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
+    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);  
 
     // console.log('oneWeekAgo: ', oneMonthAgo);
 

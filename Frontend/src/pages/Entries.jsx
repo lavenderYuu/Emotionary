@@ -15,8 +15,9 @@ import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
 import { Box } from "@mui/material";
 import { useTheme } from '@mui/material';
+import { decryptContent } from "../utils/crypto";
 
-const Entries = () => {
+const Entries = ({ cryptoKey }) => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
@@ -24,11 +25,38 @@ const Entries = () => {
   const pagination = useSelector((state) => state.entries.pagination);
   const allEntries = useSelector((state) => state.entries.filteredEntries || state.entries.entries);
   const theme = useTheme();
+  const [decryptedEntries, setDecryptedEntries] = useState([]);
+
+  const activeEntryId = useSelector((state) => state.entries.activeEntry);
+  const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
 
   useEffect(() => {
     dispatch(filterEntries());
     window.scrollTo(0, 0);
   }, [dispatch]);
+
+  useEffect(() => {
+    async function decryptAndStore() {
+      if (!cryptoKey || !allEntries.length) {
+        setDecryptedEntries([]);
+        return;
+      }
+
+      const decrypted = await Promise.all(
+        allEntries.map(async (entry) => {
+          try {
+            const content = await decryptContent(entry.content, entry.content_iv, cryptoKey);
+            return { ...entry, content };
+          } catch {
+            return { ...entry, content: "[Unable to decrypt]" };
+          }
+        })
+      );
+      
+      setDecryptedEntries(decrypted);
+    }
+    decryptAndStore();
+  }, [cryptoKey, allEntries, dispatch]);
 
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
@@ -56,6 +84,7 @@ const Entries = () => {
   const handleSaveEntry = async () => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
+    dispatch(resetEntry());
   };
 
   const handlePageChange = (event, value) => {
@@ -71,7 +100,7 @@ const Entries = () => {
       {pagination.totalEntries === 0 ?
         <Box sx={{ margin: 4 }}>Whoops, that filter returned no results! Please try again.</Box> :
         <EntryCard
-          entries={allEntries}
+          entries={decryptedEntries}
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
         />
@@ -80,12 +109,15 @@ const Entries = () => {
         isOpen={isViewModalOpen}
         onClose={handleCloseModal}
         onEdit={handleEditEntry}
+        entry={activeEntry}
       />
       <CreateEditEntryModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSave={handleSaveEntry}
         mode={mode}
+        cryptoKey={cryptoKey}
+        entry={activeEntry}
       />
       <div>
         {" "}

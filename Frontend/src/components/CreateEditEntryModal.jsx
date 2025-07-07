@@ -23,12 +23,12 @@ import { sentimentEmojiMap } from '../utils/helpers';
 import { fetchTags } from '../features/tags/tagsSlice';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { encryptContent } from "../utils/crypto";
 
 const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
 
 // base component: https://mui.com/material-ui/react-dialog/
-const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
-  const entry = useSelector((state) => state.entries.activeEntry);
+const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry }) => {
   const tags = useSelector(selectSortedTags);
   const userId = useSelector((state) => state.auth.userId);
   const [formData, setFormData] = useState({
@@ -85,6 +85,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
   const getSentiment = async (content) => {
     const sentimentAnalysis = client.textClassification({ // returns an array of predictions (label + score)
+      provider: 'hf-inference',
       model: 'tabularisai/multilingual-sentiment-analysis',
       inputs: content,
     });
@@ -119,10 +120,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
       const mood = await getSentiment(content);
 
+      const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
+
       const entryData = {
         title,
         date: date.toISOString(),
-        content,
+        content: encryptedContent,
+        content_iv: iv,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: userId,
