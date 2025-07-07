@@ -39,7 +39,7 @@ export const tourSteps = [
   },
   {
     id: 'create-entry',
-    text: 'This is where you create an entry. Let\'s get to writing!',
+    text: 'This is where you create an entry. Let\'s start writing!',
     attachTo: {
       element: '#create-entry',
     },
@@ -99,7 +99,7 @@ export const tourSteps = [
     },
       floatingUIOptions: {
       middleware: [
-        offset(16),
+        offset(32),
       ],
     },
     classes: '-bottom',
@@ -112,7 +112,7 @@ export const tourSteps = [
   },
   {
     id: 'entry-tags',
-    text: 'You can manage tags here.',
+    text: 'You can manage your tags here.',
     attachTo: {
       element: '#create-entry-manage-tags',
       on: 'bottom',

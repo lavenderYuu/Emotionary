@@ -61,6 +61,36 @@ const Home = () => {
     tour.start();
   }, [dispatch, tour]);
 
+    useEffect(() => {
+    return () => {
+      if (tour?.isActive()) {
+        tour.cancel();
+      }
+    };
+  }, [tour]);
+  
+  useEffect(() => {
+    if (!tour) return;
+
+    const observer = new MutationObserver(() => {
+      const currentStep = tour.getCurrentStep();
+      const selector = currentStep?.options?.attachTo?.element;
+
+      if (selector) {
+        const el = document.querySelector(selector);
+
+        if (!el) {
+          console.log(`Element for "${currentStep.id}" not in DOM. Cancelling tour.`);
+          tour.cancel();
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [tour]);
+
   return (
       <>
         <h1>Hello, {userName} 👋🏻</h1>
