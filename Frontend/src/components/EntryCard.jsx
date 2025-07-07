@@ -103,7 +103,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
       p: 2 }}>
         {entries.map((entry, index) => (
           <Box
-            key={index}
+            key={entry._id}
             sx={{ margin: '8px' }}>
               <Card 
                 onClick={() => onClick(entry._id)}

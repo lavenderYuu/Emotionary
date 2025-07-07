@@ -38,6 +38,7 @@ const Entries = ({ cryptoKey }) => {
   useEffect(() => {
     async function decryptAndStore() {
       if (!cryptoKey || !allEntries.length) {
+        setDecryptedEntries([]);
         return;
       }
 

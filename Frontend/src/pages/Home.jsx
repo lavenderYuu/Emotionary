@@ -17,6 +17,7 @@ const Home = ({ cryptoKey }) => {
 
   const allEntries = useSelector((state) => state.entries.entries);
   const [decryptedEntries, setDecryptedEntries] = useState([]);
+  const recentEntries = decryptedEntries.slice(0, 8);
 
   const activeEntryId = useSelector((state) => state.entries.activeEntry);
   const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
@@ -31,6 +32,7 @@ const Home = ({ cryptoKey }) => {
   useEffect(() => {
     async function decryptAndStore() {
       if (!cryptoKey || !allEntries.length) {
+        setDecryptedEntries([]);
         return;
       }
 
@@ -90,7 +92,7 @@ const Home = ({ cryptoKey }) => {
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
           num={8}
-          entries={decryptedEntries.slice(0,8)}
+          entries={recentEntries}
         />
         <ViewEntryModal
           isOpen={isViewModalOpen}
