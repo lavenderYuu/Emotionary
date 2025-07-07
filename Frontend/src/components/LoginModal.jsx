@@ -278,7 +278,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
               }}
             />
             {showSignIn ? "" : (
-              <PasskeyRequirements requirements={requirements} />
+              <PasskeyRequirements requirements={requirements} isPasskey={false} />
             )}
             {showSignIn ? "" : (
               <Box sx={{ display: 'flex', alignItems: 'center' }}>

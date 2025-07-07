@@ -12,11 +12,11 @@ export function getPasskeyRequirements(passkey) {
   };
 }
 
-export default function PasskeyRequirements({ requirements }) {
+export default function PasskeyRequirements({ requirements, isPasskey = true }) {
   return (
     <Box sx={{ mb: 1 }}>
       <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-        Your passkey must contain:
+        {isPasskey ? "Your passkey must contain:" : "Your password must contain:"}
       </Typography>
       <Requirement label="At least 12 characters" isMet={requirements.length} />
       <Requirement label="An uppercase letter" isMet={requirements.uppercase} />
