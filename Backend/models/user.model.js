@@ -51,9 +51,10 @@ const UserSchema = new Schema({
   },
 
   onboarded: {
-    type: Boolean,
+    type: String,
+    enum: ["not-started", "completed"],
     required: true,
-    default: false,
+    default: "not-started",
   }
 });
 

@@ -9,7 +9,7 @@ import CreateButton from "../components/buttons/CreateButton";
 import { useContext, useEffect } from "react";
 import { decryptContent } from "../utils/crypto";
 import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
-import { createTourSteps } from "../utils/tour/tourSteps";
+import { UserTourStatus, createTourSteps } from "../utils/tour/tourConfig";
 
 const Home = ({ cryptoKey }) => {
   const userId = useSelector((state) => state.auth.userId);
@@ -27,6 +27,7 @@ const Home = ({ cryptoKey }) => {
 
   const dispatch = useDispatch();
   const tour = useContext(ShepherdTourContext);
+  const [onboarded, setOnboarded] = useState(() => localStorage.getItem("onboarded") || UserTourStatus.NOT_STARTED);
 
   useEffect(() => {
     dispatch(fetchEntries());
@@ -93,8 +94,17 @@ const Home = ({ cryptoKey }) => {
     }
   }
 
+  const handleTourSkip = () => {
+    setOnboarded(UserTourStatus.SKIPPED);
+    localStorage.setItem("onboarded", UserTourStatus.SKIPPED);
+    if (tour?.isActive()) {
+      tour.cancel();
+    }
+  }
+
   const handleTourComplete = async () => {
-    localStorage.setItem("onboarded", "true");
+    setOnboarded(UserTourStatus.COMPLETED);
+    localStorage.setItem("onboarded", UserTourStatus.COMPLETED);
     if (tour?.isActive()) {
       tour.cancel();
     }
@@ -109,16 +119,19 @@ const Home = ({ cryptoKey }) => {
   useEffect(() => {
     dispatch(fetchEntries());
     window.scrollTo(0, 0);
+  }, [dispatch]);
+
+  useEffect(() => { // initialize tour
+    if (!tour) return;
     
-    const onboarded = localStorage.getItem("onboarded");
-    if (onboarded !== "true") {
-      const steps = createTourSteps(handleTourComplete);
+    if (onboarded == UserTourStatus.NOT_STARTED) {
+      const steps = createTourSteps({ handleTourSkip, handleTourComplete });
       tour.addSteps(steps);
       tour.start();
     }
-  }, [dispatch, tour]);
+  }, [tour, onboarded]); 
 
-  useEffect(() => {
+  useEffect(() => { // cancel tour on unmount
     return () => {
       if (tour?.isActive()) {
         tour.cancel();
@@ -126,7 +139,7 @@ const Home = ({ cryptoKey }) => {
     };
   }, [tour]);
   
-  useEffect(() => {
+  useEffect(() => { // cancel tour if attached elements are not in DOM
     if (!tour) return;
 
     const observer = new MutationObserver(() => {

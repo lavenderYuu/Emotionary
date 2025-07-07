@@ -136,7 +136,7 @@ describe("User Tests", function () {
       password: "password1234",
     });
     expect(res.status).to.equal(200);
-    expect(res.body.user).to.have.property("onboarded", true);
+    expect(res.body.user).to.have.property("onboarded", "completed");
   });
 
   it("should not log in with non-existent user", async function () {

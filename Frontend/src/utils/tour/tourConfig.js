@@ -1,16 +1,24 @@
 import { offset } from '@floating-ui/dom';
 
+export const UserTourStatus = {
+  NOT_STARTED: 'not-started',
+  SKIPPED: 'skipped',
+  COMPLETED: 'completed'
+};
+
 // Adapted from: https://docs.shepherdjs.dev/recipes/cookbook/
 
-export const createTourSteps = (onTourComplete) => [
+export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   {
     id: 'intro',
-    text: 'Welcome to emotionary! Click "Next" to start a quick tour. Click "Skip" to onboard later.',
+    text: 'Welcome to emotionary! Click "Next" to start a quick tour. Click "Skip" to complete the tour the next time you log in.',
     classes: '-intro',
     buttons: [
       {
         text: 'Skip',
-        action: function () { this.cancel(); },
+        action: function () { 
+          handleTourSkip();
+        },
       },
       {
         text: 'Next',
@@ -157,7 +165,7 @@ export const createTourSteps = (onTourComplete) => [
       {
         text: 'Done',
         action: function () {
-          onTourComplete();
+          handleTourComplete();
           this.cancel();
         },
       },

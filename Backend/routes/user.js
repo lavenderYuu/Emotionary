@@ -88,7 +88,7 @@ router.put("/complete-onboarding", async (req, res) => {
   }
 
   try {
-    await User.findByIdAndUpdate(userId, { onboarded: true });
+    await User.findByIdAndUpdate(userId, { onboarded: "completed" });
     res.status(200).json({ message: "Marking onboarded as complete" });
   } catch (err) {
     console.error("Error marking onboarded as complete:", err);
