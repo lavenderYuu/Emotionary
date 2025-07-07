@@ -3,7 +3,8 @@
   box-shadow: 0 4px 8px #7d7d7d;
   border-radius: 12px;
   padding: 4px;
-  max-width: 280px;
+  max-width: 300px;
+  border: solid 4px #b8a7ff;
 }
 
 .shepherd-element.-intro {
@@ -42,7 +43,7 @@
 }
 
 .shepherd-text {
-  padding: 0 8px;
+  padding: 4px 8px;
 }
 
 .shepherd-button {
@@ -68,7 +69,7 @@
   content: ' ';
   position: absolute;
   top: 50%;
-  left: 99%;
+  left: 100%;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
@@ -79,7 +80,7 @@
   content: ' ';
   position: absolute;
   top: 50%;
-  right: 99%;
+  right: 100%;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
@@ -89,7 +90,7 @@
 .shepherd-element.-bottom::after{ /* up arrow */
   content: ' ';
   position: absolute;
-  top: -20%;
+  top: -21%;
   left: 50%;
   transform: translateX(-50%);
   width: 24px;
