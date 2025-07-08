@@ -33,7 +33,7 @@ const Entries = ({ cryptoKey }) => {
   useEffect(() => {
     dispatch(filterEntries());
     window.scrollTo(0, 0);
-  }, [dispatch, filters]);
+  }, [dispatch, filters, entries]);
 
   useEffect(() => {
     async function decryptAndStore() {

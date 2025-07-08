@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 import SaveButton from './buttons/SaveButton'
-import { fetchEntries, createEntry, editEntry } from '../features/entries/entriesSlice';
+import { fetchEntries, createEntry, editEntry, filterEntries } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
 import TagManagementModal from './TagManagementModal';

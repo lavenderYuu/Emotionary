@@ -136,10 +136,6 @@ export const entriesSlice = createSlice({
       .addCase(createEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         state.entries.push(entry);
-
-        if (!state.filters.deleted) {
-          state.filteredEntries.push(entry);
-        }
       })
       .addCase(editEntry.fulfilled, (state, action) => {
         const entry = action.payload;
@@ -173,11 +169,6 @@ export const entriesSlice = createSlice({
         if (index !== -1) {
           state.entries.splice(index, 1);
         }
-
-        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
-        if (filteredIndex !== -1) {
-          state.filteredEntries[filteredIndex] = entry;
-        }
       })
       .addCase(softDeleteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
@@ -193,8 +184,6 @@ export const entriesSlice = createSlice({
 
         if (state.filters.deleted) {
           state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
-        } else {
-          state.filteredEntries.push(entry);
         }
       });      
   },
