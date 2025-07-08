@@ -7,9 +7,9 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import { useSelector, useDispatch } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useState } from 'react';
-import { selectEntry, resetEntry, favoriteEntry, softDeleteEntry } from '../features/entries/entriesSlice';
+import { selectEntry, resetEntry, favoriteEntry, softDeleteEntry, hardDeleteEntry, restoreEntry } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -19,13 +19,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import { selectSortedTags } from '../features/tags/tagsSelectors';
 import { useTheme } from '@mui/material';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 
-const EntryCard = ({ entries, onClick, onEdit }) => {
-  const tags = useSelector(selectSortedTags);
+const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -61,11 +59,30 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     setAlert(false);
   }
 
-  const handleDelete = async () => {
+  const handleSoftDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
     if (selectedEntry) {
       dispatch(softDeleteEntry(selectedEntry));
+      dispatch(resetEntry());
+      handleClose();
+    }
+  }
+
+  const handleHardDelete = async () => {
+    setAnchorEl(null);
+    setAlert(false);
+    if (selectedEntry) {
+      dispatch(hardDeleteEntry(selectedEntry));
+      dispatch(resetEntry());
+      handleClose();
+    }
+  }
+
+  const handleRestore = async () => {
+    setAnchorEl(null);
+    if (selectedEntry) {
+      dispatch(restoreEntry(selectedEntry));
       dispatch(resetEntry());
       handleClose();
     }
@@ -198,12 +215,30 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           }
         }}
       >
-        <MenuItem key='edit' onClick={handleEdit}>
-          Edit
-        </MenuItem>
-        <MenuItem key='delete' onClick={() => setAlert(true)}>
-          Delete
-        </MenuItem>
+      {!selectedEntry.deleted && (
+        <>
+          <MenuItem key='edit' onClick={handleEdit}>
+            Edit
+          </MenuItem>
+          <MenuItem key='delete' onClick={() => setAlert(true)}>
+            Delete
+          </MenuItem>
+        </>
+      )}
+
+      {selectedEntry.deleted && (
+        <>
+          <MenuItem key='edit' onClick={handleEdit}>
+            Edit
+          </MenuItem>
+          <MenuItem key='restore' onClick={handleRestore}>
+            Restore
+          </MenuItem>
+          <MenuItem key='delete-forever' onClick={() => setAlert(true)}>
+            Delete Forever
+          </MenuItem>
+        </>
+      )}
       </Menu>}
       <Dialog
         open={alert}
@@ -215,11 +250,20 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           }
           }
         }}>
-          <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
-          <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
+          <DialogTitle>Are you sure you want to {isDeletedView ? "permanently delete" : "delete"} this entry?</DialogTitle>
+          {isDeletedView ?
+            <DialogContent>
+              You will not be able to undo this action.
+            </DialogContent>
+             : 
+            <DialogContent>
+              Deleting this entry will remove it from your dashboard and insights. 
+              You won't be able to search for a deleted entry, but you can filter for deleted entries.
+            </DialogContent>
+          }
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={handleNevermind}>Nevermind</Button>
-            <Button onClick={handleDelete} color="error">Yes, delete</Button>
+            <Button onClick={isDeletedView ? handleHardDelete : handleSoftDelete} color="error">Yes, {isDeletedView ? "delete forever" : "delete"}</Button>
           </DialogActions>
       </Dialog>
     </>

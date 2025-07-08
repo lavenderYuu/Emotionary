@@ -55,7 +55,7 @@ export const favoriteEntry = createAsyncThunk('entries/favoriteEntry', async (en
     return await res.json();
 });
 
-export const deleteEntry = createAsyncThunk('entries/deleteEntry', async (entry) => {
+export const hardDeleteEntry = createAsyncThunk('entries/hardDeleteEntry', async (entry) => {
     const res = await fetch(`http://localhost:3000/entries/${entry._id}`, { method: 'DELETE' });
     return await res.json();
 });
@@ -69,6 +69,14 @@ export const softDeleteEntry = createAsyncThunk('entries/softDeleteEntry', async
     return await res.json();
 });
 
+export const restoreEntry = createAsyncThunk('entries/restore', async (entry) => {
+    const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deleted: false, deletedAt: null }),
+    });
+    return await res.json();
+});
 
 export const entriesSlice = createSlice({
   name: "entries",
@@ -159,11 +167,16 @@ export const entriesSlice = createSlice({
           state.filteredEntries[filteredIndex] = entry;
         }
       })
-      .addCase(deleteEntry.fulfilled, (state, action) => {
+      .addCase(hardDeleteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         const index = state.entries.findIndex((e) => e._id === entry._id);
         if (index !== -1) {
           state.entries.splice(index, 1);
+        }
+
+        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
+        if (filteredIndex !== -1) {
+          state.filteredEntries[filteredIndex] = entry;
         }
       })
       .addCase(softDeleteEntry.fulfilled, (state, action) => {
@@ -173,7 +186,17 @@ export const entriesSlice = createSlice({
         if (!state.filters.deleted) {
           state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
         }
-      });
+      })
+      .addCase(restoreEntry.fulfilled, (state, action) => {
+        const entry = action.payload;
+        state.entries.push(entry);
+
+        if (state.filters.deleted) {
+          state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
+        } else {
+          state.filteredEntries.push(entry);
+        }
+      });      
   },
 });
 

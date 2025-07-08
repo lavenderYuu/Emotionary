@@ -103,6 +103,7 @@ const Entries = ({ cryptoKey }) => {
           entries={decryptedEntries}
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
+          isDeletedView={filters.deleted === true}
         />
       }
       <ViewEntryModal
