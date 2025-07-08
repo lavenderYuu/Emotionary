@@ -39,7 +39,8 @@ const EntrySchema = new Schema(
 
         user_id : {
             type: mongoose.Types.ObjectId,
-            ref: "User"
+            ref: "User",
+            required: true,
         },
 
         mood: {
