@@ -77,6 +77,11 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   };
 
   const handleDateChange = (date) => {
+    const now = dayjs();
+    if (date.isAfter(now)) {
+      showSnackbar("You can't select a future date or time.");
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       date: date
@@ -232,8 +237,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
               <DateTimePicker
                 slotProps={{
                   popper: {
-                    
-                    zIndex: 10000
+                    zindex: 10000
                   }
                 }}
                 required 
@@ -287,7 +291,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
           paper: {
             sx: { 
             borderRadius: 4
-          }
+            }
           }
         }}>
           <DialogTitle>Are you sure you want to leave?</DialogTitle>
@@ -304,7 +308,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         userTags={tags}
         onTagUpdated={handleTags}
       />
-      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
+      {/* 
+        Show alert if user: 
+          - attempts to add >3 tags
+          - creates/edits entry without title/date/content
+          - attemps to select a future date/time 
+      */}
           <Snackbar
             open={snackbar.open}
             autoHideDuration={5000}

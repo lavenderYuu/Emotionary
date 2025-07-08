@@ -60,12 +60,20 @@ const Home = ({ cryptoKey }) => {
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
     dispatch(selectEntry(id));
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'select-entry') {
+      tour.next();
+    }
   };
 
   const handleCloseModal = () => {
     setIsViewModalOpen(false);
     setIsModalOpen(false);
     dispatch(resetEntry());
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'close-entry') {
+      tour.next();
+    }
   };
 
   const handleCreateModal = () => {
@@ -124,7 +132,7 @@ const Home = ({ cryptoKey }) => {
   useEffect(() => { // initialize tour
     if (!tour) return;
     
-    if (onboarded == UserTourStatus.NOT_STARTED) {
+    if (onboarded === UserTourStatus.NOT_STARTED) {
       const steps = createTourSteps({ handleTourSkip, handleTourComplete });
       tour.addSteps(steps);
       tour.start();

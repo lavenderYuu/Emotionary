@@ -28,7 +28,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'click-create-entry',
-    text: 'Get started by clicking the "Create an entry" button.',
+    text: 'Get started by clicking on the "Create an entry" button.',
     attachTo: {
       element: '#create-entry-button',
       on: 'left',
@@ -120,7 +120,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'entry-tags',
-    text: 'You can manage your tags here.',
+    text: 'You can manage your tags here and add them to your entry.',
     attachTo: {
       element: '#create-entry-manage-tags',
       on: 'bottom',
@@ -140,7 +140,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'click-save-entry',
-    text: 'Let\'s save your first entry!',
+    text: 'Click "Save" to save your entry.',
     attachTo: {
       element: '#save-entry-button',
       on: 'left',
@@ -157,16 +157,133 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       },
     ],
   },
-   {
+  {
+    id: 'created-entry',
+    text: 'Hooray, you\'ve created an entry! The dashboard will automatically update with your changes.',
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'select-entry',
+    text: 'Click on a card to view the entry.',
+    attachTo: {
+      element: '#entry-card:first-child',
+      on: 'top',
+    },
+    classes: '-top',
+    floatingUIOptions: {
+      middleware: [
+        offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+      },
+    ],
+  },
+  {
+    id: 'view-entry',
+    text: 'This is where you view an entry.',
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'entry-mood',
+    text: 'This is the analyzed sentiment of your entry. You can click here to change it.',
+    attachTo: {
+      element: '#mood-button',
+      on: 'left',
+    },
+    classes: '-left',
+    floatingUIOptions: {
+      middleware: [
+        offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'edit-entry',
+    text: 'You can also edit your entry here, but let\'s skip that for now.',
+    attachTo: {
+      element: '#edit-button',
+      on: 'left',
+    },
+    classes: '-left',
+    floatingUIOptions: {
+      middleware: [
+        offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'close-entry',
+    text: 'Let\'s close this by clicking "X".',
+    attachTo: {
+      element: '#close-button',
+      on: 'left',
+    },
+    classes: '-left',
+    floatingUIOptions: {
+      middleware: [
+        offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+      },
+    ],
+  },
+  {
+    id: 'entry-kebab',
+    text: 'You can also edit or delete your entry here.',
+    attachTo: {
+      element: '#kebab-button',
+      on: 'right',
+    },
+    classes: '-right',
+    floatingUIOptions: {
+      middleware: [
+        offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
     id: 'complete',
-    text: "Hooray! You're all set! 🎉",
+    text: 'That\'s the end of the tour! You\'re all set! 🎉',
     classes: '-intro',
     buttons: [
       {
         text: 'Done',
         action: function () {
           handleTourComplete();
-          this.cancel();
         },
       },
     ],

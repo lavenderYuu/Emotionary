@@ -26,6 +26,7 @@ const MoodButton = ({ mood, onSelectMood }) => {
   return (
     <>
       <Button
+        id='mood-button'
         variant="text"
         sx={{
           whiteSpace: 'nowrap',
