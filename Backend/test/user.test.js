@@ -118,7 +118,7 @@ describe("User Tests", function () {
   });
 
   // PUT /users/complete-onboarding
-  it("should mark onboarding true for user who completed onboarding", async function () {
+  it("should mark onboarded as completed for user who completed onboarding", async function () {
     const user = new User({
         name: "User",
         email: "user@example1.com",
@@ -129,7 +129,7 @@ describe("User Tests", function () {
 
     let res = await request(app).put("/users/complete-onboarding").send({ userId: user._id});
     expect(res.status).to.equal(200);
-    expect(res.body).to.have.property("message", "Marking onboarded as complete");
+    expect(res.body).to.have.property("message", "Marking onboarded as completed");
     
     res = await request(app).post("/users/login").send({
       email: user.email,
@@ -228,7 +228,7 @@ describe("User Tests", function () {
         verifyPasskey_iv: user.verifyPasskey_iv,
       });
       expect(res.status).to.equal(200);
-      expect(res.body).to.have.property("message", "Marking setup as complete");
+      expect(res.body).to.have.property("message", "Marking setupComplete as true");
       
       const idToken = "verifiedToken";
       const payload = {

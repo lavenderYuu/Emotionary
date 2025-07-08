@@ -223,7 +223,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'close-entry',
-    text: 'Let\'s close this by clicking "X".',
+    text: 'Let\'s close this view by clicking "X".',
     attachTo: {
       element: '#close-button',
       on: 'left',
