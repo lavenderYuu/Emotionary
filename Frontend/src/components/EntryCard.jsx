@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useDispatch } from "react-redux"
 import { useState } from 'react';
-import { selectEntry, resetEntry, favoriteEntry, softDeleteEntry, hardDeleteEntry, restoreEntry, fetchEntries } from '../features/entries/entriesSlice';
+import { selectEntry, resetEntry, softDeleteEntry, hardDeleteEntry, restoreEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -43,7 +43,8 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
 
   const handleFavorite = async (e, entry) => {
     e.stopPropagation();
-    dispatch(favoriteEntry(entry));
+    await dispatch(favoriteEntry(entry)).unwrap();
+    dispatch(fetchEntries());
   }
 
   const handleKebab = (e, id) => {
@@ -85,6 +86,7 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
     if (selectedEntry) {
       dispatch(restoreEntry(selectedEntry));
       dispatch(resetEntry());
+      dispatch(fetchEntries());
       handleClose();
     }
   }

@@ -27,24 +27,6 @@ export const filterEntries = createAsyncThunk('entries/filterEntries', async (_,
     };
 });
 
-export const createEntry = createAsyncThunk('entries/createEntry', async (entry) => {
-    const res = await fetch(`http://localhost:3000/entries`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry),
-    });
-    return await res.json();
-});
-
-export const editEntry = createAsyncThunk('entries/editEntry', async ({ id, entryData }) => {
-    const res = await fetch(`http://localhost:3000/entries/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entryData),
-    });
-    return await res.json();
-});
-
 export const favoriteEntry = createAsyncThunk('entries/favoriteEntry', async (entry) => {
     const update = entry.favorite === true ? false : true;
     const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
@@ -133,23 +115,6 @@ export const entriesSlice = createSlice({
           currentPage: action.payload.currentPage,
         };
       })
-      .addCase(createEntry.fulfilled, (state, action) => {
-        const entry = action.payload;
-        state.entries.push(entry);
-      })
-      .addCase(editEntry.fulfilled, (state, action) => {
-        const entry = action.payload;
-        
-        const index = state.entries.findIndex((e) => e._id === entry._id);
-        if (index !== -1) {
-          state.entries[index] = entry;
-        }
-        
-        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
-        if (filteredIndex !== -1) {
-          state.filteredEntries[filteredIndex] = entry;
-        }
-      })
       .addCase(favoriteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         const index = state.entries.findIndex((e) => e._id === entry._id);
@@ -165,9 +130,9 @@ export const entriesSlice = createSlice({
       })
       .addCase(hardDeleteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
-        const index = state.entries.findIndex((e) => e._id === entry._id);
+        const index = state.filteredEntries.findIndex((e) => e._id === entry._id);
         if (index !== -1) {
-          state.entries.splice(index, 1);
+          state.filteredEntries.splice(index, 1);
         }
       })
       .addCase(softDeleteEntry.fulfilled, (state, action) => {
