@@ -8,12 +8,12 @@ import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useSelector, useDispatch } from "react-redux"
-import { useMemo, useState, useEffect } from 'react';
-import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
+import { useState } from 'react';
+import { selectEntry, resetEntry, favoriteEntry, softDeleteEntry } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { getDate, getTags } from '../utils/helpers';
+import { getDate } from '../utils/helpers';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -43,8 +43,6 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     onEdit();
   };
 
-  const tagMap = useMemo(() => getTags(tags), [tags]);
-
   const handleFavorite = async (e, entry) => {
     e.stopPropagation();
     dispatch(favoriteEntry(entry));
@@ -67,9 +65,8 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     setAnchorEl(null);
     setAlert(false);
     if (selectedEntry) {
-      await dispatch(deleteEntry(selectedEntry)).unwrap();
+      dispatch(softDeleteEntry(selectedEntry));
       dispatch(resetEntry());
-      dispatch(fetchEntries());
       handleClose();
     }
   }

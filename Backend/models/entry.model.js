@@ -45,6 +45,16 @@ const EntrySchema = new Schema(
         mood: {
             type: String,
             required: true,
+        },
+
+        deleted: {
+            type: Boolean,
+            default: false,
+        },
+        
+        deletedAt: {
+            type: Date,
+            default: null,
         }
     }
 )

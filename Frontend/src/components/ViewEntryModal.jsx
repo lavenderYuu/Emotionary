@@ -5,26 +5,21 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Box, Chip } from '@mui/material';
 import { getDate } from '../utils/helpers';
 import EditButton from './buttons/EditButton'
 import MoodButton from './buttons/MoodButton';
-import { fetchEntries } from '../features/entries/entriesSlice';
+import { editEntry } from '../features/entries/entriesSlice';
 
 // base component: https://mui.com/material-ui/react-dialog/
 const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
-  const tags = useSelector((state) => state.tags.tags);
   const dispatch = useDispatch();
   
   const handleSelectMood = async (selectedMood) => {
+    const id = entry._id;
     try {
-      const response = await fetch(`http://localhost:3000/entries/${entry._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mood: selectedMood }),
-      });
-      dispatch(fetchEntries());
+      dispatch(editEntry({ id, entryData: { mood: selectedMood } }));
     } catch (err) {
       window.alert(err.message);
     }

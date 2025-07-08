@@ -8,13 +8,14 @@ export const fetchEntries = createAsyncThunk('entries/fetchEntries', async (_, {
 
 export const filterEntries = createAsyncThunk('entries/filterEntries', async (_, { getState }) => {
     const userId = getState().auth.userId;
-    const { startDate, endDate, mood, favorite, page, tagId, limit } = getState().entries.filters;
+    const { startDate, endDate, mood, favorite, page, tagId, deleted, limit } = getState().entries.filters;
     const params = new URLSearchParams();
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
     if (mood) params.append('mood', mood);
     if (favorite) params.append('favorite', favorite);
     if (tagId) params.append('tagId', tagId);
+    params.append('deleted', deleted === true ? 'true' : 'false');
     params.append('page', page);
     const res = await fetch(`http://localhost:3000/entries/filter/${userId}?${params.toString()}`);
     const data = await res.json();
@@ -24,6 +25,24 @@ export const filterEntries = createAsyncThunk('entries/filterEntries', async (_,
       totalPages: data.totalPages,
       currentPage: data.currentPage,
     };
+});
+
+export const createEntry = createAsyncThunk('entries/createEntry', async (entry) => {
+    const res = await fetch(`http://localhost:3000/entries`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+    });
+    return await res.json();
+});
+
+export const editEntry = createAsyncThunk('entries/editEntry', async ({ id, entryData }) => {
+    const res = await fetch(`http://localhost:3000/entries/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entryData),
+    });
+    return await res.json();
 });
 
 export const favoriteEntry = createAsyncThunk('entries/favoriteEntry', async (entry) => {
@@ -41,6 +60,15 @@ export const deleteEntry = createAsyncThunk('entries/deleteEntry', async (entry)
     return await res.json();
 });
 
+export const softDeleteEntry = createAsyncThunk('entries/softDeleteEntry', async (entry) => {
+    const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deleted: true, deletedAt: new Date() }),
+    });
+    return await res.json();
+});
+
 
 export const entriesSlice = createSlice({
   name: "entries",
@@ -54,6 +82,7 @@ export const entriesSlice = createSlice({
       mood: null,
       favorite: undefined,
       tagId: null,
+      deleted: false,
       page: 1,
       limit: 8,
     },
@@ -96,11 +125,38 @@ export const entriesSlice = createSlice({
           currentPage: action.payload.currentPage,
         };
       })
-      .addCase(favoriteEntry.fulfilled, (state, action) => {
+      .addCase(createEntry.fulfilled, (state, action) => {
         const entry = action.payload;
+        state.entries.push(entry);
+
+        if (!state.filters.deleted) {
+          state.filteredEntries.push(entry);
+        }
+      })
+      .addCase(editEntry.fulfilled, (state, action) => {
+        const entry = action.payload;
+        
         const index = state.entries.findIndex((e) => e._id === entry._id);
         if (index !== -1) {
           state.entries[index] = entry;
+        }
+        
+        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
+        if (filteredIndex !== -1) {
+          state.filteredEntries[filteredIndex] = entry;
+        }
+      })
+      .addCase(favoriteEntry.fulfilled, (state, action) => {
+        const entry = action.payload;
+        const index = state.entries.findIndex((e) => e._id === entry._id);
+        
+        if (index !== -1) {
+          state.entries[index] = entry;
+        }
+        
+        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
+        if (filteredIndex !== -1) {
+          state.filteredEntries[filteredIndex] = entry;
         }
       })
       .addCase(deleteEntry.fulfilled, (state, action) => {
@@ -109,10 +165,18 @@ export const entriesSlice = createSlice({
         if (index !== -1) {
           state.entries.splice(index, 1);
         }
+      })
+      .addCase(softDeleteEntry.fulfilled, (state, action) => {
+        const entry = action.payload;
+        state.entries = state.entries.filter(e => e._id !== entry._id);
+
+        if (!state.filters.deleted) {
+          state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
+        }
       });
   },
 });
 
-export const { selectEntry, resetEntry, createEntry, setFilter, setPage } = entriesSlice.actions;
+export const { selectEntry, resetEntry, setFilter, setPage } = entriesSlice.actions;
 
 export default entriesSlice.reducer;

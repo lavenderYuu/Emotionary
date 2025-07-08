@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { selectSortedTags } from '../features/tags/tagsSelectors';
 import SaveButton from './buttons/SaveButton'
-import { fetchEntries } from '../features/entries/entriesSlice';
+import { fetchEntries, createEntry, editEntry } from '../features/entries/entriesSlice';
 import { useDispatch } from 'react-redux';
 import { InferenceClient } from '@huggingface/inference';
 import TagManagementModal from './TagManagementModal';
@@ -137,29 +137,15 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         let response;
         if (mode === "create") {
           console.log("in create mode");
-          response = await fetch('http://localhost:3000/entries', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entryData),
-          });
+          dispatch(createEntry(entryData));
         } else if (mode === "edit") {
           console.log("in edit mode");
           console.log(id);
-          response = await fetch(`http://localhost:3000/entries/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entryData),
-          });
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to save entry');
+          dispatch(editEntry({ id, entryData }));
         }
 
         setId("");
         setFormData({ title: '', date: null, content: '' });
-        await response.json();
-        dispatch(fetchEntries());
       } catch (err) {
         window.alert(err.message);
       }

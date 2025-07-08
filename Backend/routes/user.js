@@ -202,7 +202,7 @@ router.post("/logout", async (req, res) => {
 router.get('/:userId/entries', async (req, res) => {
     try {
         const entries = await Entry
-          .find({ user_id: req.params.userId })
+          .find({ user_id: req.params.userId, deleted: false }) // only fetch non-deleted entries
           .populate('tags') // get tags
           .sort({ date: -1 }) // always return sorted in descending order
           .exec();

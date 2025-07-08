@@ -91,7 +91,6 @@ const Home = ({ cryptoKey }) => {
         <EntryCard
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
-          num={8}
           entries={recentEntries}
         />
         <ViewEntryModal
