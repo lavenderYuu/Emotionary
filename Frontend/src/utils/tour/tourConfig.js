@@ -33,17 +33,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       element: '#create-entry-button',
       on: 'left',
     },
-    classes: '-left',
+    classes: '-left -no-button',
     floatingUIOptions: {
       middleware: [
         offset(16),
       ],
     },
-    buttons: [
-      {
-        text: 'Next',
-      },
-    ],
   },
   {
     id: 'create-entry',
@@ -120,7 +115,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'entry-tags',
-    text: 'You can manage your tags here and add them to your entry.',
+    text: 'You can manage your tags here.',
     attachTo: {
       element: '#create-entry-manage-tags',
       on: 'bottom',
@@ -128,7 +123,7 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
     classes: '-bottom',
     floatingUIOptions: {
       middleware: [
-        offset(16),
+        offset(20),
       ],
     },
     buttons: [
@@ -145,17 +140,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       element: '#save-entry-button',
       on: 'left',
     },
-    classes: '-left',
+    classes: '-left -no-button',
     floatingUIOptions: {
       middleware: [
         offset(16),
       ],
     },
-    buttons: [
-      {
-        text: 'Next',
-      },
-    ],
   },
   {
     id: 'created-entry',
@@ -174,17 +164,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       element: '#entry-card:first-child',
       on: 'top',
     },
-    classes: '-top',
+    classes: '-top -no-button',
     floatingUIOptions: {
       middleware: [
         offset(16),
       ],
     },
-    buttons: [
-      {
-        text: 'Next',
-      },
-    ],
   },
   {
     id: 'view-entry',
@@ -243,17 +228,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       element: '#close-button',
       on: 'left',
     },
-    classes: '-left',
+    classes: '-left -no-button',
     floatingUIOptions: {
       middleware: [
         offset(16),
       ],
     },
-    buttons: [
-      {
-        text: 'Next',
-      },
-    ],
   },
   {
     id: 'entry-kebab',
@@ -266,6 +246,66 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
     floatingUIOptions: {
       middleware: [
         offset(16),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'insights',
+    text: 'Under "Insights", you can view different charts and graphs of your moods.',
+    attachTo: {
+      element: '#nav-Insights',
+      on: 'bottom',
+    },
+    classes: '-bottom -multiline',
+    floatingUIOptions: {
+      middleware: [
+        offset(24),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'entries',
+    text: 'Under "Entries", you can filter your entries by date, mood, tags, and favorites.',
+    attachTo: {
+      element: '#nav-Entries',
+      on: 'bottom',
+    },
+    classes: '-bottom -multiline',
+    floatingUIOptions: {
+      middleware: [
+        offset(24),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'search',
+    text: 'Under "Search", can search for your entries by title, content, or tags.',
+    attachTo: {
+      element: '#search-bar',
+      on: 'bottom',
+    },
+    classes: '-bottom -multiline',
+    floatingUIOptions: {
+      middleware: [
+        offset(18),
       ],
     },
     buttons: [
