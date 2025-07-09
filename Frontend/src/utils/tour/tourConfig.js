@@ -43,9 +43,6 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   {
     id: 'create-entry',
     text: 'This is where you create an entry. Let\'s start writing!',
-    attachTo: {
-      element: '#create-entry',
-    },
     buttons: [
       {
         text: 'Next',

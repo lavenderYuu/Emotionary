@@ -204,7 +204,6 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   return (
     <>
       <Dialog
-        id='create-entry'
         disableScrollLock
         onClose={()=> setAlert(true)}
         open={isOpen}
