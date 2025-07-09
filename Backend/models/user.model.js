@@ -32,6 +32,7 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: false,
+    sparse: true, // enforce unique only if googleId exists
   },
 
   setupComplete: {
@@ -47,6 +48,13 @@ const UserSchema = new Schema({
   verifyPasskey_iv: {
     type: String,
     required: false,
+  },
+
+  onboarded: {
+    type: String,
+    enum: ["not-started", "completed"],
+    required: true,
+    default: "not-started",
   }
 });
 

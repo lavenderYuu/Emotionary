@@ -49,7 +49,7 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
     hide();
   };
 
-  const handleAgreeToTerms = (e) => {
+  const handleAgreeToPolicy = (e) => {
     setAgreedToPolicy(e.target.checked);
   };
 
@@ -75,7 +75,7 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
     const { iv, content } = await encryptContent("verified", key);
     
     await fetch("http://localhost:3000/users/complete-setup", {
-      method: "POST",
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.id, verifyPasskey_content: content, verifyPasskey_iv: iv }),
     });
@@ -192,7 +192,7 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Checkbox 
                     checked={agreedToPolicy} 
-                    onChange={handleAgreeToTerms} 
+                    onChange={handleAgreeToPolicy} 
                     required
                     sx={{ p: 0, paddingRight: '8px' }}
                   />

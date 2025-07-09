@@ -78,6 +78,24 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Updates existing user onboarded field
+// PUT /users/complete-onboarding
+router.put("/complete-onboarding", async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "Missing user ID" });
+  }
+
+  try {
+    await User.findByIdAndUpdate(userId, { onboarded: "completed" });
+    res.status(200).json({ message: "Marking onboarded as completed" });
+  } catch (err) {
+    console.error("Error marking onboarded as completed:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -144,8 +162,8 @@ router.post("/google-auth", async (req, res) => {
 });
 
 // Updates existing Google user setupComplete field
-// POST /users/complete-setup
-router.post("/complete-setup", async (req, res) => {
+// PUT /users/complete-setup
+router.put("/complete-setup", async (req, res) => {
   const { userId, verifyPasskey_content, verifyPasskey_iv } = req.body;
 
   if (!userId) {
@@ -165,9 +183,9 @@ router.post("/complete-setup", async (req, res) => {
         verifyPasskey_iv,
       }
     );
-    res.status(200).json({ message: "Marking setup as complete" });
+    res.status(200).json({ message: "Marking setupComplete as true" });
   } catch (err) {
-    console.error("Error marking setup as complete:", err);
+    console.error("Error marking setupComplete as true:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });

@@ -89,6 +89,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
       p: 2 }}>
         {entries.map((entry, index) => (
           <Box
+            id="entry-card"
             key={entry._id}
             sx={{ margin: '8px' }}>
               <Card 
@@ -124,7 +125,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                   action={
                     <IconButton
                       aria-label="more"
-                      id="long-button"
+                      id="kebab-button"
                       aria-controls={'menu'}
                       aria-expanded={'menu'}
                       aria-haspopup="true"
@@ -215,9 +216,11 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           paper: {
             sx: { 
             borderRadius: 4
+            }
           }
-          }
-        }}>
+        }}
+        sx={{ zIndex: 10001 }}
+        >
           <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
           <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>

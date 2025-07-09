@@ -77,6 +77,11 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   };
 
   const handleDateChange = (date) => {
+    const now = dayjs();
+    if (date.isAfter(now)) {
+      showSnackbar("You can't select a future date or time.");
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       date: date
@@ -213,7 +218,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           {/* Title field */}
-          <TextField required label='Title' name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
+          <TextField id='create-entry-title' required label='Title' name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
           slotProps={{
             htmlInput: {
               maxLength: 40,
@@ -226,15 +231,22 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
           onChange={handleInputChange}
           />
           {/* Date picker */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              required 
-              disableFuture
-              label='Date'
-              value={formData.date}
-              onChange={handleDateChange}
-            />
+          <Box id='create-entry-date'>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                slotProps={{
+                  popper: {
+                    zindex: 10000
+                  }
+                }}
+                required 
+                disableFuture
+                label='Date'
+                value={formData.date}
+                onChange={handleDateChange}
+              />
           </LocalizationProvider>
+          </Box>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -249,7 +261,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         </IconButton>
         {/* Main entry field */}
         <DialogContent dividers sx={{ p: 2 }}>
-          <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
+          <TextField id='create-entry-content' required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}
             onChange={handleInputChange}
           />
@@ -259,7 +271,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
                 onClick={() => toggleTag(tag._id)} />
             ))}
             <Box sx={{ mt: 1.3, ml: 0.3, display: 'flex', justifyContent: 'flex-start' }}>
-              <Button variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
+              <Button id='create-entry-manage-tags' variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
                 Manage Tags
               </Button>
             </Box>
@@ -273,11 +285,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         open={alert}
         onClose={() => setAlert(false)}
         closeAfterTransition={false} // https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue
+        sx={{ zIndex: 10001 }}
         slotProps={{
           paper: {
             sx: { 
             borderRadius: 4
-          }
+            }
           }
         }}>
           <DialogTitle>Are you sure you want to leave?</DialogTitle>
@@ -294,7 +307,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         userTags={tags}
         onTagUpdated={handleTags}
       />
-      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
+      {/* 
+        Show alert if user: 
+          - attempts to add >3 tags
+          - creates/edits entry without title/date/content
+          - attemps to select a future date/time 
+      */}
           <Snackbar
             open={snackbar.open}
             autoHideDuration={5000}

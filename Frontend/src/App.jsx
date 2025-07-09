@@ -15,6 +15,9 @@ import { lightTheme, darkTheme } from "./utils/theme";
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from "@mui/material";
 import { getKey } from "./utils/crypto";
+import { ShepherdTourContext, shepherdTourInstance } from "./utils/tour/ShepherdContext";
+import 'shepherd.js/dist/css/shepherd.css';
+import './utils/tour/shepherd.css';
 
 function MainLayout({ cryptoKey }) {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -25,16 +28,18 @@ function MainLayout({ cryptoKey }) {
 
   return (
     <>
-      <NavigationBar />
-      <Routes>
-        <Route path="/dashboard" element={<Home cryptoKey={cryptoKey} />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="/entries" element={<Entries cryptoKey={cryptoKey} />} />
-        <Route path="/search" element={<SearchResults cryptoKey={cryptoKey} />} />
-      </Routes>
+      <ShepherdTourContext.Provider value={shepherdTourInstance}>
+        <NavigationBar />
+        <Routes>
+          <Route path="/dashboard" element={<Home cryptoKey={cryptoKey} />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/entries" element={<Entries cryptoKey={cryptoKey} />} />
+          <Route path="/search" element={<SearchResults cryptoKey={cryptoKey} />} />
+        </Routes>
+      </ShepherdTourContext.Provider>
     </>
   );
-}
+};
 
 function App() {
   const dispatch = useDispatch();
