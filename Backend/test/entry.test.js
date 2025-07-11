@@ -30,7 +30,7 @@ describe("Entry Tests", function () {
   });
 
   // GET /users/:userId/entries
-  it("should fetch all entries of specified user", async () => {
+  it("should fetch all active entries of specified user", async () => {
     const user1 = new mongoose.Types.ObjectId();
     const user2 = new mongoose.Types.ObjectId();
 
@@ -64,6 +64,18 @@ describe("Entry Tests", function () {
         favorite: false,
         user_id: user2,
         mood: "😭",
+      },
+      {
+        title: "Title 3",
+        date: "2025-06-03",
+        content: "Content 3",
+        content_iv: "dummy_iv_3",
+        tags: [],
+        favorite: false,
+        user_id: user1,
+        mood: "😭",
+        deleted: true,
+        deletedAt: new Date(),
       },
     ]);
 
@@ -546,6 +558,30 @@ describe("Entry Tests", function () {
           user_id: user1,
           mood: "😃",
         },
+        {
+          title: "Title 5",
+          date: new Date("2025-06-05T02:00:00Z"), // PDT: June 4, 2025 7:00 PM (evening)
+          content: "Content 5",
+          content_iv: "dummy_iv_5",
+          tags: [tag2._id],
+          favorite: true,
+          user_id: user1,
+          mood: "😃",
+          deleted: true,
+          deletedAt: new Date("2025-06-05T02:05:00Z"),
+        },
+        {
+          title: "Title 6",
+          date: new Date("2025-06-01T07:00:00Z"), // PDT: June 1, 2025 12:00 AM (midnight)
+          content: "Content 6",
+          content_iv: "dummy_iv_6",
+          tags: [],
+          favorite: false,
+          user_id: user1,
+          mood: "😊",
+          deleted: true,
+          deletedAt: new Date("2025-06-03T07:00:00Z"),
+        },
       ];
 
       await Entry.create(entries);
@@ -613,7 +649,18 @@ describe("Entry Tests", function () {
       expect(entries[1].title).to.equal("Title 2");
     });
 
-    it("should filter entries by date range, mood, tag and favorite status", async function () {
+    it("should filter entries by deleted status", async function () {
+      const response = await request(app).get(
+        `/entries/filter/${user1}?deleted=true`
+      );
+      const entries = response.body.entries;
+      expect(response.statusCode).to.equal(200);
+      expect(entries).to.be.an("array").with.lengthOf(2);
+      expect(entries[0].title).to.equal("Title 5");
+      expect(entries[1].title).to.equal("Title 6");
+    });
+
+    it("should filter entries by date range, mood, tag, favorite, and deleted status", async function () {
       const startDate = dayjs(new Date("2025-06-02T00:00:00"))
         .startOf("day")
         .toDate()
@@ -630,7 +677,7 @@ describe("Entry Tests", function () {
           startDate
         )}&endDate=${encodeURIComponent(endDate)}&mood=😢&tagId=${
           tag3._id
-        }&favorite=false`
+        }&favorite=false&delete=false`
       );
 
       const entries = response.body.entries;

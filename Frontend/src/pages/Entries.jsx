@@ -24,6 +24,7 @@ const Entries = ({ cryptoKey }) => {
   const pagination = useSelector((state) => state.entries.pagination);
   const entries = useSelector((state) => state.entries.entries);
   const allEntries = useSelector((state) => state.entries.filteredEntries || entries);
+  const filters = useSelector((state) => state.entries.filters);
   const [decryptedEntries, setDecryptedEntries] = useState([]);
 
   const activeEntryId = useSelector((state) => state.entries.activeEntry);
@@ -32,11 +33,7 @@ const Entries = ({ cryptoKey }) => {
   useEffect(() => {
     dispatch(filterEntries());
     window.scrollTo(0, 0);
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(filterEntries());
-  }, [dispatch, entries]);
+  }, [dispatch, filters, entries]);
 
   useEffect(() => {
     async function decryptAndStore() {
@@ -106,6 +103,7 @@ const Entries = ({ cryptoKey }) => {
           entries={decryptedEntries}
           onClick={handleOpenCard}
           onEdit={handleEditEntry}
+          isDeletedView={filters.deleted === true}
         />
       }
       <ViewEntryModal
