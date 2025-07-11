@@ -191,6 +191,7 @@ const NavigationBar = () => {
                 <NavMenu className="nav_menu">
                   {navLinks.map(({ label, path }) => (
                     <NavItem
+                      id={`nav-${label}`}
                       key={label}
                       as={Link}
                       to={path}
@@ -202,7 +203,7 @@ const NavigationBar = () => {
               )}
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <Search>
+              <Search id='search-bar'>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>

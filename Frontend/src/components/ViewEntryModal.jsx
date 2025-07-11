@@ -34,6 +34,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
   return (
     <>
       <Dialog
+        id='view-entry'
         key={entry._id} // Ensures that the dialog updates when the entry changes
         disableScrollLock
         onClose={onClose}
@@ -61,6 +62,7 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
             </Typography>
         </DialogTitle>
         <IconButton
+          id='close-button'
           aria-label="close"
           onClick={onClose}
           sx={(theme) => ({

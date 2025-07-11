@@ -109,7 +109,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
   return (
     <>
     {/* https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue */}
-    <Dialog open={open} onClose={onClose} closeAfterTransition={false} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif' }}}}>
+    <Dialog open={open} onClose={onClose} closeAfterTransition={false} sx={{ zIndex: 10000}} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif' }}}}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Manage Tags
         <IconButton onClick={onClose}><CloseIcon /></IconButton>
@@ -204,6 +204,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
     <Dialog
       open={Boolean(tagToDelete)}
       onClose={() => setTagToDelete(null)}
+      sx={{ zIndex: 10001 }}
       slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, }}}}
     >
       <DialogTitle>Delete Tag</DialogTitle>
@@ -213,7 +214,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
           <strong>{tagToDelete?.name}</strong>?
         </Typography>
       </DialogContent>
-      <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <DialogActions sx={{ display: 'flex', justifyContent: 'space-around' }}>
         <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
         <Button
           onClick={() => {

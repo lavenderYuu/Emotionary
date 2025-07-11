@@ -6,10 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries, resetEntry, selectEntry } from "../features/entries/entriesSlice";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { decryptContent } from "../utils/crypto";
+import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
+import { UserTourStatus, createTourSteps } from "../utils/tour/tourConfig";
 
 const Home = ({ cryptoKey }) => {
+  const userId = useSelector((state) => state.auth.userId);
   const userName = useSelector((state) => state.auth.userName);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +26,8 @@ const Home = ({ cryptoKey }) => {
   const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
 
   const dispatch = useDispatch();
+  const tour = useContext(ShepherdTourContext);
+  const [onboarded, setOnboarded] = useState(() => localStorage.getItem("onboarded") || UserTourStatus.NOT_STARTED);
 
   useEffect(() => {
     dispatch(fetchEntries());
@@ -55,18 +60,30 @@ const Home = ({ cryptoKey }) => {
   const handleOpenCard = (id) => {
     setIsViewModalOpen(true);
     dispatch(selectEntry(id));
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'select-entry') {
+      tour.next();
+    }
   };
 
   const handleCloseModal = () => {
     setIsViewModalOpen(false);
     setIsModalOpen(false);
     dispatch(resetEntry());
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'close-entry') {
+      tour.next();
+    }
   };
 
   const handleCreateModal = () => {
     setIsViewModalOpen(false);
     setIsModalOpen(true);
     setMode('create');
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'click-create-entry') {
+      tour.next();
+    }
   };
 
   const handleEditEntry = () => {
@@ -79,7 +96,78 @@ const Home = ({ cryptoKey }) => {
     setIsModalOpen(false);
     dispatch(fetchEntries());
     dispatch(resetEntry());
+
+    if (tour?.isActive() && tour?.getCurrentStep()?.id === 'click-save-entry') {
+      tour.next();
+    }
   }
+
+  const handleTourSkip = () => {
+    setOnboarded(UserTourStatus.SKIPPED);
+    localStorage.setItem("onboarded", UserTourStatus.SKIPPED);
+    if (tour?.isActive()) {
+      tour.cancel();
+    }
+  }
+
+  const handleTourComplete = async () => {
+    setOnboarded(UserTourStatus.COMPLETED);
+    localStorage.setItem("onboarded", UserTourStatus.COMPLETED);
+    if (tour?.isActive()) {
+      tour.cancel();
+    }
+    
+    await fetch("http://localhost:3000/users/complete-onboarding", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+  }
+
+  useEffect(() => {
+    dispatch(fetchEntries());
+    window.scrollTo(0, 0);
+  }, [dispatch]);
+
+  useEffect(() => { // initialize tour
+    if (!tour) return;
+    
+    if (onboarded === UserTourStatus.NOT_STARTED) {
+      const steps = createTourSteps({ handleTourSkip, handleTourComplete });
+      tour.addSteps(steps);
+      tour.start();
+    }
+  }, [tour, onboarded]); 
+
+  useEffect(() => { // cancel tour on unmount
+    return () => {
+      if (tour?.isActive()) {
+        tour.cancel();
+      }
+    };
+  }, [tour]);
+  
+  useEffect(() => { // cancel tour if attached elements are not in DOM
+    if (!tour) return;
+
+    const observer = new MutationObserver(() => {
+      const currentStep = tour.getCurrentStep();
+      const selector = currentStep?.options?.attachTo?.element;
+
+      if (selector) {
+        const el = document.querySelector(selector);
+
+        if (!el) {
+          console.log(`Element for "${currentStep.id}" not in DOM. Cancelling tour.`);
+          tour.cancel();
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [tour]);
 
   return (
       <>
