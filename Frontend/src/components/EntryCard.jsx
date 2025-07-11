@@ -104,7 +104,7 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.map((entry, index) => (
+        {entries.map((entry) => (
           <Box
             key={entry._id}
             sx={{ margin: '8px' }}>
@@ -219,18 +219,18 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
         }}
       >
       {!selectedEntry.deleted && (
-        <>
+        <Box>
           <MenuItem key='edit' onClick={handleEdit}>
             Edit
           </MenuItem>
           <MenuItem key='delete' onClick={() => setAlert(true)}>
             Delete
           </MenuItem>
-        </>
+        </Box>
       )}
 
       {selectedEntry.deleted && (
-        <>
+        <Box>
           <MenuItem key='edit' onClick={handleEdit}>
             Edit
           </MenuItem>
@@ -240,7 +240,7 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
           <MenuItem key='delete-forever' onClick={() => setAlert(true)}>
             Delete Forever
           </MenuItem>
-        </>
+        </Box>
       )}
       </Menu>}
       <Dialog
@@ -261,7 +261,7 @@ const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
              : 
             <DialogContent>
               Deleting this entry will remove it from your dashboard and insights. 
-              You won't be able to search for a deleted entry, but you can filter for deleted entries.
+              You won't be able to search for a deleted entry, but you can still filter for deleted entries.
             </DialogContent>
           }
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>

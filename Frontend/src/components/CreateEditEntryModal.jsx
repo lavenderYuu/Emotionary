@@ -42,6 +42,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   const [alert, setAlert] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning'});
   const dispatch = useDispatch();
+  const [edited, setEdited] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,7 +51,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   }, [isOpen]);
   
   useEffect(() => {
-    if (entry) {
+    if (entry && !edited) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
@@ -70,6 +71,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    setEdited(true);
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -77,6 +79,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   };
 
   const handleDateChange = (date) => {
+    setEdited(true);
     setFormData((prev) => ({
       ...prev,
       date: date
@@ -170,6 +173,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
     setAlert(false);
     setFormData({ title: '', date: null, content: '' });
     setActiveTags([]);
+    setEdited(false);
     onClose();
   }
 

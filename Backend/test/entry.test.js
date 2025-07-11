@@ -660,7 +660,7 @@ describe("Entry Tests", function () {
       expect(entries[1].title).to.equal("Title 6");
     });
 
-    it("should filter entries by date range, mood, tag, favorite, and delete status", async function () {
+    it("should filter entries by date range, mood, tag, favorite, and deleted status", async function () {
       const startDate = dayjs(new Date("2025-06-02T00:00:00"))
         .startOf("day")
         .toDate()
