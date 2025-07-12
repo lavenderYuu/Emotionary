@@ -57,6 +57,68 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Updated styling and tooltips for charts (CP)
     - Dark mode
 
+## Milestone 4
+
+### XSS Security Assessment
+
+#### Input Fields Tested
+
+| Component                | Input Field(s)                |
+|-------------------------------|-------------------------------|
+| Sign Up Modal                 | First Name, Email, Password   |
+| Login Modal                   | Email, Password               |
+| Google Sign Up Modal          | Passkey                       |
+| Google Login Modal            | Passkey                       |
+| Create Entry Modal            | Title, Content                |
+| Edit Entry Modal              | Title, Content                |
+| Search Bar                    | Search Query                  |
+| Create Tag                    | Tag Name                      |
+| Edit Tag                      | Tag Name                      |
+
+#### Payloads Used
+
+- `<script>alert("Test1")</script>`
+- `<b>Test1</b>`
+
+#### Results
+
+| Input Point         | Payload Submitted                 | Vulnerable? | Comments |
+|---------------------|-----------------------------------|----------------------|-------|
+| Sign Up: First Name | `<script>alert("Test1")</script>`   | No                   | No alert popup, rendered as plaintext on homepage |
+| Sign Up: Email      | `<script>alert("Test1")</script>`   | No                   | Rejected due to invalid email format |
+| Sign Up: Password   | `<script>alert("Test1")</script>`   | No                   | No alert popup, accepted as password, but not rendered anywhere |
+| Login: Email        | `<script>alert("Test1")</script>`   | No                   | Rejected due to invalid email format     |
+| Login: Password     | `<script>alert("Test1")</script>`   | No                   | No alert popup, successful login, but not rendered anywhere     |
+| Google Sign Up: Passkey | `<script>alert("Test1")</script>` | No                 | No alert popup, accepted as passkey, but not rendered anywhere  |
+| Google Login: Passkey | `<script>alert("Test1")</script>`   | No                 | No alert popup, successful login, but not rendered anywhere     |
+| Create Entry: Title | `<script>alert("Test1")</script>` | No                     | No alert popup, rendered as plaintext     |
+| Create Entry: Content | `<script>alert("Test1")</script>` | No                 | No alert popup, rendered as plaintext  |
+| Edit Entry: Content | `<script>alert("Test1")</script>` | No                 | No alert popup, rendered as plaintext  |
+| Search              | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext on homepage |
+| Create Tag: Tag Name | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
+| Edit Tag: Tag Name  | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
+| Sign Up: First Name | `<b>Test1</b>`   | No                   | Rendered as plaintext (not bolded) on homepage |
+| Sign Up: Email      | `<b>Test1</b>`   | No                   | Rejected due to invalid email format |
+| Sign Up: Password   | `<b>Test1</b>`   | No                   | Accepted as password, but not rendered anywhere |
+| Login: Email        | `<b>Test1</b>`   | No                   | Rejected due to invalid email format        |
+| Login: Password     | `<b>Test1</b>`   | No                   | Successful login, but not rendered anywhere     |
+| Google Sign Up: Passkey | `<b>Test1</b>` | No                 | Accepted as passkey, but not rendered anywhere  |
+| Google Login: Passkey | `<b>Test1</b>`   | No                 | Successful login, but not rendered anywhere     |
+| Create Entry: Title | `<b>Test1</b>` | No                     | Rendered as plaintext (not bolded)     |
+| Create Entry: Content | `<b>Test1</b>` | No                 | Rendered as plaintext (not bolded)  |
+| Edit Entry: Content | `<b>Test1</b>` | No                 | Rendered as plaintext (not bolded)  |
+| Search              | `<b>Test1</b>` | No                   | Rendered as plaintext on Search Results page (not bolded) |
+| Create Tag: Tag Name | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
+| Edit Tag: Tag Name  | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
+
+#### Mitigation
+
+No changes were made, as no vulnerabilities were discovered. The app is already rather secure because:
+- By default, React escapes values inserted into the DOM. That is, React automatically escapes special HTML characters in user input, ensuring it is rendered as plaintext rather than HTML or JavaScript. This can only be bypassed if `dangerouslySetInnerHTML` is used to manually insert raw HTML into the DOM. We did not use `dangerouslySetInnerHTML` at all in our project.
+- We did not allow direct DOM manipulation with user input using `innerHTML`, `outerHTML`, or `document.write`. We only allowed React components to display input via JSX, which handles escaping safely.
+
+We considered using [DOMPurify](https://github.com/cure53/DOMPurify) to sanitize user inputs but determined it was unnecessary in our case. DOMPurify is primarily used to protect against XSS attacks when rendering rich text input or using `dangerouslySetInnerHTML`, which we do not use. Overall, since React handles escaping and we avoid high-risk rendering of user inputs, our application is not vulnerable to XSS attacks.
+
 ### Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
