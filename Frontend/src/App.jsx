@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
+import FutureLetter from "./pages/FutureLetter";
 import NavigationBar from "./components/navigation";
 import Insights from "./pages/Insights";
 import Entries from "./pages/Entries";
@@ -34,7 +35,11 @@ function MainLayout({ cryptoKey }) {
           <Route path="/dashboard" element={<Home cryptoKey={cryptoKey} />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/entries" element={<Entries cryptoKey={cryptoKey} />} />
-          <Route path="/search" element={<SearchResults cryptoKey={cryptoKey} />} />
+          <Route
+            path="/search"
+            element={<SearchResults cryptoKey={cryptoKey} />}
+          />
+          <Route path="/timecapsule" element={<FutureLetter />} />
         </Routes>
       </ShepherdTourContext.Provider>
     </>
