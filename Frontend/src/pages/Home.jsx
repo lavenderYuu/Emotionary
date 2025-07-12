@@ -10,6 +10,7 @@ import { useContext, useEffect } from "react";
 import { decryptContent } from "../utils/crypto";
 import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
 import { UserTourStatus, createTourSteps } from "../utils/tour/tourConfig";
+import DailyPrompt from "../components/DailyPrompt";
 
 const Home = ({ cryptoKey }) => {
   const userId = useSelector((state) => state.auth.userId);
@@ -175,6 +176,7 @@ const Home = ({ cryptoKey }) => {
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
+        <DailyPrompt />
         <h2>Recent Entries</h2>
         <EntryCard
           onClick={handleOpenCard}
