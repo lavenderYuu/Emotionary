@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./FutureLetter.css";
 import EnvelopeAnimation from "../components/EnvelopeAnimation";
-import successImage from "../images/ok.png";
 import LetterButton from "../components/buttons/LetterButton";
 //https://mui.com/material-ui/react-dialog/
 const FutureLetter = () => {
