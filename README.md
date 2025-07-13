@@ -50,10 +50,11 @@
 - [completed] ML for NLP and sentiment analysis
 
 ## XSS Security Assessment
+We performed a manual XSS security assessment by entering various payloads into all input fields across our application to determine whether user input could manipulate the DOM or execute unintended scripts.
 
 ### Input Fields Tested
 
-| Component                | Input Field(s)                |
+| Component                     | Input Field(s)                |
 |-------------------------------|-------------------------------|
 | Sign Up Modal                 | First Name, Email, Password   |
 | Login Modal                   | Email, Password               |
@@ -67,8 +68,8 @@
 
 ### Payloads Used
 
-- `<script>alert("Test1")</script>`
-- `<b>Test1</b>`
+- `<script>alert("Test1")</script>`: Tests for reflected or stored XSS. If our app is vulnerable, an alert popup should appear with the message "Test1".
+- `<b>Test1</b>`: Tests for HTML injection. If our app is vulnerable, the text should render in bold instead of plaintext.
 
 ### Results
 
