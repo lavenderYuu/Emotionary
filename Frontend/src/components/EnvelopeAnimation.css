@@ -19,25 +19,25 @@
 }
 
 .envelope-body {
-  border-top: 46px solid transparent;
-  border-right: 70px solid #c4dff0;
-  border-bottom: 46px solid #c4dff0;
-  border-left: 70px solid #a4d4f2;
-  border-radius: 6px;
-  z-index: 9;
-}
-
-.envelope-flap {
-  top: 0;
-  left: 0;
-  border-top: 46px solid #91bbd5;
-  border-left: 70px solid transparent;
-  border-bottom: 46px solid transparent;
-  border-right: 70px solid transparent;
-  border-radius: 6px;
-  z-index: 6;
-  transform-origin: center top;
-}
+    border-top: 46px solid transparent;
+    border-right: 70px solid #e8d8c0;  /* Light brown kraft paper */
+    border-bottom: 46px solid #e8d8c0;  /* Same as right side */
+    border-left: 70px solid #d4c4a8;    /* Slightly darker brown for depth */
+    border-radius: 6px;
+    z-index: 9;
+  }
+  
+  .envelope-flap {
+    top: 0;
+    left: 0;
+    border-top: 46px solid #c4b090;    /* Darker kraft paper for flap */
+    border-left: 70px solid transparent;
+    border-bottom: 46px solid transparent;
+    border-right: 70px solid transparent;
+    border-radius: 6px;
+    z-index: 6;
+    transform-origin: center top;
+  }
 
 .envelope-letter {
   top: 0;

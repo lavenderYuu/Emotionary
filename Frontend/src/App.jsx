@@ -7,6 +7,7 @@ import NavigationBar from "./components/navigation";
 import Insights from "./pages/Insights";
 import Entries from "./pages/Entries";
 import SearchResults from "./pages/SearchResults";
+import LetterWrite from "./pages/LetterWrite";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect, useMemo, useState } from "react";
@@ -39,7 +40,14 @@ function MainLayout({ cryptoKey }) {
             path="/search"
             element={<SearchResults cryptoKey={cryptoKey} />}
           />
-          <Route path="/timecapsule" element={<FutureLetter />} />
+          <Route
+            path="/timecapsule"
+            element={<FutureLetter/>}
+          />
+          <Route
+            path="/write-letter"
+            element={<LetterWrite />}
+          />
         </Routes>
       </ShepherdTourContext.Provider>
     </>
