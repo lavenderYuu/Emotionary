@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./EnvelopeAnimation.css";
-
+// https://codepen.io/orzoon/pen/zpNWpy
 const EnvelopeAnimation = ({ isOpen, onOpenComplete, children }) => {
   const flapRef = useRef(null);
   const letterRef = useRef(null);

@@ -6,4 +6,10 @@
     font-weight: 500;
     text-transform: none;
     margin: 8px;
+    text-decoration: none;
 }
+
+.future-letter-button:disabled {
+    background-color: #d1d5db; 
+    color: #6b7280;
+  } 

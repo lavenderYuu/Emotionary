@@ -3,53 +3,78 @@ import { useNavigate } from "react-router-dom";
 import LetterTextField from "../components/LetterTextField";
 import "./FutureLetter.css";
 import EnvelopeAnimation from "../components/EnvelopeAnimation";
-
+import successImage from "../../public/images/ok.png";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  Button,
+  DialogActions,
+} from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
+import LetterButton from "../components/buttons/LetterButton";
+//https://mui.com/material-ui/react-dialog/
 const FutureLetter = () => {
   const [flowStep, setFlowStep] = useState("closed"); // closed, opening, writing, saving
   const [letterText, setLetterText] = useState("");
   const [email, setEmail] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+    const [formData, setFormData] = useState({
+      email: "",
+      date: null,
+      content: "",
+    });
   const navigate = useNavigate();
 
   const handleOpen = () => {
     setFlowStep("opening");
     setTimeout(() => {
       setFlowStep("writing");
-    }, 1500);
+    }, 1200);
   };
 
   const handleContinue = () => {
-    setFlowStep("saving");
+    setIsOpen(true);
   };
-
-  const handleSave = () => {
-    setFlowStep("opening");
-    setIsSaving(true);
+  const handleSave = (event) => {
+    event.preventDefault();
+    setIsOpen(false);
+    setFlowStep("closing");
     setTimeout(() => {
-      setIsSaving(false);
-      setFlowStep("closed");
+      setFlowStep("success");
       setLetterText("");
       setEmail("");
-      // Here you would typically send the data to your backend
       console.log("Letter saved:", { letterText, email });
-    }, 1000);
+    }, 1500);
   };
+
+    const handleDateChange = (date) => {
+      const now = dayjs();
+      if (date.isAfter(now)) {
+        showSnackbar("You can't select a future date or time.");
+        return;
+      }
+      setEdited(true);
+      setFormData((prev) => ({
+        ...prev,
+        date: date
+      }));
+    };
 
   return (
     <div>
-      <h1>Future Letter</h1>
+      {flowStep !== "success" && <h1>Future Letter</h1>}
 
       {flowStep === "closed" && (
-        <button
-          className="future-letter-button"
-          onClick={handleOpen}
-        >
-          Open Envelope
-        </button>
+        <LetterButton onClick={handleOpen}>Open Envelope</LetterButton>
       )}
-
       {flowStep === "opening" && <EnvelopeAnimation isOpen={true} />}
-
+      {flowStep === "closing" && <EnvelopeAnimation isOpen={false} />}
       {flowStep === "writing" && (
         <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="p-6">
@@ -59,7 +84,7 @@ const FutureLetter = () => {
             />
             <div className="flex justify-end mt-4">
               <button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg disabled:opacity-50"
+                className="future-letter-button"
                 onClick={handleContinue}
                 disabled={!letterText.trim()}
               >
@@ -69,41 +94,98 @@ const FutureLetter = () => {
           </div>
         </div>
       )}
-
-      {flowStep === "saving" && (
-        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-6">
-          <h2 className="text-2xl font-bold mb-6">Save Your Future Letter</h2>
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2" htmlFor="email">
-              Email Address (to receive your letter):
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="flex justify-between">
-            <button
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg"
-              onClick={() => setFlowStep("writing")}
-            >
-              Back
-            </button>
-            <button
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg disabled:opacity-50"
-              onClick={handleSave}
-              disabled={!email.trim() || isSaving}
-            >
-              {isSaving ? "Saving..." : "Save Letter"}
-            </button>
-          </div>
+      {flowStep === "success" && (
+        <div className="success-message">
+          <h1>Letter sent successfully!</h1>
+          <img src={successImage} alt="" style={{ width: "200px" }} />
         </div>
       )}
+
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+        <DialogContent>
+          <DialogContentText
+            sx={{ fontSize: "1.2rem", color: "#333", margin: "10px 0 36px" }}
+          >
+            Please enter your email address and the date you want to receive
+          </DialogContentText>
+          <form onSubmit={handleSave}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: "36px",
+                marginLeft: "15px",
+                marginRight: "15px",
+              }}
+            >
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="name"
+                name="email"
+                label="Email Address"
+                type="email"
+                fullWidth
+                variant="standard"
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  slotProps={{
+                    popper: {
+                      zindex: 10000,
+                    },
+                  }}
+                  required
+                  disableFuture
+                  label="Date"
+                  value={formData.date}
+                  onChange={handleDateChange}
+                />
+              </LocalizationProvider>
+            </div>
+
+            <DialogActions>
+              <Button
+                onClick={() => setIsOpen(false)}
+                sx={{
+                  backgroundColor: "#ffe59a",
+                  color: "#3d3d3d",
+                  borderRadius: "30px",
+                  fontFamily: "Outfit, sans-serif",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  margin: "8px",
+                  textDecoration: "none",
+                  "&:hover": {
+                    boxShadow: 8,
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                sx={{
+                  backgroundColor: "#ffe59a",
+                  color: "#3d3d3d",
+                  borderRadius: "30px",
+                  fontFamily: "Outfit, sans-serif",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  margin: "8px",
+                  textDecoration: "none",
+                  "&:hover": {
+                    boxShadow: 8,
+                  },
+                }}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

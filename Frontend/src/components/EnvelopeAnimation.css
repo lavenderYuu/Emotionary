@@ -2,7 +2,8 @@
 .envelope-animation {
   display: flex;
   justify-content: center;
-  margin: 40px 0;
+  margin: 100px 0;
+
 }
 
 .envelope-container {
