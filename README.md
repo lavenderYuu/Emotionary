@@ -159,7 +159,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Dark mode
 
 ## Milestone 4
-For Milestone 4, we completed our standard requirements as well as some stretch requirements. We also continued to perform testing, file issues, and fix bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)).
+For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
 - 🔒 Encryption - User entries are encrypted using Web Crypto API
     - Encrypted on client-side so backend server never sees unencrypted data
 - 🔑 Password and passkey requirements for enhanced security
@@ -178,13 +178,13 @@ For Milestone 4, we completed our standard requirements as well as some stretch 
 ## Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
-**Instructions to run:**
-1. Please follow Steps #1 and #2 below from the "Getting Started" section > "Instructions to run"
+### Instructions to run
+1. Please follow Steps #1 and #2 below from [Getting Started](#instructions-to-run-1)
     - Clone this repo, go to `Milestone3` branch, and add `.env` file
 2. If you would like to run the test suite image separately, run `docker compose up --build test`
 4. Otherwise, follow the remaining instructions below, and test reports will be automatically generated in Step #6
 
-**Links:**
+### Links
 - [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
 - [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test)
 
@@ -197,7 +197,7 @@ The following credentials need to be passed as environment variables:
 
 We will send you a `.env` file to use for Step #2 below.
 
-**Instructions to run:**
+### Instructions to run
 1. Clone this repo and go to the `Milestone3` branch
 2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
     - Make sure the file is named `.env`
