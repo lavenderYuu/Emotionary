@@ -17,7 +17,7 @@ import LetterButton from "../components/buttons/LetterButton";
 import "./FutureLetter.css";
 import "./LetterWrite.css";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
 const LetterWrite = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +30,12 @@ const LetterWrite = () => {
     date: null,
     content: "",
   });
+
+  const [isComfirmed, setIsConfirmed] = useState(false);
+    
+    const {userEmail } = useSelector(
+      (state) => state.auth
+    );
 
   const handleDateChange = (date) => {
     setFormData((prev) => ({
@@ -51,6 +57,16 @@ const LetterWrite = () => {
     setIsOpen(true);
   };
 
+  const checkEmail = (event) => {
+    event.preventDefault();
+    if (formData.email !== userEmail) {
+        setIsConfirmed(true);
+    } else {
+        handleSave(event);
+    }
+  }
+
+
 
   const handleTestSend = async () => {
     if (!formData.date || !formData.email) return;
@@ -58,6 +74,7 @@ const LetterWrite = () => {
     setIsOpen(false);
     setError(null);
     setShowError(false);
+
     
     const updatedFormData = {
         ...formData,
@@ -93,10 +110,11 @@ const LetterWrite = () => {
   };
 
   const handleSave = async (event) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
-    const emailValue = event.target.email.value;
-    if (!formData.date || !emailValue) return;
+    if (!formData.date || !formData.email) return;
     setFormSubmitted(true);
     setIsOpen(false);
     setError(null);
@@ -151,6 +169,24 @@ const LetterWrite = () => {
         </button>
       </div>
 
+      <Dialog open={isComfirmed} onClose={() => {setIsConfirmed(false);}}>
+        <DialogContent>
+          <DialogContentText sx={{ fontSize: "1.2rem", color: "#333", margin: "10px 0 36px" }}>
+            Are you sure you want to send this letter to a different email address?
+          </DialogContentText>
+          <DialogContentText sx={{ fontSize: "1rem", color: "#666", marginBottom: "20px" }}>
+            You're sending to: <strong>{formData.email}</strong><br/>
+            Your account email is: <strong>{userEmail}</strong>
+          </DialogContentText>
+          <DialogActions>
+            <LetterButton onClick={() => setIsConfirmed(false)}>Cancel</LetterButton>
+            <LetterButton onClick={() => {setIsConfirmed(false); handleSave();}}>
+              Confirm
+            </LetterButton>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogContent>
           <DialogContentText
@@ -159,7 +195,7 @@ const LetterWrite = () => {
             Please enter your email address and the date you want to receive
           </DialogContentText>
 
-          <form onSubmit={handleSave}>
+          <form onSubmit={checkEmail}>
             <div
               style={{
                 display: "flex",

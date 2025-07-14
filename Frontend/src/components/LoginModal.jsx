@@ -83,10 +83,14 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
         throw new Error(data.message || "Google authentication failed");
       }
 
-      setGoogleUser({ id: data.user._id, name: data.user.name, setupComplete: data.user.setupComplete });
+      setGoogleUser({ 
+        id: data.user._id, 
+        name: data.user.name, 
+        email: data.user.email,
+        setupComplete: data.user.setupComplete 
+      });
       setShowGoogleModal(true);
     } catch (error) {
-      console.error("Error during Google authentication:", error);
       alert("Google authentication failed: " + error.message);
     }
   };
@@ -164,7 +168,7 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
       const key = await deriveKey(formData.password, data.user._id);
       setCryptoKey(key);
 
-      dispatch(setUserId({ userId: data.user._id, userName: data.user.name }));
+      dispatch(setUserId({ userId: data.user._id, userName: data.user.name, userEmail: data.user.email }));
       localStorage.setItem("onboarded", data.user.onboarded);
       navigate("/dashboard");
     } catch (error) {

@@ -14,12 +14,15 @@ import { useEffect, useMemo, useState } from "react";
 import { setUserId } from "./features/users/usersSlice";
 import { Navigate } from "react-router-dom";
 import { lightTheme, darkTheme } from "./utils/theme";
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery } from "@mui/material";
 import { getKey } from "./utils/crypto";
-import { ShepherdTourContext, shepherdTourInstance } from "./utils/tour/ShepherdContext";
-import 'shepherd.js/dist/css/shepherd.css';
-import './utils/tour/shepherd.css';
+import {
+  ShepherdTourContext,
+  shepherdTourInstance,
+} from "./utils/tour/ShepherdContext";
+import "shepherd.js/dist/css/shepherd.css";
+import "./utils/tour/shepherd.css";
 
 function MainLayout({ cryptoKey }) {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -40,32 +43,36 @@ function MainLayout({ cryptoKey }) {
             path="/search"
             element={<SearchResults cryptoKey={cryptoKey} />}
           />
-          <Route
-            path="/timecapsule"
-            element={<FutureLetter/>}
-          />
-          <Route
-            path="/write-letter"
-            element={<LetterWrite />}
-          />
+          <Route path="/timecapsule" element={<FutureLetter />} />
+          <Route path="/write-letter" element={<LetterWrite />} />
         </Routes>
       </ShepherdTourContext.Provider>
     </>
   );
-};
+}
 
 function App() {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.userId);
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const theme = useMemo(() => (prefersDarkMode ? darkTheme : lightTheme), [prefersDarkMode]);
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const theme = useMemo(
+    () => (prefersDarkMode ? darkTheme : lightTheme),
+    [prefersDarkMode]
+  );
   const [cryptoKey, setCryptoKey] = useState(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const storedUserName = localStorage.getItem("userName");
-    if (storedUserId && storedUserName) {
-      dispatch(setUserId({ userId: storedUserId, userName: storedUserName }));
+    const storedUserEmail = localStorage.getItem("userEmail");
+    if (storedUserId && storedUserName && storedUserEmail) {
+      dispatch(
+        setUserId({
+          userId: storedUserId,
+          userName: storedUserName,
+          userEmail: storedUserEmail,
+        })
+      );
     }
   }, [dispatch]);
 
