@@ -1,10 +1,11 @@
 import { Children } from "react";
 import Button from "@mui/material/Button"; 
 
-const LetterButton = ({ onClick, children }) => {
+const LetterButton = ({ onClick, children, ...props }) => {
   return (
     <Button
       onClick={onClick}
+      {...props}
       sx={{
         backgroundColor: "#ffe59a",
         color: "#3d3d3d",

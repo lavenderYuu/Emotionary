@@ -7,6 +7,8 @@ import {
   TextField,
   Button,
   DialogActions,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -14,11 +16,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import LetterButton from "../components/buttons/LetterButton";
 import "./FutureLetter.css";
 import "./LetterWrite.css";
+import dayjs from "dayjs";
 
 const LetterWrite = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -33,27 +38,94 @@ const LetterWrite = () => {
     }));
   };
 
+  const handleEmailChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      email: e.target.value,
+    }));
+  };
+
   const handleContinue = () => {
+    setError(null);
+    setShowError(false);
     setIsOpen(true);
   };
 
-  const handleSave = (event) => {
-    event.preventDefault();
+
+  const handleTestSend = async () => {
+    if (!formData.date || !formData.email) return;
     setFormSubmitted(true);
     setIsOpen(false);
+    setError(null);
+    setShowError(false);
+    
+    const updatedFormData = {
+        ...formData,
+        email: formData.email,
+    };
+    try {
+        const response = await fetch(
+          "http://localhost:3000/email/send-email-test",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              recipientEmail: updatedFormData.email,
+              content: updatedFormData.content,
+              scheduledTime: updatedFormData.date.toISOString(),
+            }),
+          }
+        );
+        
+        if (response.status !== 200) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to send test email");
+        }
+        
+      navigate("/timecapsule", { state: { fromWrite: true } });
+    } catch (error) {
+        setError(`Failed to send test email: ${error.message}`);
+        setShowError(true);
+        return;
+    }
+  };
+
+  const handleSave = async (event) => {
+    event.preventDefault();
 
     const emailValue = event.target.email.value;
-
     if (!formData.date || !emailValue) return;
+    setFormSubmitted(true);
+    setIsOpen(false);
+    setError(null);
+    setShowError(false);
 
-    const updatedFormData = {
-      ...formData,
-      email: emailValue,
-    };
+    try {
+      const response = await fetch("http://localhost:3000/email/schedule-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recipientEmail: formData.email,
+          content: formData.content,
+          scheduledTime: formData.date.toISOString(),
+        }),
+      });
 
-    console.log("Form Data:", updatedFormData);
+      if (response.status !== 200) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to schedule email");
+      }
 
-    navigate("/timecapsule", { state: { fromWrite: true } });
+      navigate("/timecapsule", { state: { fromWrite: true } });
+    } catch (error) {
+      setError(`Failed to schedule email: ${error.message}`);
+      setShowError(true);
+      return;
+    }
   };
 
   return (
@@ -107,6 +179,8 @@ const LetterWrite = () => {
                 type="email"
                 fullWidth
                 variant="standard"
+                value={formData.email}
+                onChange={handleEmailChange}
               />
 
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -114,6 +188,9 @@ const LetterWrite = () => {
                   disablePast
                   label="Date"
                   value={formData.date}
+                  shouldDisableDate={(date) =>
+                    dayjs(date).isSame(dayjs(), "day")
+                  }
                   onChange={handleDateChange}
                   slotProps={{
                     textField: {
@@ -132,28 +209,29 @@ const LetterWrite = () => {
               <LetterButton onClick={() => setIsOpen(false)}>
                 Cancel
               </LetterButton>
-              <Button
-                type="submit"
-                sx={{
-                  backgroundColor: "#ffe59a",
-                  color: "#3d3d3d",
-                  borderRadius: "30px",
-                  fontFamily: "Outfit, sans-serif",
-                  fontWeight: 500,
-                  textTransform: "none",
-                  margin: "8px",
-                  textDecoration: "none",
-                  "&:hover": {
-                    boxShadow: 8,
-                  },
-                }}
-              >
-                Save
-              </Button>
+              <LetterButton type="submit">Send</LetterButton>
+              <LetterButton onClick={() => handleTestSend()}>
+                Test Send
+              </LetterButton>
             </DialogActions>
           </form>
         </DialogContent>
       </Dialog>
+
+      <Snackbar
+        open={showError}
+        autoHideDuration={6000}
+        onClose={() => setShowError(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
