@@ -2,12 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
-import FutureLetter from "./pages/FutureLetter";
+import Timecapsule from "./pages/Timecapsule";
 import NavigationBar from "./components/navigation";
 import Insights from "./pages/Insights";
 import Entries from "./pages/Entries";
 import SearchResults from "./pages/SearchResults";
-import LetterWrite from "./pages/LetterWrite";
+import Letter from "./pages/Letter";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEntries } from "./features/entries/entriesSlice";
 import { useEffect, useMemo, useState } from "react";
@@ -43,8 +43,8 @@ function MainLayout({ cryptoKey }) {
             path="/search"
             element={<SearchResults cryptoKey={cryptoKey} />}
           />
-          <Route path="/timecapsule" element={<FutureLetter />} />
-          <Route path="/write-letter" element={<LetterWrite />} />
+          <Route path="/timecapsule" element={<Timecapsule />} />
+          <Route path="/write-letter" element={<Letter />} />
         </Routes>
       </ShepherdTourContext.Provider>
     </>

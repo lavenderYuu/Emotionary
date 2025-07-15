@@ -20,7 +20,7 @@ router.post("/send-email-test", async (req, res) => {
 
     const { data, error } = await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: recipientEmail,
+      to: "emotionary@yahoo.com",
       subject: `Test Email from Resend – ${pacificTime}`,
       html: htmlContent,
     });
