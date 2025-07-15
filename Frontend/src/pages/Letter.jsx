@@ -57,6 +57,8 @@ const Letter = () => {
 
   const checkEmail = (event) => {
     event.preventDefault();
+    setFormSubmitted(true);
+    if (!formData.date || !formData.email) return;
     if (formData.email !== userEmail) {
       setIsConfirmed(true);
     } else {
@@ -101,10 +103,7 @@ const Letter = () => {
     if (event) {
       event.preventDefault();
     }
-    
-    setFormSubmitted(true);
 
-    if (!formData.date || !formData.email) return;
     setIsOpen(false);
     setError(null);
     setShowError(false);
