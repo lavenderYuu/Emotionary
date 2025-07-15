@@ -176,7 +176,7 @@ const Home = ({ cryptoKey }) => {
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
-        <DailyPrompt />
+        <DailyPrompt onCreateFromPrompt={handleCreateModal}/>
         <h2>Recent Entries</h2>
         <EntryCard
           onClick={handleOpenCard}

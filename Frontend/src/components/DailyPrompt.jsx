@@ -6,13 +6,14 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import CreateButton from './buttons/CreateButton';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
-export default function DailyPrompt() {
+export default function DailyPrompt({ onCreateFromPrompt }) {
     const entries = useSelector((state) => state.entries.entries);
     const theme = useTheme();
     const backgroundColor = theme.palette.mode === 'light' ? '#fbf6ef' : '#1e1e1e';
 
     const [currentPrompt, setCurrentPrompt] = useState(null);
     const [usingGeneralPrompt, setUsingGeneralPrompt] = useState(false);
+    const [isRotating, setIsRotating] = useState(false);
 
     const recentEntry = useMemo(() => {
         const today = dayjs().startOf('day');
@@ -102,11 +103,8 @@ export default function DailyPrompt() {
         const randomGeneral = generalPrompts[Math.floor(Math.random() * generalPrompts.length)];
         setCurrentPrompt(randomGeneral);
         setUsingGeneralPrompt(true);
-
-    };
-
-    const handleCreateEntry = () => {
-
+        setIsRotating(true);
+        setTimeout(() => setIsRotating(false), 600);
     };
 
     return (
@@ -123,8 +121,8 @@ export default function DailyPrompt() {
                 <h2>Daily Prompt</h2>
                 <p>{currentPrompt}</p>
                 <div>
-                    <RefreshIcon onClick={handleRefresh}/>
-                    <CreateOutlinedIcon onClick={handleCreateEntry} sx={{ mr: 1 }} />
+                    <RefreshIcon onClick={handleRefresh} sx={{mr: 1.5, mt: 0.8, cursor: 'pointer', transition: 'transform 0.6s', transform: isRotating ? 'rotate(360deg)' : 'rotate(0deg)' }}/>
+                    <CreateOutlinedIcon onClick={onCreateFromPrompt} sx={{ ml: 1.5, mt: 0.8, cursor: 'pointer' }} />
                 </div>
             </div>
             
