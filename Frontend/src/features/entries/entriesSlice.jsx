@@ -74,7 +74,7 @@ export const entriesSlice = createSlice({
       tagId: null,
       deleted: false,
       page: 1,
-      limit: 8,
+      limit: 9,
     },
     pagination: {
       totalEntries: 0,

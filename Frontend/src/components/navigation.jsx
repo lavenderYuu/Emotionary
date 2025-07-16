@@ -139,7 +139,8 @@ const NavigationBar = () => {
     { label: "Home", path: "/dashboard" },
     { label: "Insights", path: "/insights" },
     { label: "Entries", path: "/entries" },
-  ]
+    { label: "Timecapsule", path: "/timecapsule" },
+  ];
 
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>

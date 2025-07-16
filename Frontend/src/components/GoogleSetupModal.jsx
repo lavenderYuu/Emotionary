@@ -6,8 +6,6 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import CloseButton from "./buttons/CloseButton";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
@@ -80,7 +78,7 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
       body: JSON.stringify({ userId: user.id, verifyPasskey_content: content, verifyPasskey_iv: iv }),
     });
 
-    dispatch(setUserId({ userId: user.id, userName: user.name }));
+    dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
     navigate("/dashboard");
   };
 
@@ -108,7 +106,7 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
 
       // Verification successful
       setCryptoKey(key);
-      dispatch(setUserId({ userId: user.id, userName: user.name }));
+      dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
       navigate("/dashboard");
     } catch (err) {
       window.alert("Invalid passkey. Please try again.");
