@@ -14,7 +14,7 @@ router.get("/filter/:userId", async (req, res) => {
       tagId,
       deleted,
       page = 1,
-      limit = 8,
+      limit = 9,
     } = req.query;
     const filter = { user_id: userId };
     if (startDate) {

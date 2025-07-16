@@ -22,7 +22,7 @@ const Home = ({ cryptoKey }) => {
 
   const allEntries = useSelector((state) => state.entries.entries);
   const [decryptedEntries, setDecryptedEntries] = useState([]);
-  const recentEntries = decryptedEntries.slice(0, 8);
+  const recentEntries = decryptedEntries.slice(0, 9);
 
   const activeEntryId = useSelector((state) => state.entries.activeEntry);
   const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
