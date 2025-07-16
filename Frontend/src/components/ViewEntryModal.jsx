@@ -5,7 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Chip } from '@mui/material';
 import { getDate } from '../utils/helpers';
 import EditButton from './buttons/EditButton'
@@ -13,12 +13,13 @@ import MoodButton from './buttons/MoodButton';
 import { fetchEntries } from '../features/entries/entriesSlice';
 
 // base component: https://mui.com/material-ui/react-dialog/
-const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
+const ViewEntryModal = ({ isOpen, onClose, onEdit }) => {
+  const entry = useSelector((state) => state.entries.activeEntry);
   const dispatch = useDispatch();
   
   const handleSelectMood = async (selectedMood) => {
     try {
-      await fetch(`http://localhost:3000/entries/${entry._id}`, {
+      const response = await fetch(`http://localhost:3000/entries/${entry._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mood: selectedMood }),
@@ -34,8 +35,6 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
   return (
     <>
       <Dialog
-        id='view-entry'
-        key={entry._id} // Ensures that the dialog updates when the entry changes
         disableScrollLock
         onClose={onClose}
         open={isOpen}
@@ -62,7 +61,6 @@ const ViewEntryModal = ({ isOpen, onClose, onEdit, entry }) => {
             </Typography>
         </DialogTitle>
         <IconButton
-          id='close-button'
           aria-label="close"
           onClick={onClose}
           sx={(theme) => ({

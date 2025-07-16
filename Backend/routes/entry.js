@@ -12,9 +12,8 @@ router.get("/filter/:userId", async (req, res) => {
       mood,
       favorite,
       tagId,
-      deleted,
       page = 1,
-      limit = 9,
+      limit = 8,
     } = req.query;
     const filter = { user_id: userId };
     if (startDate) {
@@ -29,11 +28,7 @@ router.get("/filter/:userId", async (req, res) => {
     if (favorite) {
       filter.favorite = favorite === "true";
     }
-    if (deleted) {
-      filter.deleted = deleted === "true"; // include deleted if selected
-    } else {
-      filter.deleted = false; // else exclude deleted by default
-    }
+
     if (tagId) {
       filter.tags = { $in: [tagId] };
     }
@@ -47,7 +42,7 @@ router.get("/filter/:userId", async (req, res) => {
       .find(filter)
       .populate('tags')
       .setOptions(options)
-      .exec();
+      .exec();;
     const totalEntries = await Entry.countDocuments(filter);
     res.json({
       entries,
@@ -75,6 +70,7 @@ router.get('/:entryId', async (req, res) => {
         res.status(400).json({ error: 'Failed to fetch entry' });
     }
 });
+
 
 // Create a new entry
 // POST /entries

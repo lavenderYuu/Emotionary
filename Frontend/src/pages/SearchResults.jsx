@@ -7,9 +7,8 @@ import ViewEntryModal from "../components/ViewEntryModal";
 import CreateEditEntryModal from "../components/CreateEditEntryModal";
 import CreateButton from "../components/buttons/CreateButton";
 import { filterEntriesByQuery } from "../utils/search";
-import { decryptContent } from "../utils/crypto";
 
-export default function SearchResults({ cryptoKey }) {
+export default function SearchResults() {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("q") || "";
   const entries = useSelector((state) => state.entries.entries);
@@ -18,35 +17,8 @@ export default function SearchResults({ cryptoKey }) {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState("view");
-  const [decryptedEntries, setDecryptedEntries] = useState([]);
 
-  const activeEntryId = useSelector((state) => state.entries.activeEntry);
-  const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
-
-  useEffect(() => {
-    async function decryptAndStore() {
-      if (!cryptoKey || !entries.length) {
-        setDecryptedEntries([]);
-        return;
-      }
-
-      const decrypted = await Promise.all(
-        entries.map(async (entry) => {
-          try {
-            const content = await decryptContent(entry.content, entry.content_iv, cryptoKey);
-            return { ...entry, content };
-          } catch {
-            return { ...entry, content: "[Unable to decrypt]" };
-          }
-        })
-      );
-
-      setDecryptedEntries(decrypted);
-    }
-    decryptAndStore();
-  }, [cryptoKey, entries]);
-
-  const searchResults = filterEntriesByQuery(decryptedEntries, query);
+  const searchResults = filterEntriesByQuery(entries, query);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,7 +49,6 @@ export default function SearchResults({ cryptoKey }) {
 
   const handleSaveEntry = async () => {
     setIsModalOpen(false);
-    dispatch(resetEntry());
   };
 
   return (
@@ -102,20 +73,8 @@ export default function SearchResults({ cryptoKey }) {
         />
       )}
       <CreateButton onClick={handleCreateModal} />
-      <ViewEntryModal
-        isOpen={isViewModalOpen}
-        onClose={handleCloseModal}
-        onEdit={handleEditEntry}
-        entry={activeEntry}
-      />
-      <CreateEditEntryModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSave={handleSaveEntry}
-        mode={mode}
-        cryptoKey={cryptoKey}
-        entry={activeEntry}
-      />
+      <ViewEntryModal isOpen={isViewModalOpen} onClose={handleCloseModal} onEdit={handleEditEntry} />
+      <CreateEditEntryModal isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveEntry} mode={mode}/>
     </div>
   );
 }

@@ -247,8 +247,8 @@ describe("Tag Tests", function () {
         ]);
 
         const entries = await Entry.create([
-            { title: "Title 1", date: "2025-06-01", content: "Content 1", content_iv: "dummy_iv", tags: [tags[0]._id, tags[1]._id], favorite: false, user_id: user, mood: "😊" },
-            { title: "Title 2", date: "2025-06-02", content: "Content 2", content_iv: "dummy_iv", tags: [tags[0]._id], favorite: true, user_id: user, mood: "😭" },
+            { title: "Title 1", date: "2025-06-01", content: "Content 1", tags: [tags[0]._id, tags[1]._id], favorite: false, user_id: user, mood: "😊" },
+            { title: "Title 2", date: "2025-06-02", content: "Content 2", tags: [tags[0]._id], favorite: true, user_id: user, mood: "😭" },
         ]);
 
         const tagId = tags[0]._id;

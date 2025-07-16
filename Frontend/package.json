@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "mocha \"test/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report.html,autoOpen=true",
+    "test": "mocha --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-report.html,autoOpen=true",
     "test-and-report": "mocha --reporter mochawesome --reporter-options reportDir=/app/test-results,reportFilename=frontend-test-report --exit"
   },
   "dependencies": {
@@ -19,21 +19,16 @@
     "@mui/material": "^7.1.1",
     "@mui/x-charts": "^8.5.0",
     "@mui/x-date-pickers": "^8.6.0",
-    "@peculiar/webcrypto": "^1.5.0",
     "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.8.2",
     "dayjs": "^1.11.13",
     "dotenv": "^17.0.1",
-    "idb-keyval": "^6.2.2",
-    "react": "^18.3.1",
+    "react": "^19.1.0",
     "react-calendar-heatmap": "^1.10.0",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.1",
-    "react-shepherd": "^6.1.8",
-    "react-tooltip": "^5.29.1",
-    "shepherd.js": "^14.5.0",
-    "sinon": "^21.0.0"
+    "react-tooltip": "^5.29.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
