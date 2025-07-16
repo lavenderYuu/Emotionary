@@ -11,6 +11,7 @@ import { decryptContent } from "../utils/crypto";
 import { ShepherdTourContext } from "../utils/tour/ShepherdContext";
 import { UserTourStatus, createTourSteps } from "../utils/tour/tourConfig";
 import DailyPrompt from "../components/DailyPrompt";
+import MentalHealthIndicator from "../components/MentalHealthIndicator";
 
 const Home = ({ cryptoKey }) => {
   const userId = useSelector((state) => state.auth.userId);
@@ -197,6 +198,7 @@ const Home = ({ cryptoKey }) => {
           cryptoKey={cryptoKey}
           entry={activeEntry}
         />
+        <MentalHealthIndicator />
       </>
   )
 }
