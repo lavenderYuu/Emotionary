@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import dayjs from 'dayjs';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import CreateButton from './buttons/CreateButton';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 export default function DailyPrompt({ onCreateFromPrompt }) {
@@ -86,8 +85,20 @@ export default function DailyPrompt({ onCreateFromPrompt }) {
     ];
 
     useEffect(() => {
-        if (entries.length>0 && !currentPrompt && !usingGeneralPrompt) { // only run if entries are loaded, prompt isn't set yet, and we're not using general prompt; this ensures prompt is displayed without having to click refresh button
-            console.log('recentMood: ', recentMood);
+        if (currentPrompt) {
+            localStorage.setItem('currentPrompt', currentPrompt);
+            localStorage.setItem('usingGeneralPrompt', usingGeneralPrompt.toString());
+        }
+    }, [currentPrompt, usingGeneralPrompt]);
+
+    useEffect(() => {
+        const savedPrompt = localStorage.getItem('currentPrompt');
+        const savedUsingGeneral = localStorage.getItem('usingGeneralPrompt') === 'true';
+
+        if (savedPrompt) {
+            setCurrentPrompt(savedPrompt);
+            setUsingGeneralPrompt(savedUsingGeneral);
+        } else if (entries.length>0 && !currentPrompt && !usingGeneralPrompt) { // only run if entries are loaded, prompt isn't set yet, and we're not using general prompt; this ensures prompt is displayed without having to click refresh button
             if (recentMood && moodPrompts[recentMood]) {
                 const options = moodPrompts[recentMood];
                 const randomPrompt = options[Math.floor(Math.random() * options.length)];
