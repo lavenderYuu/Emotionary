@@ -15,6 +15,7 @@ import FilterRow from "../components/FilterRow";
 import Pagination from "@mui/material/Pagination";
 import { Box } from "@mui/material";
 import { decryptContent } from "../utils/crypto";
+import MentalHealthIndicator from "../components/MentalHealthIndicator";
 
 const Entries = ({ cryptoKey }) => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -138,6 +139,7 @@ const Entries = ({ cryptoKey }) => {
           />
         )}
       </div>
+      <MentalHealthIndicator />
     </>
   );
 };

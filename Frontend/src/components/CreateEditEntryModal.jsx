@@ -48,6 +48,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
     if (isOpen) {
       dispatch(fetchTags());
     }
+
+    if (mode === 'create') {
+      setFormData({ title: '', date: null, content: '' });
+      setActiveTags([]);
+      setId('');
+      setEdited(false);
+    }
   }, [isOpen]);
   
   useEffect(() => {
