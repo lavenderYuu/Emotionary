@@ -190,6 +190,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   }
 
   const toggleTag = (id) => {
+    setEdited(true);
     const exists = activeTags.some((tid) => tid === id );
 
     if (exists) {
@@ -216,7 +217,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
     <>
       <Dialog
         disableScrollLock
-        onClose={()=> setAlert(true)}
+        onClose={()=> {
+          if (edited) {
+            setAlert(true);
+          } else {
+            handleClose();
+          }
+        }}
         open={isOpen}
         slotProps={{ // https://stackoverflow.com/questions/51722676/react-js-how-to-add-style-in-paperprops-of-dialog-material-ui
           paper: {
@@ -261,7 +268,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
         </DialogTitle>
         <IconButton
           aria-label="close"
-          onClick={()=> setAlert(true)}
+          onClick={()=> {
+            if (edited) {
+              setAlert(true);
+            } else {
+              handleClose();
+            }
+          }}
           sx={(theme) => ({
             position: 'absolute',
             right: 8,
