@@ -82,3 +82,7 @@ a, h1, h2, h3, h4, h5, p {
 .react-calendar-heatmap .color-scale-3 { fill: #679fde; }
 .react-calendar-heatmap .color-scale-4 { fill: #68c686; }
 .react-calendar-heatmap .color-scale-5 { fill: #10a9a7; }
+
+.MuiPopper-root.MuiPickerPopper-root {
+  z-index: 10000;
+}

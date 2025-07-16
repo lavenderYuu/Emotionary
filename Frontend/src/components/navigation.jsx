@@ -15,6 +15,7 @@ import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
 import { RESET_APP } from "../app/rootReducer";
+import { del } from 'idb-keyval';
 
 const NavMenu = styled("ul")(({ theme }) => ({
   display: "flex",
@@ -113,6 +114,9 @@ const NavigationBar = () => {
         throw new Error(data.message);
       }
 
+      await del('cryptoKey');
+      console.log('CryptoKey deleted from IndexedDB');
+
       dispatch(clearUserId());
       dispatch({ type: RESET_APP });
       navigate("/", { state: { fromLogout: true } })
@@ -135,7 +139,8 @@ const NavigationBar = () => {
     { label: "Home", path: "/dashboard" },
     { label: "Insights", path: "/insights" },
     { label: "Entries", path: "/entries" },
-  ]
+    { label: "Timecapsule", path: "/timecapsule" },
+  ];
 
   const drawer = (
     <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
@@ -187,6 +192,7 @@ const NavigationBar = () => {
                 <NavMenu className="nav_menu">
                   {navLinks.map(({ label, path }) => (
                     <NavItem
+                      id={`nav-${label}`}
                       key={label}
                       as={Link}
                       to={path}
@@ -198,7 +204,7 @@ const NavigationBar = () => {
               )}
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <Search>
+              <Search id='search-bar'>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>

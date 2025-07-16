@@ -23,12 +23,12 @@ import { sentimentEmojiMap } from '../utils/helpers';
 import { fetchTags } from '../features/tags/tagsSlice';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { encryptContent } from "../utils/crypto";
 
 const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
 
 // base component: https://mui.com/material-ui/react-dialog/
-const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
-  const entry = useSelector((state) => state.entries.activeEntry);
+const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry }) => {
   const tags = useSelector(selectSortedTags);
   const userId = useSelector((state) => state.auth.userId);
   const [formData, setFormData] = useState({
@@ -42,15 +42,23 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   const [alert, setAlert] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning'});
   const dispatch = useDispatch();
+  const [edited, setEdited] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       dispatch(fetchTags());
     }
+
+    if (mode === 'create') {
+      setFormData({ title: '', date: null, content: '' });
+      setActiveTags([]);
+      setId('');
+      setEdited(false);
+    }
   }, [isOpen]);
   
   useEffect(() => {
-    if (entry) {
+    if (entry && !edited) {
       setFormData({ title: entry.title, date: dayjs(entry.date), content: entry.content });
       setActiveTags(entry.tags ? entry.tags.map(tag => tag._id || tag) : []);
       setId(entry._id);
@@ -70,6 +78,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    setEdited(true);
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -77,6 +86,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
   };
 
   const handleDateChange = (date) => {
+    const now = dayjs();
+    if (date.isAfter(now)) {
+      showSnackbar("You can't select a future date or time.");
+      return;
+    }
+    setEdited(true);
     setFormData((prev) => ({
       ...prev,
       date: date
@@ -85,6 +100,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
   const getSentiment = async (content) => {
     const sentimentAnalysis = client.textClassification({ // returns an array of predictions (label + score)
+      provider: 'hf-inference',
       model: 'tabularisai/multilingual-sentiment-analysis',
       inputs: content,
     });
@@ -119,10 +135,13 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
 
       const mood = await getSentiment(content);
 
+      const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
+
       const entryData = {
         title,
         date: date.toISOString(),
-        content,
+        content: encryptedContent,
+        content_iv: iv,
         tags: activeTags,
         favorite: entry?.favorite ? entry.favorite : false,
         user_id: userId,
@@ -166,6 +185,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
     setAlert(false);
     setFormData({ title: '', date: null, content: '' });
     setActiveTags([]);
+    setEdited(false);
     onClose();
   }
 
@@ -209,7 +229,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
       >
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems:'flex-end' }}>
           {/* Title field */}
-          <TextField required label='Title' name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
+          <TextField id='create-entry-title' required label='Title' name='title' variant="outlined" placeholder='Title' sx={{width: 270, paddingRight: 2}} 
           slotProps={{
             htmlInput: {
               maxLength: 40,
@@ -222,15 +242,22 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
           onChange={handleInputChange}
           />
           {/* Date picker */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              required 
-              disableFuture
-              label='Date'
-              value={formData.date}
-              onChange={handleDateChange}
-            />
+          <Box id='create-entry-date'>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                slotProps={{
+                  popper: {
+                    zindex: 10000
+                  }
+                }}
+                required 
+                disableFuture
+                label='Date'
+                value={formData.date}
+                onChange={handleDateChange}
+              />
           </LocalizationProvider>
+          </Box>
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -245,7 +272,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         </IconButton>
         {/* Main entry field */}
         <DialogContent dividers sx={{ p: 2 }}>
-          <TextField required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
+          <TextField id='create-entry-content' required name='content' variant="outlined" placeholder="Today, I'm feeling..." fullWidth multiline rows={8} 
             value={formData.content}
             onChange={handleInputChange}
           />
@@ -255,7 +282,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
                 onClick={() => toggleTag(tag._id)} />
             ))}
             <Box sx={{ mt: 1.3, ml: 0.3, display: 'flex', justifyContent: 'flex-start' }}>
-              <Button variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
+              <Button id='create-entry-manage-tags' variant="outlined" size="small" onClick={() => setIsManageTagsOpen(true)} sx={{ fontFamily: 'Outfit, sans-serif', textTransform: 'none' }}>
                 Manage Tags
               </Button>
             </Box>
@@ -269,11 +296,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         open={alert}
         onClose={() => setAlert(false)}
         closeAfterTransition={false} // https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue
+        sx={{ zIndex: 10001 }}
         slotProps={{
           paper: {
             sx: { 
             borderRadius: 4
-          }
+            }
           }
         }}>
           <DialogTitle>Are you sure you want to leave?</DialogTitle>
@@ -290,7 +318,12 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode}) => {
         userTags={tags}
         onTagUpdated={handleTags}
       />
-      {/* Show alert if user attempts to add >3 tags or creates/edits entry without title/date/content */}
+      {/* 
+        Show alert if user: 
+          - attempts to add >3 tags
+          - creates/edits entry without title/date/content
+          - attemps to select a future date/time 
+      */}
           <Snackbar
             open={snackbar.open}
             autoHideDuration={5000}

@@ -7,33 +7,30 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import { useSelector, useDispatch } from "react-redux"
-import { useMemo } from 'react';
-import { selectEntry, deleteEntry, resetEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
+import { useDispatch } from "react-redux"
+import { useState } from 'react';
+import { selectEntry, resetEntry, softDeleteEntry, hardDeleteEntry, restoreEntry, favoriteEntry, fetchEntries } from '../features/entries/entriesSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { getDate, getTags } from '../utils/helpers';
-import { useState } from 'react';
+import { getDate } from '../utils/helpers';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import { selectSortedTags } from '../features/tags/tagsSelectors';
 import { useTheme } from '@mui/material';
 
 // base components: https://mui.com/material-ui/react-card/, https://mui.com/material-ui/react-menu/
 
-const EntryCard = ({ entries, onClick, onEdit }) => {
-  const tags = useSelector(selectSortedTags);
-  const entry = useSelector((state) => state.entries.activeEntry);
+const EntryCard = ({ entries, onClick, onEdit, isDeletedView }) => {
+  const [selectedEntry, setSelectedEntry] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [alert, setAlert] = useState(false);
   const theme = useTheme();
-
+  
   const handleClose = () => {
     setAnchorEl(null);
     dispatch(resetEntry());
@@ -44,16 +41,17 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     onEdit();
   };
 
-  const tagMap = useMemo(() => getTags(tags), [tags]);
-
   const handleFavorite = async (e, entry) => {
     e.stopPropagation();
-    dispatch(favoriteEntry(entry));
+    await dispatch(favoriteEntry(entry)).unwrap();
+    dispatch(fetchEntries());
   }
 
   const handleKebab = (e, id) => {
     e.stopPropagation(); 
     setAnchorEl(e.currentTarget);
+    const entry = entries.find(e => e._id === id);
+    setSelectedEntry(entry);
     dispatch(selectEntry(id));
   }
 
@@ -62,13 +60,35 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
     setAlert(false);
   }
 
-  const handleDelete = async () => {
+  const handleSoftDelete = async () => {
     setAnchorEl(null);
     setAlert(false);
-    await dispatch(deleteEntry(entry)).unwrap();
-    dispatch(resetEntry());
-    dispatch(fetchEntries());
-    handleClose();
+    if (selectedEntry) {
+      dispatch(softDeleteEntry(selectedEntry));
+      dispatch(resetEntry());
+      handleClose();
+    }
+  }
+
+  const handleHardDelete = async () => {
+    setAnchorEl(null);
+    setAlert(false);
+    if (selectedEntry) {
+      dispatch(hardDeleteEntry(selectedEntry));
+      dispatch(resetEntry());
+      dispatch(fetchEntries()); // force fetch after hard delete
+      handleClose();
+    }
+  }
+
+  const handleRestore = async () => {
+    setAnchorEl(null);
+    if (selectedEntry) {
+      dispatch(restoreEntry(selectedEntry));
+      dispatch(resetEntry());
+      dispatch(fetchEntries());
+      handleClose();
+    }
   }
 
   if (entries.length === 0) {
@@ -84,9 +104,10 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
       alignItems: 'center', 
       gap: 2, 
       p: 2 }}>
-        {entries.map((entry, index) => (
+        {entries.map((entry) => (
           <Box
-            key={index}
+            id="entry-card"
+            key={entry._id}
             sx={{ margin: '8px' }}>
               <Card 
                 onClick={() => onClick(entry._id)}
@@ -121,7 +142,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
                   action={
                     <IconButton
                       aria-label="more"
-                      id="long-button"
+                      id="kebab-button"
                       aria-controls={'menu'}
                       aria-expanded={'menu'}
                       aria-haspopup="true"
@@ -181,7 +202,7 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           </Box>
         ))}
      </Box>
-     {entry &&
+     {selectedEntry &&
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -198,12 +219,30 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           }
         }}
       >
-        <MenuItem key='edit' onClick={handleEdit}>
-          Edit
-        </MenuItem>
-        <MenuItem key='delete' onClick={() => setAlert(true)}>
-          Delete
-        </MenuItem>
+      {!selectedEntry.deleted && (
+        <Box>
+          <MenuItem key='edit' onClick={handleEdit}>
+            Edit
+          </MenuItem>
+          <MenuItem key='delete' onClick={() => setAlert(true)}>
+            Delete
+          </MenuItem>
+        </Box>
+      )}
+
+      {selectedEntry.deleted && (
+        <Box>
+          <MenuItem key='edit' onClick={handleEdit}>
+            Edit
+          </MenuItem>
+          <MenuItem key='restore' onClick={handleRestore}>
+            Restore
+          </MenuItem>
+          <MenuItem key='delete-forever' onClick={() => setAlert(true)}>
+            Delete Forever
+          </MenuItem>
+        </Box>
+      )}
       </Menu>}
       <Dialog
         open={alert}
@@ -212,14 +251,25 @@ const EntryCard = ({ entries, onClick, onEdit }) => {
           paper: {
             sx: { 
             borderRadius: 4
+            }
           }
+        }}
+        sx={{ zIndex: 10001 }}
+        >
+          <DialogTitle>Are you sure you want to {isDeletedView ? "permanently delete" : "delete"} this entry?</DialogTitle>
+          {isDeletedView ?
+            <DialogContent>
+              You will not be able to undo this action.
+            </DialogContent>
+             : 
+            <DialogContent>
+              Deleting this entry will remove it from your dashboard and insights. 
+              You won't be able to search for a deleted entry, but you can still filter for deleted entries.
+            </DialogContent>
           }
-        }}>
-          <DialogTitle>Are you sure you want to delete this entry?</DialogTitle>
-          <DialogContent>Deleting this entry will remove it from your entries history and your mood graph. You will not be able to undo this action.</DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'space-around'}}>
             <Button onClick={handleNevermind}>Nevermind</Button>
-            <Button onClick={handleDelete} color="error">Yes, delete</Button>
+            <Button onClick={isDeletedView ? handleHardDelete : handleSoftDelete} color="error">Yes, {isDeletedView ? "delete forever" : "delete"}</Button>
           </DialogActions>
       </Dialog>
     </>

@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 const EditButton = ({ onClick }) => {
   return (
     <Button
+      id='edit-button'
       variant="contained"
       sx={{ 
           backgroundColor: '#ffe59a',

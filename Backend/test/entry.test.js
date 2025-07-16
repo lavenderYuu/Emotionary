@@ -30,7 +30,7 @@ describe("Entry Tests", function () {
   });
 
   // GET /users/:userId/entries
-  it("should fetch all entries of specified user", async () => {
+  it("should fetch all active entries of specified user", async () => {
     const user1 = new mongoose.Types.ObjectId();
     const user2 = new mongoose.Types.ObjectId();
 
@@ -39,6 +39,7 @@ describe("Entry Tests", function () {
         title: "Title 1",
         date: "2025-06-01",
         content: "Content 1",
+        content_iv: "dummy_iv_1",
         tags: [],
         favorite: false,
         user_id: user1,
@@ -48,6 +49,7 @@ describe("Entry Tests", function () {
         title: "Title 2",
         date: "2025-06-02",
         content: "Content 2",
+        content_iv: "dummy_iv_2",
         tags: [],
         favorite: true,
         user_id: user1,
@@ -57,10 +59,23 @@ describe("Entry Tests", function () {
         title: "Title 3",
         date: "2025-06-03",
         content: "Content 3",
+        content_iv: "dummy_iv_3",
         tags: [],
         favorite: false,
         user_id: user2,
         mood: "😭",
+      },
+      {
+        title: "Title 3",
+        date: "2025-06-03",
+        content: "Content 3",
+        content_iv: "dummy_iv_3",
+        tags: [],
+        favorite: false,
+        user_id: user1,
+        mood: "😭",
+        deleted: true,
+        deletedAt: new Date(),
       },
     ]);
 
@@ -69,11 +84,14 @@ describe("Entry Tests", function () {
     expect(response1.body).to.be.an("array").with.lengthOf(2);
     expect(response1.body[0].title).to.equal("Title 2");
     expect(response1.body[1].title).to.equal("Title 1");
+    expect(response1.body[0].content_iv).to.equal("dummy_iv_2");
+    expect(response1.body[1].content_iv).to.equal("dummy_iv_1");
 
     const response2 = await request(app).get(`/users/${user2}/entries`);
     expect(response2.statusCode).to.equal(200);
     expect(response2.body).to.be.an("array").with.lengthOf(1);
     expect(response2.body[0].title).to.equal("Title 3");
+    expect(response2.body[0].content_iv).to.equal("dummy_iv_3");
   });
 
   // GET /entries/:entryId
@@ -85,6 +103,7 @@ describe("Entry Tests", function () {
         title: "Title 1",
         date: "2025-06-01",
         content: "Content 1",
+        content_iv: "dummy_iv_1",
         tags: [],
         favorite: false,
         user_id: user1,
@@ -94,6 +113,7 @@ describe("Entry Tests", function () {
         title: "Title 2",
         date: "2025-06-02",
         content: "Content 2",
+        content_iv: "dummy_iv_2",
         tags: [],
         favorite: true,
         user_id: user1,
@@ -107,6 +127,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv_1");
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(false);
     expect(response.body.mood).to.equal("😊");
@@ -122,6 +143,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [tag1, tag2],
       favorite: false,
       user_id: user1,
@@ -134,6 +156,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv");
     expect(response.body.tags).to.be.an("array").with.lengthOf(2);
     expect(response.body.tags).to.include(tag1.toString());
     expect(response.body.tags).to.include(tag2.toString());
@@ -150,6 +173,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -162,6 +186,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv");
     expect(response.body.tags).to.be.an("array").with.lengthOf(0);
     expect(response.body.favorite).to.equal(false);
     expect(response.body.user_id).to.equal(user1.toString());
@@ -176,6 +201,7 @@ describe("Entry Tests", function () {
       title: "",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -196,6 +222,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -216,6 +243,28 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "",
+      content_iv: "dummy_iv",
+      tags: [],
+      favorite: false,
+      user_id: user1,
+      mood: "😊",
+    };
+
+    const response = await request(app).post("/entries").send(entry);
+
+    expect(response.statusCode).to.equal(400);
+    expect(response.body.error).to.equal("Failed to add entry");
+  });
+
+  // POST /entries
+  it("should fail to create a new entry with no content_iv", async function () {
+    const user1 = new mongoose.Types.ObjectId();
+
+    const entry = {
+      title: "Title 1",
+      date: "2025-06-01",
+      content: "abcd",
+      content_iv: "",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -236,6 +285,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -259,6 +309,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [tag1],
       favorite: false,
       user_id: user1,
@@ -273,6 +324,7 @@ describe("Entry Tests", function () {
         title: "Updated Title",
         date: "2025-06-02",
         content: "Updated Content",
+        content_iv: "dummy_iv_new",
         tags: [updatedTag1, tag2],
       });
 
@@ -280,6 +332,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Updated Title");
     expect(response.body.date).to.equal("2025-06-02T00:00:00.000Z");
     expect(response.body.content).to.equal("Updated Content");
+    expect(response.body.content_iv).to.equal("dummy_iv_new");
     expect(response.body.tags).to.be.an("array").with.lengthOf(2);
     expect(response.body.tags).to.not.include(tag1.toString());
     expect(response.body.tags).to.include(updatedTag1.toString());
@@ -297,6 +350,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -311,6 +365,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv");
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(false);
     expect(response.body.mood).to.equal("😭");
@@ -324,6 +379,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [],
       favorite: false,
       user_id: user1,
@@ -338,6 +394,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv");
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(true);
     expect(response.body.mood).to.equal("😊");
@@ -353,6 +410,7 @@ describe("Entry Tests", function () {
       title: "Title 1",
       date: "2025-06-01",
       content: "Content 1",
+      content_iv: "dummy_iv",
       tags: [tag1, tag2],
       favorite: false,
       user_id: user1,
@@ -367,6 +425,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv");
     expect(response.body.tags).to.be.an("array").with.lengthOf(2);
     expect(response.body.tags).to.include(tag1.toString());
     expect(response.body.tags).to.include(tag2.toString());
@@ -383,6 +442,7 @@ describe("Entry Tests", function () {
       title: "Updated Title",
       date: "2025-06-02",
       content: "Updated Content",
+      content_iv: "dummy_iv",
       tags: [],
     });
     expect(response.statusCode).to.equal(404);
@@ -398,6 +458,7 @@ describe("Entry Tests", function () {
         title: "Title 1",
         date: "2025-06-01",
         content: "Content 1",
+        content_iv: "dummy_iv_1",
         tags: [],
         favorite: false,
         user_id: user1,
@@ -407,6 +468,7 @@ describe("Entry Tests", function () {
         title: "Title 2",
         date: "2025-06-02",
         content: "Content 2",
+        content_iv: "dummy_iv_2",
         tags: [],
         favorite: true,
         user_id: user1,
@@ -420,6 +482,7 @@ describe("Entry Tests", function () {
     expect(response.body.title).to.equal("Title 1");
     expect(response.body.date).to.equal("2025-06-01T00:00:00.000Z");
     expect(response.body.content).to.equal("Content 1");
+    expect(response.body.content_iv).to.equal("dummy_iv_1");
     expect(response.body.tags).to.be.an("array").empty;
     expect(response.body.favorite).to.equal(false);
     expect(response.body.mood).to.equal("😊");
@@ -459,6 +522,7 @@ describe("Entry Tests", function () {
           title: "Title 1",
           date: new Date("2025-06-01T07:00:00Z"), // PDT: June 1, 2025 12:00 AM (midnight)
           content: "Content 1",
+          content_iv: "dummy_iv_1",
           tags: [tag1._id, tag2._id],
           favorite: false,
           user_id: user1,
@@ -468,6 +532,7 @@ describe("Entry Tests", function () {
           title: "Title 2",
           date: new Date("2025-06-02T19:00:00Z"), // PDT: June 2, 2025 12:00 PM (noon)
           content: "Content 2",
+          content_iv: "dummy_iv_2",
           tags: [tag2._id, tag3._id],
           favorite: true,
           user_id: user1,
@@ -477,6 +542,7 @@ describe("Entry Tests", function () {
           title: "Title 3",
           date: new Date("2025-06-03T07:00:00Z"), // PDT: June 3, 2025 12:00 AM (midnight)
           content: "Content 3",
+          content_iv: "dummy_iv_3",
           tags: [tag3._id],
           favorite: false,
           user_id: user1,
@@ -486,10 +552,35 @@ describe("Entry Tests", function () {
           title: "Title 4",
           date: new Date("2025-06-05T02:00:00Z"), // PDT: June 4, 2025 7:00 PM (evening)
           content: "Content 4",
+          content_iv: "dummy_iv_4",
           tags: [tag1._id, tag2._id, tag3._id],
           favorite: true,
           user_id: user1,
           mood: "😃",
+        },
+        {
+          title: "Title 5",
+          date: new Date("2025-06-05T02:00:00Z"), // PDT: June 4, 2025 7:00 PM (evening)
+          content: "Content 5",
+          content_iv: "dummy_iv_5",
+          tags: [tag2._id],
+          favorite: true,
+          user_id: user1,
+          mood: "😃",
+          deleted: true,
+          deletedAt: new Date("2025-06-05T02:05:00Z"),
+        },
+        {
+          title: "Title 6",
+          date: new Date("2025-06-01T07:00:00Z"), // PDT: June 1, 2025 12:00 AM (midnight)
+          content: "Content 6",
+          content_iv: "dummy_iv_6",
+          tags: [],
+          favorite: false,
+          user_id: user1,
+          mood: "😊",
+          deleted: true,
+          deletedAt: new Date("2025-06-03T07:00:00Z"),
         },
       ];
 
@@ -558,7 +649,18 @@ describe("Entry Tests", function () {
       expect(entries[1].title).to.equal("Title 2");
     });
 
-    it("should filter entries by date range, mood, tag and favorite status", async function () {
+    it("should filter entries by deleted status", async function () {
+      const response = await request(app).get(
+        `/entries/filter/${user1}?deleted=true`
+      );
+      const entries = response.body.entries;
+      expect(response.statusCode).to.equal(200);
+      expect(entries).to.be.an("array").with.lengthOf(2);
+      expect(entries[0].title).to.equal("Title 5");
+      expect(entries[1].title).to.equal("Title 6");
+    });
+
+    it("should filter entries by date range, mood, tag, favorite, and deleted status", async function () {
       const startDate = dayjs(new Date("2025-06-02T00:00:00"))
         .startOf("day")
         .toDate()
@@ -575,7 +677,7 @@ describe("Entry Tests", function () {
           startDate
         )}&endDate=${encodeURIComponent(endDate)}&mood=😢&tagId=${
           tag3._id
-        }&favorite=false`
+        }&favorite=false&delete=false`
       );
 
       const entries = response.body.entries;

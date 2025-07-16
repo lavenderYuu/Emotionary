@@ -25,13 +25,36 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: function() { return !this.googleId; },
-    minlength: [8, "Password should be at least 8 characters long"],
+    minlength: [12, "Password should be at least 12 characters long"],
   },
 
   googleId: {
     type: String,
     unique: true,
     required: false,
+    sparse: true, // enforce unique only if googleId exists
+  },
+
+  setupComplete: {
+    type: Boolean,
+    required: function() { return this.googleId; },
+  },
+
+  verifyPasskey_content: {
+    type: String,
+    required: false,
+  },
+
+  verifyPasskey_iv: {
+    type: String,
+    required: false,
+  },
+
+  onboarded: {
+    type: String,
+    enum: ["not-started", "completed"],
+    required: true,
+    default: "not-started",
   }
 });
 

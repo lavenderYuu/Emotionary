@@ -17,6 +17,11 @@ const EntrySchema = new Schema(
             type: String,
             required: true,
         },
+
+        content_iv: {
+            type: String,
+            required: true,
+        },
         
         tags: {
             type: [
@@ -34,12 +39,23 @@ const EntrySchema = new Schema(
 
         user_id : {
             type: mongoose.Types.ObjectId,
-            ref: "User"
+            ref: "User",
+            required: true,
         },
 
         mood: {
             type: String,
             required: true,
+        },
+
+        deleted: {
+            type: Boolean,
+            default: false,
+        },
+        
+        deletedAt: {
+            type: Date,
+            default: null,
         }
     }
 )
