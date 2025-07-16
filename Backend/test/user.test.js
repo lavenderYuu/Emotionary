@@ -27,7 +27,7 @@ describe("User Tests", function () {
 
   // POST /users/register
   it("should create a new user", async function () {
-    const plaintextPassword = "password1234";
+    const plaintextPassword = "password123";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -49,7 +49,7 @@ describe("User Tests", function () {
   });
 
   it("should not create a user with an existing email", async function () {
-    const plaintextPassword = "password1234";
+    const plaintextPassword = "password123";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -61,7 +61,7 @@ describe("User Tests", function () {
   });
 
   it("should not create a user with invalid email format", async function () {
-    const plaintextPassword = "password1234";
+    const plaintextPassword = "password123";
     const userData = {
       email: "invalid-email",
       password: plaintextPassword,
@@ -75,7 +75,7 @@ describe("User Tests", function () {
     );
   });
 
-  it("should not create a user with password less than 12 characters", async function () {
+  it("should not create a user with password less than 8 characters", async function () {
     const userData = {
       email: "Adam@gmail.com",
       password: "short",
@@ -85,13 +85,13 @@ describe("User Tests", function () {
     expect(res.status).to.equal(400);
     expect(res.body).to.have.property(
       "message",
-      "Password must be at least 12 characters long"
+      "Password must be at least 8 characters long"
     );
   });
 
   // POST /users/login
   it("should log in an existing user", async function () {
-    const plaintextPassword = "password1234";
+    const plaintextPassword = "password123";
     const userData = {
       email: "Bob@gmail.com",
       password: plaintextPassword,
@@ -117,32 +117,10 @@ describe("User Tests", function () {
     expect(res.body).to.have.property("message", "Wrong password");
   });
 
-  // PUT /users/complete-onboarding
-  it("should mark onboarded as completed for user who completed onboarding", async function () {
-    const user = new User({
-        name: "User",
-        email: "user@example1.com",
-        password: "password1234",
-    });
-
-    await user.save();
-
-    let res = await request(app).put("/users/complete-onboarding").send({ userId: user._id});
-    expect(res.status).to.equal(200);
-    expect(res.body).to.have.property("message", "Marking onboarded as completed");
-    
-    res = await request(app).post("/users/login").send({
-      email: user.email,
-      password: "password1234",
-    });
-    expect(res.status).to.equal(200);
-    expect(res.body.user).to.have.property("onboarded", "completed");
-  });
-
   it("should not log in with non-existent user", async function () {
     const userData = {
       email: "Adam@outlook.com",
-      password: "password1234",
+      password: "password123",
       name: "Adam",
     };
     const res = await request(app).post("/users/login").send(userData);
@@ -209,80 +187,5 @@ describe("User Tests", function () {
       expect(res.body).to.have.property("message", "Invalid Google ID token");
     });
 
-    // PUT /users/complete-setup
-    it("should mark setupComplete true for existing user", async function () {
-      const user = new User({
-          name: "User",
-          email: "user@gmail.com",
-          googleId: "googleId1234",
-          setupComplete: false,
-          verifyPasskey_content: "encrypted_verified_string",
-          verifyPasskey_iv: "dummy_iv"
-      });
-
-      await user.save();
-
-      let res = await request(app).put("/users/complete-setup").send({
-        userId: user._id,
-        verifyPasskey_content: user.verifyPasskey_content,
-        verifyPasskey_iv: user.verifyPasskey_iv,
-      });
-      expect(res.status).to.equal(200);
-      expect(res.body).to.have.property("message", "Marking setupComplete as true");
-      
-      const idToken = "verifiedToken";
-      const payload = {
-        name: user.name,
-        email: user.email,
-        sub: user.googleId
-      };
-
-      clientStub.returns(Promise.resolve({
-        getPayload: () => payload
-      }));
-
-      res = await request(app).post("/users/google-auth").send({ idToken });
-      expect(res.status).to.equal(200);
-      expect(res.body.user).to.have.property("setupComplete", true);
-    });
-
-    describe("verifyPasskey", function () {
-      let user;
-
-      beforeEach(async function () {
-        user = new User({
-          name: "User 1",
-          email: "user@example.com",
-          googleId: "googleId12345",
-          setupComplete: true,
-          verifyPasskey_content: "encrypted_verified_string",
-          verifyPasskey_iv: "dummy_iv"
-        });
-
-        await user.save();
-      });
-
-      afterEach(async function () {
-        await User.deleteMany({});
-      });
-
-      // GET /users/verify-passkey/:userId
-      it("should return the user's passkey verification data if the user exists", async function () {
-        const res = await request(app).get(`/users/verify-passkey/${user._id}`);
-
-        expect(res.status).to.equal(200);
-        expect(res.body).to.have.property("iv", "dummy_iv");
-        expect(res.body).to.have.property("content", "encrypted_verified_string");
-      });
-
-      // GET /users/verify-passkey/:userId
-      it("should return a 404 error if the user does not exist", async function () {
-        const wrongId = new mongoose.Types.ObjectId();
-        const res = await request(app).get(`/users/verify-passkey/${wrongId}`);
-
-        expect(res.status).to.equal(404);
-        expect(res.body).to.have.property("error", "User not found");
-      });
-    });
   });
 });

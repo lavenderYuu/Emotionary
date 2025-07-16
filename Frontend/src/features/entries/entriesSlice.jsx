@@ -8,14 +8,13 @@ export const fetchEntries = createAsyncThunk('entries/fetchEntries', async (_, {
 
 export const filterEntries = createAsyncThunk('entries/filterEntries', async (_, { getState }) => {
     const userId = getState().auth.userId;
-    const { startDate, endDate, mood, favorite, page, tagId, deleted, limit } = getState().entries.filters;
+    const { startDate, endDate, mood, favorite, page, tagId, limit } = getState().entries.filters;
     const params = new URLSearchParams();
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
     if (mood) params.append('mood', mood);
     if (favorite) params.append('favorite', favorite);
     if (tagId) params.append('tagId', tagId);
-    params.append('deleted', deleted === true ? 'true' : 'false');
     params.append('page', page);
     const res = await fetch(`http://localhost:3000/entries/filter/${userId}?${params.toString()}`);
     const data = await res.json();
@@ -37,44 +36,26 @@ export const favoriteEntry = createAsyncThunk('entries/favoriteEntry', async (en
     return await res.json();
 });
 
-export const hardDeleteEntry = createAsyncThunk('entries/hardDeleteEntry', async (entry) => {
+export const deleteEntry = createAsyncThunk('entries/deleteEntry', async (entry) => {
     const res = await fetch(`http://localhost:3000/entries/${entry._id}`, { method: 'DELETE' });
     return await res.json();
 });
 
-export const softDeleteEntry = createAsyncThunk('entries/softDeleteEntry', async (entry) => {
-    const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deleted: true, deletedAt: new Date() }),
-    });
-    return await res.json();
-});
-
-export const restoreEntry = createAsyncThunk('entries/restore', async (entry) => {
-    const res = await fetch(`http://localhost:3000/entries/${entry._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deleted: false, deletedAt: null }),
-    });
-    return await res.json();
-});
 
 export const entriesSlice = createSlice({
   name: "entries",
   initialState: {
-    entries: [], // encrypted entries
+    entries: [],
     filteredEntries: [],
-    activeEntry: null, // just the ID of the active entry
+    activeEntry: null,
     filters: {
       startDate: null,
       endDate: null,
       mood: null,
       favorite: undefined,
       tagId: null,
-      deleted: false,
       page: 1,
-      limit: 9,
+      limit: 8,
     },
     pagination: {
       totalEntries: 0,
@@ -85,7 +66,7 @@ export const entriesSlice = createSlice({
 
   reducers: {
     selectEntry(state, action) {
-      const selectEntry = state.activeEntry = action.payload;
+      const selectEntry = state.entries.find((e) => e._id === action.payload);
       state.activeEntry = selectEntry || null;
     },
     resetEntry(state, action) {
@@ -106,6 +87,13 @@ export const entriesSlice = createSlice({
     builder
       .addCase(fetchEntries.fulfilled, (state, action) => {
         state.entries = action.payload;
+
+        if (state.activeEntry) {
+          const update = action.payload.find(
+            (entry) => entry._id === state.activeEntry._id
+          );
+          state.activeEntry = update;
+        }
       })
       .addCase(filterEntries.fulfilled, (state, action) => {
         state.filteredEntries = action.payload.filteredEntries;
@@ -118,42 +106,21 @@ export const entriesSlice = createSlice({
       .addCase(favoriteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
         const index = state.entries.findIndex((e) => e._id === entry._id);
-        
+
         if (index !== -1) {
           state.entries[index] = entry;
         }
-        
-        const filteredIndex = state.filteredEntries.findIndex((e) => e._id === entry._id);
-        if (filteredIndex !== -1) {
-          state.filteredEntries[filteredIndex] = entry;
-        }
       })
-      .addCase(hardDeleteEntry.fulfilled, (state, action) => {
+      .addCase(deleteEntry.fulfilled, (state, action) => {
         const entry = action.payload;
-        const index = state.filteredEntries.findIndex((e) => e._id === entry._id);
+        const index = state.entries.findIndex((e) => e._id === entry._id);
         if (index !== -1) {
-          state.filteredEntries.splice(index, 1);
+          state.entries.splice(index, 1);
         }
-      })
-      .addCase(softDeleteEntry.fulfilled, (state, action) => {
-        const entry = action.payload;
-        state.entries = state.entries.filter(e => e._id !== entry._id);
-
-        if (!state.filters.deleted) {
-          state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
-        }
-      })
-      .addCase(restoreEntry.fulfilled, (state, action) => {
-        const entry = action.payload;
-        state.entries.push(entry);
-
-        if (state.filters.deleted) {
-          state.filteredEntries = state.filteredEntries.filter(e => e._id !== entry._id);
-        }
-      });      
+      });
   },
 });
 
-export const { selectEntry, resetEntry, setFilter, setPage } = entriesSlice.actions;
+export const { selectEntry, resetEntry, createEntry, setFilter, setPage} = entriesSlice.actions;
 
 export default entriesSlice.reducer;

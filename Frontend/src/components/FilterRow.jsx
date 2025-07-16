@@ -3,8 +3,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { sentimentEmojiMap } from '../utils/helpers';
@@ -50,18 +48,6 @@ const FilterRow = () => {
       setFilter({
         ...filters,
         favorite: newFavoriteValue, 
-        page: 1,
-      })
-    );
-  };
-
-  const handleDeleted = () => {
-    const newDeletedValue = !filters.deleted;
-
-    dispatch(
-      setFilter({
-        ...filters,
-        deleted: newDeletedValue, 
         page: 1,
       })
     );
@@ -116,7 +102,9 @@ const FilterRow = () => {
       })
     );
   }
+
   
+
   return (
     <div
       style={{
@@ -175,21 +163,6 @@ const FilterRow = () => {
           <FavoriteIcon color="error" />
         ) : (
           <FavoriteBorderOutlinedIcon />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleDeleted}
-        sx={{
-          borderRadius: "12px",
-          padding: "8px",
-          display: 'flex',
-          gap: '8px'
-        }}
-      >
-        {filters.deleted === true ? (
-          <DeleteIcon />
-        ) : (
-          <DeleteOutlinedIcon />
         )}
       </IconButton>
     </div>

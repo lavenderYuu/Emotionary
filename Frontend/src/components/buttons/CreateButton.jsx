@@ -4,7 +4,6 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 const CreateButton = ({ onClick }) => {
   return (
     <Button
-      id="create-entry-button"
       variant="contained"
       sx={{ 
           backgroundColor: '#ffe59a',
