@@ -16,7 +16,7 @@ import { setUserId } from "../features/users/usersSlice";
 import { Checkbox, useTheme } from '@mui/material';
 import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
-import GoogleSetupModal from "./GoogleSetUpModal";
+import GoogleSetupModal from "./GoogleSetupModal";
 import { deriveKey } from "../utils/crypto";
 import PasskeyRequirements, { getPasskeyRequirements } from "./PasskeyRequirements";
 
