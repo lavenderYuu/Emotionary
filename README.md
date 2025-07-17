@@ -184,7 +184,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Dark mode
 
 ## Milestone 4
-For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
+For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. Our updated bug list is [here](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed). In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
 - 🔒 Encryption - User entries are encrypted using Web Crypto API
     - Encrypted on client-side so backend server never sees unencrypted data
 - 🔑 Password and passkey requirements for enhanced security
