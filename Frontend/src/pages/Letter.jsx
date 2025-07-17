@@ -144,7 +144,7 @@ const Letter = () => {
       <div className="letter-container">
         <textarea
           className="letter-textarea"
-          placeholder="Write your letter to the future..."
+          placeholder="Write a letter to your future self..."
           value={formData.content}
           onChange={(e) =>
             setFormData({ ...formData, content: e.target.value })
@@ -203,7 +203,7 @@ const Letter = () => {
           <DialogContentText
             sx={{ fontSize: "1.2rem", color: theme.palette.text.primary, margin: "10px 0 36px" }}
           >
-            Please enter your email address and the date you want to receive
+            Please enter your email address and the date you want to receive the letter.
           </DialogContentText>
 
           <form onSubmit={checkEmail}>
