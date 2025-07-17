@@ -84,6 +84,7 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search Bar                    | Search Query                  |
 | Create Tag                    | Tag Name                      |
 | Edit Tag                      | Tag Name                      |
+| Time Capsule                  | Letter, Email                 |
 
 ### Payloads Used
 
@@ -107,6 +108,8 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search              | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext on homepage |
 | Create Tag: Tag Name | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
 | Edit Tag: Tag Name  | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
+| Time Capsule: Letter | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext in email |
+| Time Capsule: Email | `<script>alert("Test1")</script>` | No                   | Rejected due to invalid email format |
 | Sign Up: First Name | `<b>Test1</b>`   | No                   | Rendered as plaintext (not bolded) on homepage |
 | Sign Up: Email      | `<b>Test1</b>`   | No                   | Rejected due to invalid email format |
 | Sign Up: Password   | `<b>Test1</b>`   | No                   | Accepted as password, but not rendered anywhere |
@@ -120,6 +123,8 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search              | `<b>Test1</b>` | No                   | Rendered as plaintext on Search Results page (not bolded) |
 | Create Tag: Tag Name | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
 | Edit Tag: Tag Name  | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
+| Time Capsule: Letter | `<b>Test1</b>` | No                   | Rendered as plaintext in email (not bolded) |
+| Time Capsule: Email | `<b>Test1</b>` | No                   | Rejected due to invalid email format |
 
 ### Mitigation
 
