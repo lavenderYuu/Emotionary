@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import * as idbKeyval from './__mocks__/idb-keyval.js';
 import * as cryptoUtils from '../src/utils/crypto.js';
+import crypto from 'crypto';
 
 describe('crypto.js', function () {
   const password = 'TestPassword$123';
@@ -22,12 +23,17 @@ describe('crypto.js', function () {
   });
 
   beforeEach(async function () {
+    // Uses Node's built-in crypto module
+    if (!globalThis.crypto) {
+      globalThis.crypto = crypto;
+    }
+
     // Ensures that globalThis.window.crypto is defined
     if (!globalThis.window) {
       globalThis.window = {};
     }
     globalThis.window.crypto = globalThis.crypto;
-
+    
     // Derive the key from the password and salt
     key = await cryptoUtils.deriveKey(password, salt, idbKeyval.set);
   });

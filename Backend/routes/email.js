@@ -1,7 +1,8 @@
 import express from "express";
 import { Resend } from "resend";
-import rateLimit from "express-rate-limit";
 import sanitizeHtml from "sanitize-html";
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' }); 
 
 const router = express.Router();
 
