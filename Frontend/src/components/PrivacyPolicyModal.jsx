@@ -82,17 +82,29 @@ const PrivacyPolicyModal = ({ show, hide }) => {
               <Link href="https://www.mongodb.com/resources/products/capabilities/mongodb-atlas-security" underline="always" target="_blank" rel="noreferrer">MongoDB Atlas</Link>. 
             </li>
             <li>
-              Encryption: Journal entry content is encrypted using a key derived from your password or passkey. 
+              Encryption: The content of your journal entries is encrypted on the frontend using Web Crypto API with a key derived from your password or passkey. 
               These keys are never stored on our servers. Your password or passkey is securely hashed and stored, and cannot be reversed.
+              Only encrypted content is stored on our servers.
             </li>
           </ul>
           <Typography variant= "h6" sx={{ mt: '16px'}}>Data sharing</Typography>
             <p>
-              We do not share your information with third parties, except for sentiment analysis in which we
-              send your journal entry contents to <Link href="https://huggingface.co/docs/inference-providers/en/security" underline="always" target="_blank" rel="noreferrer">Hugging Face</Link> {" "}
-              (HF Inference). Hugging Face does not store any user data and does not store the request body or response when routing requests. 
-              Routing uses TLS/SSL to encrypt data in transit.
+              We do not share your information with third parties, except in the following cases:
             </p>
+            <ul>
+              <li>
+                Sentiment analysis: The content of your journal entries is sent to <Link href="https://huggingface.co/docs/inference-providers/en/security" underline="always" target="_blank" rel="noreferrer">Hugging Face</Link> {" "}
+              (HF Inference) for sentiment analysis. Hugging Face does not store any user data and does not store the request body or response when routing requests. 
+              Routing uses TLS/SSL to encrypt data in transit. 
+              </li> 
+              <li>
+                Time Capsule feature: Our app includes an optional Time Capsule feature that allows you to write letters to your future self, 
+                which are then emailed to you at a scheduled time. To provide this service, we use the <Link href="https://resend.com/legal/privacy-policy" underline="always" target="_blank" rel="noreferrer">Resend API</Link> {" "} for email delivery. 
+                If you choose to use the Time Capsule feature, the content of your letter will be sent to Resend API for processing and delivery.
+                Please note that use of this feature is entirely optional, and you can use our app without using the Time Capsule feature.
+              </li> 
+            </ul>
+            
           <Typography variant= "h6" sx={{ mt: '16px'}}>Data retention</Typography>
           <p>We retain your information for as long as your account remains active.</p>
         </Box>

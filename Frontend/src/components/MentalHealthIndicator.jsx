@@ -54,7 +54,7 @@ export default function MentalHealthIndicator() {
     }
 
     return (
-        <Dialog open={open} onClose={() => {}} disableEscapeKeyDown slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400 }}}}>
+        <Dialog sx={{ zIndex: 10001 }} open={open} onClose={() => {}} disableEscapeKeyDown slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400 }}}}>
             <DialogTitle>We are here for you, {userName} ❤️</DialogTitle>
             <DialogContent>
                 <Typography variant="body1">We noticed you've been feeling down lately. It's important to get help if you or someone you know needs support for mental health, addiction or wellbeing.</Typography>
