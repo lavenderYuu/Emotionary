@@ -82,8 +82,9 @@ const PrivacyPolicyModal = ({ show, hide }) => {
               <Link href="https://www.mongodb.com/resources/products/capabilities/mongodb-atlas-security" underline="always" target="_blank" rel="noreferrer">MongoDB Atlas</Link>. 
             </li>
             <li>
-              Encryption: Journal entry content is encrypted using a key derived from your password or passkey. 
+              Encryption: The content of your journal entries is encrypted on the frontend using Web Crypto API with a key derived from your password or passkey. 
               These keys are never stored on our servers. Your password or passkey is securely hashed and stored, and cannot be reversed.
+              Only encrypted content is stored on our servers.
             </li>
           </ul>
           <Typography variant= "h6" sx={{ mt: '16px'}}>Data sharing</Typography>
@@ -92,7 +93,7 @@ const PrivacyPolicyModal = ({ show, hide }) => {
             </p>
             <ul>
               <li>
-                Sentiment analysis: The content of your journal entry is sent to <Link href="https://huggingface.co/docs/inference-providers/en/security" underline="always" target="_blank" rel="noreferrer">Hugging Face</Link> {" "}
+                Sentiment analysis: The content of your journal entries is sent to <Link href="https://huggingface.co/docs/inference-providers/en/security" underline="always" target="_blank" rel="noreferrer">Hugging Face</Link> {" "}
               (HF Inference) for sentiment analysis. Hugging Face does not store any user data and does not store the request body or response when routing requests. 
               Routing uses TLS/SSL to encrypt data in transit. 
               </li> 
