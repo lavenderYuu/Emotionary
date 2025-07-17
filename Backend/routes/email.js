@@ -1,6 +1,5 @@
 import express from "express";
 import { Resend } from "resend";
-import rateLimit from "express-rate-limit";
 import sanitizeHtml from "sanitize-html";
 
 const router = express.Router();
@@ -13,9 +12,11 @@ router.post("/send-email-test", async (req, res) => {
     const cleanContent = sanitizeHtml(content, {
       allowedTags: [],
       allowedAttributes: {},
-      textFilter: function (text) {
+      disallowedTagsMode: 'escape',
+      parseStyleAttributes: false,
+      textFilter: function(text) {
         return text;
-      },
+      }
     });
 
     const pacificTime = new Date().toLocaleString("en-US", {
@@ -79,6 +80,8 @@ router.post("/schedule-email", async (req, res) => {
     const cleanContent = sanitizeHtml(content, {
       allowedTags: [],
       allowedAttributes: {},
+      disallowedTagsMode: "escape",
+      parseStyleAttributes: false,
       textFilter: function (text) {
         return text;
       },
