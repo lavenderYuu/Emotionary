@@ -12,7 +12,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
-import { Checkbox, useTheme } from '@mui/material';
+import { Checkbox, useTheme, Alert, Snackbar } from '@mui/material';
 import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import PasskeyRequirements, { getPasskeyRequirements } from "./PasskeyRequirements";
@@ -35,6 +35,8 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
   const [showPasskey, setShowPasskey] = useState(false);
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,6 +46,8 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
 
   const handleClose = () => {
     setAgreedToPolicy(false);
+    setError(null);
+    setShowError(false);
     hide();
   };
 
@@ -57,59 +61,78 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setError(null);
+    setShowError(false);
 
     // Verify whether passkey meets requirements
     if (!requirements.length || !requirements.uppercase || !requirements.number || !requirements.symbol) {
-      window.alert("Your passkey must meet all requirements.");
+      setError("Your passkey must meet all requirements.");
+      setShowError(true);
       return;
     }
 
-    // Derive key from passkey and use user ID as salt
-    const key = await deriveKey(passkey, user.id);
-    setCryptoKey(key);
+    try {
+      // Derive key from passkey and use user ID as salt
+      const key = await deriveKey(passkey, user.id);
+      setCryptoKey(key);
 
-    // Encrypts the string "verified" with the derived key
-    // This will be used to verify the passkey during login
-    const { iv, content } = await encryptContent("verified", key);
-    
-    await fetch("http://localhost:3000/users/complete-setup", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: user.id, verifyPasskey_content: content, verifyPasskey_iv: iv }),
-    });
+      // Encrypts the string "verified" with the derived key
+      // This will be used to verify the passkey during login
+      const { iv, content } = await encryptContent("verified", key);
+      
+      const response = await fetch("http://localhost:3000/users/complete-setup", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, verifyPasskey_content: content, verifyPasskey_iv: iv }),
+      });
 
-    dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
-    navigate("/dashboard");
+      if (!response.ok) {
+        throw new Error("Failed to complete setup. Please try again.");
+      }
+
+      dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setError(`Setup failed: ${error.message}`);
+      setShowError(true);
+    }
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-
-    // Derive key from passkey and use user ID as salt
-    const key = await deriveKey(passkey, user.id);
-
-    // Fetch the encrypted verification value and IV from the server
-    const response = await fetch(`http://localhost:3000/users/verify-passkey/${user.id}`);
-    if (!response.ok) {
-      window.alert("Could not verify user.");
-      return;
-    }
-    const { iv, content } = await response.json();
+    setError(null);
+    setShowError(false);
 
     try {
-      // Try to decrypt the verification value using the derived key
-      const decryptedValue = await decryptContent(content, iv, key);
-      if (decryptedValue !== "verified") {
-        window.alert("Invalid passkey. Please try again.");
-        return;
-      }
+      // Derive key from passkey and use user ID as salt
+      const key = await deriveKey(passkey, user.id);
 
-      // Verification successful
-      setCryptoKey(key);
-      dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
-      navigate("/dashboard");
-    } catch (err) {
-      window.alert("Invalid passkey. Please try again.");
+      // Fetch the encrypted verification value and IV from the server
+      const response = await fetch(`http://localhost:3000/users/verify-passkey/${user.id}`);
+      if (!response.ok) {
+        throw new Error("Could not verify user. Please try again.");
+      }
+      const { iv, content } = await response.json();
+
+      try {
+        // Try to decrypt the verification value using the derived key
+        const decryptedValue = await decryptContent(content, iv, key);
+        if (decryptedValue !== "verified") {
+          throw new Error("Invalid passkey. Please try again.");
+        }
+
+        // Verification successful
+        setCryptoKey(key);
+        dispatch(setUserId({ userId: user.id, userName: user.name, userEmail: user.email }));
+        navigate("/dashboard");
+      } catch (err) {
+        throw new Error("Invalid passkey. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+      setError(error.message);
+      setShowError(true);
     }
   };
 
@@ -225,6 +248,21 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
         </Box>
       </Modal>
       <PrivacyPolicyModal show={showPolicy} hide={() => setShowPolicy(false)} />
+      
+      <Snackbar
+        open={showError}
+        autoHideDuration={6000}
+        onClose={() => setShowError(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setShowError(false)} 
+          severity="error" 
+          sx={{ width: '100%' }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
