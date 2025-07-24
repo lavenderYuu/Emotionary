@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
   DialogContentText,
   TextField,
-  Button,
   DialogActions,
   Alert,
   Snackbar,
@@ -18,7 +17,10 @@ import "./Letter.css";
 import "./Timecapsule.css";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
+import { useTheme } from '@mui/material';
+
 const Letter = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -142,7 +144,7 @@ const Letter = () => {
       <div className="letter-container">
         <textarea
           className="letter-textarea"
-          placeholder="Write your letter to the future..."
+          placeholder="Write a letter to your future self..."
           value={formData.content}
           onChange={(e) =>
             setFormData({ ...formData, content: e.target.value })
@@ -199,9 +201,9 @@ const Letter = () => {
       <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogContent>
           <DialogContentText
-            sx={{ fontSize: "1.2rem", color: "#333", margin: "10px 0 36px" }}
+            sx={{ fontSize: "1.2rem", color: theme.palette.text.primary, margin: "10px 0 36px" }}
           >
-            Please enter your email address and the date you want to receive
+            Please enter your email address and the date you want to receive the letter.
           </DialogContentText>
 
           <form onSubmit={checkEmail}>

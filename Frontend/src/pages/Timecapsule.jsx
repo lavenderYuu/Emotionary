@@ -25,7 +25,7 @@ const Timecapsule = () => {
 
   return (
     <div>
-      {flowStep !== "success" && <h1>Timecapsule</h1>}
+      {flowStep !== "success" && <h1>Time Capsule</h1>}
       {flowStep === "closed" && (
         <LetterButton onClick={handleOpen}>Open Envelope</LetterButton>
       )}

@@ -13,10 +13,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
-import { Checkbox, useTheme } from '@mui/material';
+import { Checkbox, useTheme, Alert, Snackbar } from '@mui/material';
 import { Link } from "@mui/material";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
-import GoogleSetupModal from "./GoogleSetUpModal";
+import GoogleSetupModal from "./GoogleSetupModal";
 import { deriveKey } from "../utils/crypto";
 import PasskeyRequirements, { getPasskeyRequirements } from "./PasskeyRequirements";
 
@@ -44,6 +44,8 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
   const requirements = getPasskeyRequirements(formData.password);
 
   const navigate = useNavigate();
@@ -53,6 +55,8 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
   const handleClose = () => {
     setShowSignIn(true);
     setAgreedToPolicy(false);
+    setError(null);
+    setShowError(false);
     onClose();
   };
 
@@ -67,6 +71,8 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
 
   const handleSuccess = async (response) => {
     const idToken = response.credential;
+    setError(null);
+    setShowError(false);
 
     try {
       const response = await fetch("http://localhost:3000/users/google-auth", {
@@ -91,7 +97,9 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
       });
       setShowGoogleModal(true);
     } catch (error) {
-      alert("Google authentication failed: " + error.message);
+      console.error("Google authentication error:", error);
+      setError(`Google authentication failed: ${error.message}`);
+      setShowError(true);
     }
   };
 
@@ -105,15 +113,19 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
 
   const handleError = (error) => {
     console.log("Google login error:", error);
-    window.alert("Google login failed. Please try again.");
+    setError("Google login failed. Please try again.");
+    setShowError(true);
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setError(null);
+    setShowError(false);
 
     // Verify whether password meets requirements
     if (!requirements.length || !requirements.uppercase || !requirements.number || !requirements.symbol) {
-      window.alert("Your password must meet all requirements.");
+      setError("Your password must meet all requirements.");
+      setShowError(true);
       return;
     }
 
@@ -135,17 +147,20 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
-      alert("User registered successfully");
       setShowSignIn(true);
       setFormData({ firstName: "", email: "", password: "" }); 
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Registration failed: " + error.message);
+      setError(`Registration failed: ${error.message}`);
+      setShowError(true);
     }
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setError(null);
+    setShowError(false);
+    
     try {
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
@@ -173,7 +188,8 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
-      alert("Login failed: " + error.message);
+      setError(`Login failed: ${error.message}`);
+      setShowError(true);
     }
   };
 
@@ -390,6 +406,21 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
       </Modal>
       <GoogleSetupModal user={googleUser} open={showGoogleModal} hide={handleGoogleSetUpClose} setCryptoKey={setCryptoKey} />
       <PrivacyPolicyModal show={showPolicy} hide={() => setShowPolicy(false)} />
+      
+      <Snackbar
+        open={showError}
+        autoHideDuration={6000}
+        onClose={() => setShowError(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setShowError(false)} 
+          severity="error" 
+          sx={{ width: '100%' }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

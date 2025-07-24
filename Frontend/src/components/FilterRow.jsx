@@ -14,13 +14,11 @@ import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import dayjs from "dayjs";
 import { fetchTags } from "../features/tags/tagsSlice";
-import { useTheme } from "@mui/material/styles";
 
 const FilterRow = () => {
     const dispatch = useDispatch();
     const filters = useSelector((state) => state.entries.filters);
     const tags = useSelector((state) => state.tags.items);
-    const theme = useTheme();
 
   const moodOptions = Object.entries(sentimentEmojiMap).map(
     ([label, emoji]) => ({

@@ -29,19 +29,38 @@
 - Sophia Pobre
 
 ## Standard Goals
+**Minimal Requirements:**
 - [completed] Clean and intuitive journaling platform for users to write and reflect on their moods
 - [completed] ML integration to provide sentiment analysis on journal entry content
 - [completed] Tags, favorites, and filters to organize and search entries easily
 - [completed] Login and logout pages with secure authentication
 - [completed] End-to-end encryption for entry content
-- Mental health indicators based on mood trends and entry content
-- Daily prompts tailored to previous entries
-- [completed] Dark mode
+
+**Standard Requirements:**
+- [completed] Mental health indicators based on mood trends and entry content
+- [replaced] Ability to attach photos to journal entries
+- [completed] Daily prompts tailored to previous entries
+- [replaced] Speech-to-text for hands-free journaling
+- [replaced] Weather integration
+- [added] Dark mode
+- [added] Ability to delete and restore journal entries
+- [added] Tutorial feature for first-time users
+
+We have replaced a few features from our original proposal because they no longer align with our app’s core vision. Specifically, photo attachments, speech-to-text, and weather integration raise privacy concerns and rely on extra API calls that complicate security. Weather is also not related to journaling or mood tracking which are the main aspects of our app.
+Instead, we have prioritized the following features which better support our goals of creating a secure, user-friendly, and accessible journaling experience:
+- Dark mode to enhance accessibility and reduce eye strain
+- Soft delete and restore functionality to give users more control over their data
+- Guided tour feature to support first-time users and improve overall usability
+We believe these changes will result in a more cohesive and privacy-conscious user experience that better reflects our vision for the app.
 
 ## Stretch Goals
-- Email to your future self
-- [completed] Ability to delete and restore journal entries
-- [completed] Tutorial feature for first-time users
+- [completed] Email to your future self (renamed as Time Capsule)
+- [dropped] AI-generated summaries of journal entries
+- [dropped] Disappearing messages
+
+We chose to implement the time capsule feature as our stretch goal and decided to drop the other two. The time capsule feature aligns most closely with the core purpose of our app. It allows users to capture their present thoughts and revisit them in the future, reinforcing the journaling habit and offering long-term emotional insight.
+
+We opted not to implement disappearing messages as it conflicted with the idea that journal entries should be a lasting, personal record. We also chose to leave out AI-generated summaries due to privacy concerns. Processing user content through AI would have required deeper consideration around data handling, consent, and transparency, which we felt was outside the scope of this project.
 
 ## Non-Trivial Elements
 - [completed] End-to-end encryption
@@ -65,6 +84,7 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search Bar                    | Search Query                  |
 | Create Tag                    | Tag Name                      |
 | Edit Tag                      | Tag Name                      |
+| Time Capsule                  | Letter, Email                 |
 
 ### Payloads Used
 
@@ -88,6 +108,8 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search              | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext on homepage |
 | Create Tag: Tag Name | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
 | Edit Tag: Tag Name  | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext |
+| Time Capsule: Letter | `<script>alert("Test1")</script>` | No                   | No alert popup, rendered as plaintext in email |
+| Time Capsule: Email | `<script>alert("Test1")</script>` | No                   | Rejected due to invalid email format |
 | Sign Up: First Name | `<b>Test1</b>`   | No                   | Rendered as plaintext (not bolded) on homepage |
 | Sign Up: Email      | `<b>Test1</b>`   | No                   | Rejected due to invalid email format |
 | Sign Up: Password   | `<b>Test1</b>`   | No                   | Accepted as password, but not rendered anywhere |
@@ -101,6 +123,8 @@ We performed a manual XSS security assessment by entering various payloads into 
 | Search              | `<b>Test1</b>` | No                   | Rendered as plaintext on Search Results page (not bolded) |
 | Create Tag: Tag Name | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
 | Edit Tag: Tag Name  | `<b>Test1</b>` | No                   | Rendered as plaintext (not bolded) |
+| Time Capsule: Letter | `<b>Test1</b>` | No                   | Rendered as plaintext in email (not bolded) |
+| Time Capsule: Email | `<b>Test1</b>` | No                   | Rejected due to invalid email format |
 
 ### Mitigation
 
@@ -160,7 +184,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Dark mode
 
 ## Milestone 4
-For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
+For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. Our updated bug list is [here](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed). In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
 - 🔒 Encryption - User entries are encrypted using Web Crypto API
     - Encrypted on client-side so backend server never sees unencrypted data
 - 🔑 Password and passkey requirements for enhanced security
@@ -173,41 +197,51 @@ For Milestone 4, we completed our standard requirements as well as some stretch 
 - 🗑️ Deleted entries can be restored or permanently deleted
     - Users can access deleted entries by filtering on the Entries page
 - 🌡️ Mental health indicators
-- ☀️ Daily prompts
-- 📨 Email to future self
+    - Resources modal appears when user has 5 entries within the past week with a mood score of 1 or 2
+    - User must acknowledge they have read through the resources
+- ☀️ Daily prompts on Home Page
+    - First prompt displayed is tailored to the mood from the most recent entry, excluding today
+    - User can click "refresh prompt" to get a generic, non-tailored prompt 
+- 📨 Email to your future self (renamed as Time Capsule)
+    - User can send an email to their future self, capturing their present thoughts and revisiting them in the future
+    - Uses Resend API to send scheduled emails
 
 ## Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
 
 ### Instructions to run
 1. Please follow Steps #1 and #2 below from [Getting Started](#instructions-to-run-1)
-    - Clone this repo, go to `Milestone3` branch, and add `.env` file
+    - Clone this repo, go to the `Milestone4` branch, and add the `.env` file
 2. If you would like to run the test suite image separately, run `docker compose up --build test`
 4. Otherwise, follow the remaining instructions below, and test reports will be automatically generated in Step #6
 
 ### Links
-- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Backend/test)
-- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone3/Frontend/test)
+- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone4/Backend/test)
+- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone4/Frontend/test)
 
 ## Getting Started
 The following credentials need to be passed as environment variables:
 - `GOOGLE_ID`
 - `MONGODB_ID`
+- `RESEND_API_KEY`
 - `VITE_GOOGLE_ID`
 - `VITE_HUGGINGFACE_ID`
 
 We will send you a `.env` file to use for Step #2 below.
 
 ### Instructions to run
-1. Clone this repo and go to the `Milestone3` branch
+1. Clone this repo and go to the `Milestone4` branch
 2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
     - Make sure the file is named `.env`
 3. Run `docker compose up --build`
 4. Backend API runs at: http://localhost:5000
 5. Frontend will be available at: http://localhost
     - Please login using our test user:
-        - Email: test@gmail.com
-        - Password: 12345678
+        - Email: testhash@email.com
+        - Password: testingthehash
+    - Email account for Time Capsule:
+        - email: emotionary@yahoo.com
+        - password: emotionSlary1$!
 6. Tests reports are automatically generated in the project's root directory in the `test-results` folder and can be opened in your browser of choice:
     - `backend-test-report.html`
     - `frontend-test-report.html`
