@@ -89,6 +89,9 @@ We will send you a `.env` file to use for Step #2 below.
     - Please login using our test user:
         - Email: test@gmail.com
         - Password: 12345678
+    - Email account for Time Capsule:
+        - email: emotionary@yahoo.com
+        - password: emotionSlary1$!
 6. Tests reports are automatically generated in the project's root directory in the `test-results` folder and can be opened in your browser of choice:
     - `backend-test-report.html`
     - `frontend-test-report.html`
