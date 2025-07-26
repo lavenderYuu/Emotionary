@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useMediaQuery, useTheme } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { clearUserId } from "../features/users/usersSlice";
 import { useDispatch } from "react-redux";
 import { fetchEntries } from "../features/entries/entriesSlice";
@@ -97,6 +97,7 @@ const NavigationBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -150,6 +151,11 @@ const NavigationBar = () => {
             key={label}
             as={Link}
             to={path}
+            sx={{
+              borderBottom: location.pathname === path ? "2px solid #e992d5" : "none",
+              paddingBottom: location.pathname === path ? "2px" : "0",
+              transition: "border-bottom 0.1s"
+            }}
           >
             {label}
           </NavItem>
@@ -198,6 +204,11 @@ const NavigationBar = () => {
                       key={label}
                       as={Link}
                       to={path}
+                      sx={{
+                        borderBottom: location.pathname === path ? "2px solid #e992d5" : "none",
+                        paddingBottom: location.pathname === path ? "2px" : "0",
+                        transition: "border-bottom 0.1s"
+                      }}
                     >
                       {label}
                     </NavItem>
