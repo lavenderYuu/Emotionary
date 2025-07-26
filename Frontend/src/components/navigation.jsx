@@ -181,12 +181,14 @@ const NavigationBar = () => {
         <AppBar>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={logo}
-                alt="emotionary logo"
-                height="50"
-                style={{ marginRight: "40px" }}
-              />
+              <Link to="/dashboard">
+                <img
+                  src={logo}
+                  alt="emotionary logo"
+                  height="50"
+                  style={{ marginRight: "40px" }}
+                />
+              </Link>
               {/* Desktop */}
               {!isMobile && (
                 <NavMenu className="nav_menu">
