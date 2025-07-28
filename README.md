@@ -1,7 +1,7 @@
 ﻿# emotionary
 
 ## App Summary
-*emotionary* is a journaling app with sentiment analysis that helps users reflect on their moods through visual insights. Our app offers a seamless and intutitive user experience, complete with features such as tagging, favoriting, filtering, and search. Our top priority is user privacy, and we securely encrypt all account information and journal entries.
+*emotionary* is a journaling app with sentiment analysis that helps users reflect on their moods through visual insights. Our app offers a seamless and intuitive user experience, complete with features such as tagging, favoriting, filtering, and search. Our top priority is user privacy, and we securely encrypt all account information and journal entries.
 
 ## Table of Contents
 - [App Summary](#app-summary)
@@ -9,12 +9,14 @@
 - [Standard Goals](#standard-goals)
 - [Stretch Goals](#stretch-goals)
 - [Non-Trivial Elements](#non-trivial-elements)
+- [Demo](#demo)
 - [XSS Security Assessment](#xss-security-assessment)
 - [Description](#description)
 - [Milestone 1](#milestone-1)
 - [Milestone 2](#milestone-2)
 - [Milestone 3](#milestone-3)
 - [Milestone 4](#milestone-4)
+- [Milestone 5](#milestone-5)
 - [Test Suite](#test-suite)
 - [Getting Started](#getting-started)
 
@@ -67,6 +69,9 @@ We opted not to implement disappearing messages as it conflicted with the idea t
 - [in-testing] System design and comprehensive testing
 - [completed] Filtering, favoriting, tagging, and search functionalities
 - [completed] ML for NLP and sentiment analysis
+
+## Demo
+<!-- TODO -->
 
 ## XSS Security Assessment
 We performed a manual XSS security assessment by entering various payloads into all input fields across our application to determine whether user input could manipulate the DOM or execute unintended scripts.
@@ -152,13 +157,13 @@ For Milestone 2, we updated `entriesSlice` and added `usersSlice` for Redux. We 
     - API calls are made when users register or sign in
 - 🏠 Home Page
     - API calls are made when users create, edit, favorite, or delete entries
-- 🔍Insights Page - Users can see different insights for their moods in addition to the default graph on the dashboard
+- 🔍 Insights Page - Users can see different insights for their moods in addition to the default graph on the dashboard
     - 📅 Calender view with colours indicating mood on tracked dates 
     - 🌡️ Gauge displaying user's average mood over the past month
     - 🥧 Pie chart representation of user mood over the past month illustrating proportion of different moods
 
 ## Milestone 3
-For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (denoted below with CP).
+For Milestone 3, we continued to implement and improve the key functionalities of our app, including filtering, search, and tag management. We also updated `tagsSlice` for Redux. In addition, we performed manual, unit and integration testing, filed issues, and fixed high-priority bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). During M3, we found and resolved 8 bugs. Furthermore, we addressed crossplay feedback to make our app more accessible and user-friendly (denoted below with CP).
 - 🔒 Encryption - User passwords are encrypted using bcrypt
     - Database stores encrypted passwords
 - 🔑 Google OAuth - Users can log in with their Google credentials
@@ -184,7 +189,7 @@ For Milestone 3, we continued to implement and improve the key functionalities o
     - Dark mode
 
 ## Milestone 4
-For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs. Our updated bug list is [here](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed). In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
+For Milestone 4, we completed our standard requirements as well as some stretch requirements. We continued to perform testing, file issues, and fix bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)). During M4, we found and resolved 7 new bugs. In addition to our [XSS Security Assessment](#xss-security-assessment) on the frontend, we also considered how to mitigate NoSQL injection attacks on the backend. We used Mongoose to define strict schemas for our data which provides built-in protection through query casting and type enforcement. This helps prevent attackers from injecting query operators like `$ne` into API inputs.
 - 🔒 Encryption - User entries are encrypted using Web Crypto API
     - Encrypted on client-side so backend server never sees unencrypted data
 - 🔑 Password and passkey requirements for enhanced security
@@ -205,6 +210,20 @@ For Milestone 4, we completed our standard requirements as well as some stretch 
 - 📨 Email to your future self (renamed as Time Capsule)
     - User can send an email to their future self, capturing their present thoughts and revisiting them in the future
     - Uses Resend API to send scheduled emails
+
+## Milestone 5
+For Milestone 5, we focused on finetuning our existing features, addressing crossplay feedback (denoted below with CP), and fixing bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)).
+- 🛬 Landing Page improvements
+    - 🖼️ New graphic
+    - 🔨 Tooltip for passwords
+- 🏠 Navigation improvements
+    - 🔗 Logo links to home
+    - 📄 Page indicator
+- 🔍 Insights Page improvements
+    - 📊 Stacked bar chart that shows how often different moods are associated with different tags over the past month (CP)
+    - 🗺️ Vertical responsiveness for mood heatmap (CP)
+- 🏷️ Updated styling for tags and buttons to ensure consistency
+- 🌡️ Keyword-triggered mental health resources
 
 ## Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.

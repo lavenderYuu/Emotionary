@@ -119,21 +119,30 @@ export default function DailyPrompt({ onCreateFromPrompt }) {
     };
 
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center'
+            }}
+        >
             <div
                 style={{
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: '15px',
-                padding: '25px',
-                margin: '20px 28px 20px 28px',
-                backgroundColor: backgroundColor,
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: '15px',
+                    padding: '25px',
+                    margin: '20px 28px 20px 28px',
+                    backgroundColor: backgroundColor,
+                    width: '100%',
+                    maxWidth: '600px',
+                    minWidth: '300px',
+                    boxSizing: 'border-box'
                 }}
             >
-                <h2>Daily Prompt</h2>
+                <h2>Daily Prompt ☀️</h2>
                 <p>{currentPrompt}</p>
                 <div>
                     <RefreshIcon onClick={handleRefresh} sx={{mr: 1.5, mt: 0.8, cursor: 'pointer', transition: 'transform 0.6s', transform: isRotating ? 'rotate(360deg)' : 'rotate(0deg)' }}/>
-                    <CreateOutlinedIcon onClick={onCreateFromPrompt} sx={{ ml: 1.5, mt: 0.8, cursor: 'pointer' }} />
+                    <CreateOutlinedIcon onClick={() => onCreateFromPrompt(currentPrompt)} sx={{ ml: 1.5, mt: 0.8, cursor: 'pointer' }} />
                 </div>
             </div>
             

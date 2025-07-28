@@ -14,6 +14,7 @@ export const getTags = (tags) => {
     }, {});
 };
 
+// scores are negative to positive
 export const moodToScore = {
     '😭': 1,
     '☹️': 2,
@@ -30,6 +31,7 @@ export const scoreToMood = {
     5: '😀',
 };
 
+// descriptions are positive to negative
 export const sentimentEmojiMap = {
     'Very Positive': '😀',
     'Positive': '😊',
@@ -37,6 +39,17 @@ export const sentimentEmojiMap = {
     'Negative': '☹️',
     'Very Negative': '😭',
 };
+
+export const emojiSentimentMap = {
+    '😀': 'Very Positive',
+    '😊': 'Positive',
+    '😐': 'Neutral',
+    '☹️': 'Negative',
+    '😭': 'Very Negative',
+};
+
+// colors are positive to negative
+export const moodColors = ['#10a9a7', '#68c686', '#679fde', '#ec9b06', '#f02828'];
 
 export const tagColours = [
   "#e992d5", 
