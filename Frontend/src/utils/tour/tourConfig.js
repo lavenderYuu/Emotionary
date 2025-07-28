@@ -253,13 +253,33 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
     ],
   },
   {
+    id: 'home',
+    text: 'You are currently on the "Home" page.',
+    attachTo: {
+      element: '#nav-Home',
+      on: 'bottom',
+    },
+    classes: '-bottom -twoline',
+    floatingUIOptions: {
+      middleware: [
+        offset(24),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
     id: 'insights',
     text: 'Under "Insights", you can view different charts and graphs of your moods.',
     attachTo: {
       element: '#nav-Insights',
       on: 'bottom',
     },
-    classes: '-bottom -multiline',
+    classes: '-bottom -threeline',
     floatingUIOptions: {
       middleware: [
         offset(24),
@@ -279,7 +299,27 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
       element: '#nav-Entries',
       on: 'bottom',
     },
-    classes: '-bottom -multiline',
+    classes: '-bottom -threeline',
+    floatingUIOptions: {
+      middleware: [
+        offset(24),
+      ],
+    },
+    buttons: [
+      {
+        text: 'Next',
+        action: function () { this.next(); },
+      },
+    ],
+  },
+  {
+    id: 'time-capsule',
+    text: 'Under "Time Capsule", you can write a letter to your future self.',
+    attachTo: {
+      element: '#nav-TimeCapsule',
+      on: 'bottom',
+    },
+    classes: '-bottom -twoline',
     floatingUIOptions: {
       middleware: [
         offset(24),
@@ -294,15 +334,15 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
   },
   {
     id: 'search',
-    text: 'Under "Search", can search for your entries by title, content, or tags.',
+    text: 'Under "Search", you can search for your entries by title, content, or tags.',
     attachTo: {
       element: '#search-bar',
       on: 'bottom',
     },
-    classes: '-bottom -multiline',
+    classes: '-bottom -threeline',
     floatingUIOptions: {
       middleware: [
-        offset(18),
+        offset(24),
       ],
     },
     buttons: [
