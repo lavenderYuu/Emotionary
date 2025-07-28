@@ -138,7 +138,7 @@ export default function DailyPrompt({ onCreateFromPrompt }) {
                     boxSizing: 'border-box'
                 }}
             >
-                <h2>Daily Prompt</h2>
+                <h2>Daily Prompt ☀️</h2>
                 <p>{currentPrompt}</p>
                 <div>
                     <RefreshIcon onClick={handleRefresh} sx={{mr: 1.5, mt: 0.8, cursor: 'pointer', transition: 'transform 0.6s', transform: isRotating ? 'rotate(360deg)' : 'rotate(0deg)' }}/>
