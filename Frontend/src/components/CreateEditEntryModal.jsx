@@ -288,6 +288,7 @@ const CreateEditEntryModal = ({
           paper: {
             sx: {
               width: "80vw",
+              overflow: "hidden",
               borderRadius: 4,
             },
           },
@@ -422,11 +423,7 @@ const CreateEditEntryModal = ({
           </Box>
         </DialogContent>
         <DialogActions>
-          <SaveButton 
-            type="submit" 
-            onClick={handleSubmit}
-            disabled={isLoading}
-          >
+          <SaveButton type="submit" onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? "Saving..." : "Save"}
           </SaveButton>
         </DialogActions>
@@ -487,24 +484,24 @@ const CreateEditEntryModal = ({
 
       <Backdrop
         sx={{
-          color: '#fff',
+          color: "#fff",
           zIndex: 10002,
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           gap: 2,
         }}
         open={isLoading}
       >
         <Box
           sx={{
-            fontSize: '4rem',
-            animation: 'pulse 0.5s ease-in-out infinite alternate',
-            '@keyframes pulse': {
-              '0%': {
-                transform: 'scale(1)',
+            fontSize: "4rem",
+            animation: "pulse 0.5s ease-in-out infinite alternate",
+            "@keyframes pulse": {
+              "0%": {
+                transform: "scale(1)",
               },
-              '100%': {
-                transform: 'scale(1.2)',
+              "100%": {
+                transform: "scale(1.2)",
               },
             },
           }}
