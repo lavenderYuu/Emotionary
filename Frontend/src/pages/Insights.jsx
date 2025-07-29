@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import MoodHeatmap from "../components/MoodHeatmap";
 import MoodGauge from "../components/MoodGauge";
 import { useEffect } from "react";
+import MoodTagChart from "../components/MoodTagChart";
 
 const Insights = () => {
 
@@ -16,8 +17,9 @@ const Insights = () => {
       <>
         <h1>Mood Insights</h1>
         <MoodChart />
-        <h2>Your Mood This Month</h2>
-        <Box sx={{ m: 4, display: 'flex', gap: 8, alignItems: 'center', alignContent: 'center', justifyContent: 'center', flexWrap: 'wrap' }} >
+        <h2>Monthly Overview</h2>
+        <MoodTagChart />
+        <Box sx={{ p: 4, display: 'flex', gap: 8, alignItems: 'center', alignContent: 'center', justifyContent: 'center', flexWrap: 'wrap' }} >
           <Box>
             {/* <MoodCalendar /> */}
             <MoodGauge />
@@ -26,6 +28,7 @@ const Insights = () => {
             <MoodPieChart />
           </Box>
         </Box>
+        <h2>Yearly Overview</h2>
         <MoodHeatmap />
       </>
   )

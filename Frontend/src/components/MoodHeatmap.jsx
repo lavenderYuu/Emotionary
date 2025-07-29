@@ -36,7 +36,7 @@ const MoodHeatmap = () => {
 
   return (
     <div className={isHorizontal ? 'heatmap-wrapper horizontal-heatmap' : 'heatmap-wrapper vertical-heatmap'} style={{ width: '100%', maxWidth: '1000px', margin: 'auto', }}>
-      <h2>Mood Calendar</h2>
+      <h3>Mood Calendar</h3>
       <CalendarHeatmap
         key={isHorizontal ? 'horizontal' : 'vertical'}
         startDate={startDate}

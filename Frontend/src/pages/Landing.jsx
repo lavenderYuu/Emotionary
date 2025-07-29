@@ -3,6 +3,8 @@ import LoginButton from '../components/buttons/LoginButton';
 import LoginModal from '../components/LoginModal';
 import light_logo from "../images/landing_page_logo.png"
 import dark_logo from "../images/landing_page_logo_dark.png"
+import light_graphic from "../images/landing_page_graphic.svg"
+import dark_graphic from "../images/landing_page_graphic_dark.svg"
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, useTheme } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -15,6 +17,7 @@ export default function Landing ({ setCryptoKey }) {
     const theme = useTheme();
     const logo = theme.palette.mode === 'light' ? light_logo : dark_logo;
     const backgroundColor = theme.palette.mode === 'light' ? '#fefcfa' : '#242424';
+    const graphic = theme.palette.mode === 'light' ? light_graphic : dark_graphic;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -38,17 +41,17 @@ export default function Landing ({ setCryptoKey }) {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
+        {/* Login on left side */}
         <div style={{
           backgroundColor: backgroundColor,
           minHeight: '100vh', 
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'flex-end',
           justifyContent: 'center', 
           flexDirection: 'column', 
-          marginTop: '-60px',
-          maxWidth: '350px',
-          margin: '0 auto',
+          flex: 1
         }}>
+        <div>
           <img
             src={logo}
             width="300"
@@ -62,6 +65,17 @@ export default function Landing ({ setCryptoKey }) {
           )}
           <LoginButton onClick={handleOpen} />
           <LoginModal open={open} onClose={handleClose} setCryptoKey={setCryptoKey} />
+        </div>
+        </div>
+        {/* graphic on right side */}
+        <div style={{
+          flex: 1,
+          height: '100%',
+          backgroundImage: `url(${graphic})`,
+          backgroundRepeat: 'repeat-y', // tiles vertically when zoomed out
+          backgroundPosition: 'right top',
+          backgroundSize: 'auto',
+        }}>
         </div>
       </div>
     )
