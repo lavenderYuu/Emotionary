@@ -394,9 +394,6 @@ const CreateEditEntryModal = ({
                   boxShadow: activeTags.includes(tag._id)
                     ? `0 0 0 2px #fff inset`
                     : "none",
-                  textTransform: activeTags.includes(tag._id)
-                    ? "uppercase"
-                    : "none",
                 }}
                 onClick={() => toggleTag(tag._id)}
               />
