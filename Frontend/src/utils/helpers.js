@@ -63,3 +63,12 @@ export const tagColours = [
   "#f2aa3e",
   "#d5a6bd",
 ];
+
+export const sensitiveKeywords = [
+    "suicide",
+    "kill myself",
+    "hurt myself",
+    "want to die",
+    "self harm",
+    "self-harm"
+];

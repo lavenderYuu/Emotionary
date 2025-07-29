@@ -83,6 +83,15 @@ a, h1, h2, h3, h4, h5, p {
 .react-calendar-heatmap .color-scale-4 { fill: #68c686; }
 .react-calendar-heatmap .color-scale-5 { fill: #10a9a7; }
 
+.vertical-heatmap .react-calendar-heatmap {
+  transform: scale(0.4);
+  transform-origin: top center;
+}
+
+.vertical-heatmap .react-calendar-heatmap text {
+  font-size: 6px;
+}
+
 .MuiPopper-root.MuiPickerPopper-root {
   z-index: 10000;
 }

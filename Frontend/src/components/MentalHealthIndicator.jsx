@@ -7,7 +7,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function MentalHealthIndicator() {
+export default function MentalHealthIndicator({ containsSensitiveContent }) {
     const entries = useSelector((state) => state.entries.entries);
     const userName = useSelector((state) => state.auth.userName);
     const [open, setOpen ] = useState(false);
@@ -34,7 +34,7 @@ export default function MentalHealthIndicator() {
             return date.isAfter(oneWeekAgo) && (entry.mood === "😭" || entry.mood === "☹️");
         });
 
-        if (pastWeekEntries.length >= 5 && !hasAcknowledged) {
+        if ((pastWeekEntries.length >= 5 || containsSensitiveContent) && !hasAcknowledged) {
             setOpen(true);
         }
     }, [entries, acknowlegementLoaded]);
@@ -75,9 +75,6 @@ export default function MentalHealthIndicator() {
                         access a crisis line
                         </a>{' '} in your province or territory.</li>
                 </ul>
-                {/* <Typography variant="body1" sx={{mb: 1}}>If you're in immediate danger or need urgent medical support, call 9-1-1.</Typography>
-                <Typography variant="body1" sx={{mb: 1}}>If you or someone you know is thinking about suicide, call or text 9-8-8. Support is available 24 hours a day, 7 days a week.</Typography>
-                <Typography variant="body1" sx={{mb: 1}}>If you're experiencing family or gender-based violence, you can access a crisis line in your province or territory.</Typography> */}
                 <h3>Provincial and territorial resources</h3>
                 <Accordion>
                     <AccordionSummary
@@ -427,22 +424,7 @@ export default function MentalHealthIndicator() {
                 <Typography>You may also want to talk to another trusted professional, such as a counsellor or spiritual leader.</Typography>
             </DialogContent>
             <DialogActions sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
-                {/* <Button variant='contained' onClick={handleAcknowledge}>
-                    I've read this.
-                </Button> */}
-                
-                {/* <Box sx={{ display: 'flex', alignItems: 'center' }}> */}
-                    <FormControlLabel required control={<Checkbox checked={hasAcknowledged} onChange={(e) => setHasAcknowledged(e.target.checked)} />} label="I have read and reviewed this." />
-                    {/* <Checkbox
-                    checked={hasAcknowledged} 
-                    onChange={handleAcknowledge} 
-                    required
-                    sx={{ p: 0, paddingRight: '8px' }}
-                    />
-                    <Typography variant="body2">
-                    I have read and reviewed this.
-                    </Typography> */}
-                {/* </Box> */}
+                <FormControlLabel required control={<Checkbox checked={hasAcknowledged} onChange={(e) => setHasAcknowledged(e.target.checked)} />} label="I have read and reviewed this." />
                 <Button
                     onClick={handleClose}
                     disabled={!hasAcknowledged}
