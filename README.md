@@ -214,16 +214,17 @@ For Milestone 4, we completed our standard requirements as well as some stretch 
 ## Milestone 5
 For Milestone 5, we focused on finetuning our existing features, addressing crossplay feedback (denoted below with CP), and fixing bugs (see [GitHub Issues](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/issues?q=is%3Aissue+is%3Aclosed)).
 - 🛬 Landing Page improvements
-    - 🖼️ New graphic
+    - 🖼️ New graphic (CP)
     - 🔨 Tooltip for passwords
 - 🏠 Navigation improvements
-    - 🔗 Logo links to home
+    - 🔗 Logo links to home (CP)
     - 📄 Page indicator
 - 🔍 Insights Page improvements
     - 📊 Stacked bar chart that shows how often different moods are associated with different tags over the past month (CP)
     - 🗺️ Vertical responsiveness for mood heatmap (CP)
 - 🏷️ Updated styling for tags and buttons to ensure consistency
 - 🌡️ Keyword-triggered mental health resources
+- 🔃 Loading indicator when entries are being analyzed and saved
 
 ## Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.

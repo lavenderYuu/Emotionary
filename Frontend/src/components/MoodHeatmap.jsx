@@ -3,9 +3,28 @@ import { Tooltip } from 'react-tooltip'
 import 'react-calendar-heatmap/dist/styles.css';
 import { useSelector } from 'react-redux';
 import { getDate, moodToScore, scoreToMood } from '../utils/helpers';
+import { useState, useEffect } from 'react';
 
 const MoodHeatmap = () => {
   const entries = useSelector((state) => state.entries.entries);
+  const [isHorizontal, setIsHorizontal] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      console.log('window.innerWidth:', window.outerWidth);
+      setIsHorizontal(window.outerWidth > 600);
+      // setIsHorizontal(prev => {
+      //   const shouldBeHorizontal = window.innerWidth > 600;
+      //   return prev !== shouldBeHorizontal ? shouldBeHorizontal : prev;
+      // });
+      // const width = document.documentElement.clientWidth;
+      // setIsHorizontal(width > 600);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const moodData = entries.map(entry => ({
     date: entry.date,
@@ -16,9 +35,10 @@ const MoodHeatmap = () => {
   startDate.setFullYear(startDate.getFullYear() - 1); // TODO: actually should this start at january?
 
   return (
-    <div style={{ width: '100%', maxWidth: '1000px', margin: 'auto', }}>
+    <div className={isHorizontal ? 'heatmap-wrapper horizontal-heatmap' : 'heatmap-wrapper vertical-heatmap'} style={{ width: '100%', maxWidth: '1000px', margin: 'auto', }}>
       <h3>Mood Calendar</h3>
       <CalendarHeatmap
+        key={isHorizontal ? 'horizontal' : 'vertical'}
         startDate={startDate}
         endDate={new Date()}
         values={moodData}
@@ -35,8 +55,9 @@ const MoodHeatmap = () => {
             'data-tooltip-content': `${(!date || !mood) ? 'No entry' : (`Date: ${date}, Mood: ${mood}`)}`,
           };
         }}
+        gutterSize={1}
         showWeekdayLabels={true}
-        horizontal={true}
+        horizontal={isHorizontal}
       />
       <Tooltip id="tooltip"/>
     </div>

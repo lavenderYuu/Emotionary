@@ -24,6 +24,8 @@ import { fetchTags } from "../features/tags/tagsSlice";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { encryptContent } from "../utils/crypto";
+import { sensitiveKeywords } from '../utils/helpers';
+import MentalHealthIndicator from './MentalHealthIndicator';
 import LetterButton from "./buttons/LetterButton";
 
 const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
@@ -56,6 +58,7 @@ const CreateEditEntryModal = ({
   });
   const dispatch = useDispatch();
   const [edited, setEdited] = useState(false);
+  const [showMHIModal, setShowMHIModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentEmojiIndex, setCurrentEmojiIndex] = useState(0);
 
@@ -176,6 +179,11 @@ const CreateEditEntryModal = ({
     if (!isValid) {
       showSnackbar("Journal title, date, and content are required.");
       return;
+    } 
+    
+    if (containsSensitiveContent(title, content)) {
+        setShowMHIModal(true);
+        console.log('showMHIModal', showMHIModal);
     }
 
     setIsLoading(true);
@@ -269,6 +277,15 @@ const CreateEditEntryModal = ({
   const showSnackbar = (message, severity = "warning") => {
     setSnackbar({ open: true, message, severity });
   };
+
+  function containsSensitiveContent(title, content) {
+    const entryTitle = title.toLowerCase();
+    const entryContent = content.toLowerCase();
+
+    return sensitiveKeywords.some(keyword => 
+      entryTitle.includes(keyword) || entryContent.includes(keyword)
+    );
+  }
 
   return (
     <>
@@ -478,7 +495,7 @@ const CreateEditEntryModal = ({
           {snackbar.message}
         </MuiAlert>
       </Snackbar>
-
+      <MentalHealthIndicator containsSensitiveContent={showMHIModal}/>
       <Backdrop
         sx={{
           color: "#fff",
