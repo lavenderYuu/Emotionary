@@ -119,7 +119,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
           paper: {
             sx: {
               borderRadius: 4,
-              minWidth: 400,
+              minWidth: 450,
               fontFamily: "Outfit, sans-serif",
             },
           },
@@ -146,7 +146,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
           {userTags.map((tag) => (
             <Box
               key={tag._id}
-              sx={{ display: "flex", alignItems: "center", gap: 1, marginLeft: 1, borderRadius: 2}}
+              sx={{ display: "flex", alignItems: "center", gap: 2, marginLeft: 1, borderRadius: 2 }}
             >
               <Box
                 sx={{
@@ -172,7 +172,7 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
                 </>
               ) : (
                 <>
-                  <Typography sx={{ flex: 1 }}>{tag.name}</Typography>
+                  <Typography sx={{ flex: 1, fontSize: "16px"}}>{tag.name}</Typography>
                   <IconButton
                     onClick={() => {
                       setEditingTagId(tag._id);
