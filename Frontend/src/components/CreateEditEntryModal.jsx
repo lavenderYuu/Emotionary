@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, Backdrop, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
@@ -19,7 +19,7 @@ import { fetchEntries } from "../features/entries/entriesSlice";
 import { useDispatch } from "react-redux";
 import { InferenceClient } from "@huggingface/inference";
 import TagManagementModal from "./TagManagementModal";
-import { sentimentEmojiMap } from "../utils/helpers";
+import { sentimentEmojiMap, emojiSentimentMap } from "../utils/helpers";
 import { fetchTags } from "../features/tags/tagsSlice";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -56,6 +56,10 @@ const CreateEditEntryModal = ({
   });
   const dispatch = useDispatch();
   const [edited, setEdited] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentEmojiIndex, setCurrentEmojiIndex] = useState(0);
+
+  const emojis = Object.keys(emojiSentimentMap);
 
   useEffect(() => {
     if (isOpen) {
@@ -96,6 +100,18 @@ const CreateEditEntryModal = ({
       setId(entry._id);
     }
   }, [mode]);
+
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setCurrentEmojiIndex((prevIndex) => (prevIndex + 1) % emojis.length);
+      }, 500);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading, emojis.length]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -159,9 +175,12 @@ const CreateEditEntryModal = ({
 
     if (!isValid) {
       showSnackbar("Journal title, date, and content are required.");
-    } else {
-      onSave();
+      return;
+    }
 
+    setIsLoading(true);
+
+    try {
       const mood = await getSentiment(content);
 
       const { iv, content: encryptedContent } = await encryptContent(
@@ -180,36 +199,41 @@ const CreateEditEntryModal = ({
         mood: mood ? mood : "😐",
       };
 
-      try {
-        let response;
-        if (mode === "create") {
-          console.log("in create mode");
-          response = await fetch("http://localhost:3000/entries", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(entryData),
-          });
-        } else if (mode === "edit") {
-          console.log("in edit mode");
-          console.log(id);
-          response = await fetch(`http://localhost:3000/entries/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(entryData),
-          });
-        }
-
-        if (!response.ok) {
-          throw new Error("Failed to save entry");
-        }
-
-        setId("");
-        setFormData({ title: "", date: null, content: "" });
-        await response.json();
-        dispatch(fetchEntries());
-      } catch (err) {
-        window.alert(err.message);
+      let response;
+      if (mode === "create") {
+        console.log("in create mode");
+        response = await fetch("http://localhost:3000/entries", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entryData),
+        });
+      } else if (mode === "edit") {
+        console.log("in edit mode");
+        console.log(id);
+        response = await fetch(`http://localhost:3000/entries/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entryData),
+        });
       }
+
+      if (!response.ok) {
+        throw new Error("Failed to save entry");
+      }
+
+      await response.json();
+      await dispatch(fetchEntries());
+      
+      setId("");
+      setFormData({ title: "", date: null, content: "" });
+      setActiveTags([]);
+      setEdited(false);
+      
+      onSave();
+    } catch (err) {
+      showSnackbar(err.message || "Failed to save entry", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -251,6 +275,7 @@ const CreateEditEntryModal = ({
       <Dialog
         disableScrollLock
         onClose={() => {
+          if (isLoading) return;
           if (edited) {
             setAlert(true);
           } else {
@@ -263,6 +288,7 @@ const CreateEditEntryModal = ({
           paper: {
             sx: {
               width: "80vw",
+              overflow: "hidden",
               borderRadius: 4,
             },
           },
@@ -311,7 +337,9 @@ const CreateEditEntryModal = ({
         </DialogTitle>
         <IconButton
           aria-label="close"
+          disabled={isLoading}
           onClick={() => {
+            if (isLoading) return;
             if (edited) {
               setAlert(true);
             } else {
@@ -366,9 +394,6 @@ const CreateEditEntryModal = ({
                   boxShadow: activeTags.includes(tag._id)
                     ? `0 0 0 2px #fff inset`
                     : "none",
-                  textTransform: activeTags.includes(tag._id)
-                    ? "uppercase"
-                    : "none",
                 }}
                 onClick={() => toggleTag(tag._id)}
               />
@@ -395,7 +420,9 @@ const CreateEditEntryModal = ({
           </Box>
         </DialogContent>
         <DialogActions>
-          <SaveButton type="submit" onClick={handleSubmit} />
+          <SaveButton type="submit" onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save"}
+          </SaveButton>
         </DialogActions>
       </Dialog>
       <Dialog
@@ -451,6 +478,37 @@ const CreateEditEntryModal = ({
           {snackbar.message}
         </MuiAlert>
       </Snackbar>
+
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: 10002,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+        open={isLoading}
+      >
+        <Box
+          sx={{
+            fontSize: "4rem",
+            animation: "pulse 0.5s ease-in-out infinite alternate",
+            "@keyframes pulse": {
+              "0%": {
+                transform: "scale(1)",
+              },
+              "100%": {
+                transform: "scale(1.2)",
+              },
+            },
+          }}
+        >
+          {emojis[currentEmojiIndex]}
+        </Box>
+        <Typography variant="h6" component="div">
+          Analyzing your mood and saving entry...
+        </Typography>
+      </Backdrop>
     </>
   );
 };

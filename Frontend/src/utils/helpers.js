@@ -59,7 +59,7 @@ export const tagColours = [
   "#a2c3f3",
   "#6292da",
   "#f9c1ad",
-  "#e6f1c7",
+  "#b5c07a",
   "#f2aa3e",
   "#d5a6bd",
 ];
