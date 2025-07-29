@@ -24,6 +24,8 @@ import { fetchTags } from '../features/tags/tagsSlice';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { encryptContent } from "../utils/crypto";
+import { sensitiveKeywords } from '../utils/helpers';
+import MentalHealthIndicator from './MentalHealthIndicator';
 
 const client = new InferenceClient(import.meta.env.VITE_HUGGINGFACE_ID);
 
@@ -43,6 +45,7 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning'});
   const dispatch = useDispatch();
   const [edited, setEdited] = useState(false);
+  const [showMHIModal, setShowMHIModal] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -130,54 +133,60 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
 
     if (!isValid) {
       showSnackbar("Journal title, date, and content are required.");
-    } else {
-      onSave();
+      return;
+    } 
+    
+    if (containsSensitiveContent(title, content)) {
+        setShowMHIModal(true);
+        console.log('showMHIModal', showMHIModal);
+    }
 
-      const mood = await getSentiment(content);
+    onSave();
 
-      const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
+    const mood = await getSentiment(content);
 
-      const entryData = {
-        title,
-        date: date.toISOString(),
-        content: encryptedContent,
-        content_iv: iv,
-        tags: activeTags,
-        favorite: entry?.favorite ? entry.favorite : false,
-        user_id: userId,
-        mood: mood ? mood : "😐",
-      };
+    const { iv, content: encryptedContent } = await encryptContent(content, cryptoKey);
 
-      try {
-        let response;
-        if (mode === "create") {
-          console.log("in create mode");
-          response = await fetch('http://localhost:3000/entries', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entryData),
-          });
-        } else if (mode === "edit") {
-          console.log("in edit mode");
-          console.log(id);
-          response = await fetch(`http://localhost:3000/entries/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entryData),
-          });
-        }
+    const entryData = {
+      title,
+      date: date.toISOString(),
+      content: encryptedContent,
+      content_iv: iv,
+      tags: activeTags,
+      favorite: entry?.favorite ? entry.favorite : false,
+      user_id: userId,
+      mood: mood ? mood : "😐",
+    };
 
-        if (!response.ok) {
-          throw new Error('Failed to save entry');
-        }
-
-        setId("");
-        setFormData({ title: '', date: null, content: '' });
-        await response.json();
-        dispatch(fetchEntries());
-      } catch (err) {
-        window.alert(err.message);
+    try {
+      let response;
+      if (mode === "create") {
+        console.log("in create mode");
+        response = await fetch('http://localhost:3000/entries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entryData),
+        });
+      } else if (mode === "edit") {
+        console.log("in edit mode");
+        console.log(id);
+        response = await fetch(`http://localhost:3000/entries/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entryData),
+        });
       }
+
+      if (!response.ok) {
+        throw new Error('Failed to save entry');
+      }
+
+      setId("");
+      setFormData({ title: '', date: null, content: '' });
+      await response.json();
+      dispatch(fetchEntries());
+    } catch (err) {
+      window.alert(err.message);
     }
   }
 
@@ -212,6 +221,15 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
   const showSnackbar = (message, severity = 'warning') => {
     setSnackbar({ open: true, message, severity });
   };
+
+  function containsSensitiveContent(title, content) {
+    const entryTitle = title.toLowerCase();
+    const entryContent = content.toLowerCase();
+
+    return sensitiveKeywords.some(keyword => 
+      entryTitle.includes(keyword) || entryContent.includes(keyword)
+    );
+  }
 
   return (
     <>
@@ -337,20 +355,21 @@ const CreateEditEntryModal = ({ isOpen, onClose, onSave, mode, cryptoKey, entry 
           - creates/edits entry without title/date/content
           - attemps to select a future date/time 
       */}
-          <Snackbar
-            open={snackbar.open}
-            autoHideDuration={5000}
-            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          >
-            <MuiAlert
-              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-              severity={snackbar.severity}
-              sx={{ width: '100%', boxShadow: 2 }}
-            >
-              {snackbar.message}
-            </MuiAlert>
-          </Snackbar>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: '100%', boxShadow: 2 }}
+        >
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
+      <MentalHealthIndicator containsSensitiveContent={showMHIModal}/>
     </>
   );
 }
