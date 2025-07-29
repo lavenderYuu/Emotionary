@@ -19,6 +19,7 @@ const Home = ({ cryptoKey }) => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(null);
+  const [prompt, setPrompt] = useState(null);
 
   const allEntries = useSelector((state) => state.entries.entries);
   const [decryptedEntries, setDecryptedEntries] = useState([]);
@@ -71,6 +72,7 @@ const Home = ({ cryptoKey }) => {
   const handleCloseModal = () => {
     setIsViewModalOpen(false);
     setIsModalOpen(false);
+    setPrompt(null);
     dispatch(resetEntry());
 
     if (tour?.isActive() && tour?.getCurrentStep()?.id === 'close-entry') {
@@ -87,6 +89,13 @@ const Home = ({ cryptoKey }) => {
       tour.next();
     }
   };
+
+  const handleCreateFromPrompt = (currentPrompt) => {
+    setIsViewModalOpen(false);
+    setIsModalOpen(true);
+    setMode('create');
+    setPrompt(currentPrompt);
+  }
 
   const handleEditEntry = () => {
     setIsViewModalOpen(false);
@@ -177,7 +186,7 @@ const Home = ({ cryptoKey }) => {
         <p>Welcome to your emotion diary.</p> 
         <CreateButton onClick={handleCreateModal} />
         <MoodChart />
-        <DailyPrompt onCreateFromPrompt={handleCreateModal}/>
+        <DailyPrompt onCreateFromPrompt={handleCreateFromPrompt}/>
         <h2>Recent Entries</h2>
         <EntryCard
           onClick={handleOpenCard}
@@ -197,6 +206,7 @@ const Home = ({ cryptoKey }) => {
           mode={mode}
           cryptoKey={cryptoKey}
           entry={activeEntry}
+          prompt = {prompt}
         />
         <MentalHealthIndicator />
       </>

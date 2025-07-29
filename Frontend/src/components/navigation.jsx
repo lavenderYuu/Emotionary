@@ -200,7 +200,7 @@ const NavigationBar = () => {
                 <NavMenu className="nav_menu">
                   {navLinks.map(({ label, path }) => (
                     <NavItem
-                      id={`nav-${label}`}
+                      id={`nav-${label.replaceAll(" ", "")}`}
                       key={label}
                       as={Link}
                       to={path}

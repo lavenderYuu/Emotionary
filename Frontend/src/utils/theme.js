@@ -57,6 +57,16 @@ export const lightTheme = createTheme({
                 },
             },
         },
+        MuiOutlinedInput: { // placeholder text
+            styleOverrides: {
+                input: {
+                    '&::placeholder': {
+                        color: 'rgba(0, 0, 0, 0.6)',
+                        opacity: 1,
+                    },
+                },
+            },
+        },
     },
 });
 
@@ -79,6 +89,16 @@ export const darkTheme = createTheme({
             styleOverrides: {
                 label: {
                     color: 'black',
+                },
+            },
+        },
+        MuiOutlinedInput: { // placeholder text
+            styleOverrides: {
+                input: {
+                    '&::placeholder': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        opacity: 1,
+                    },
                 },
             },
         },

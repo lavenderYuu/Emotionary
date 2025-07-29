@@ -17,7 +17,7 @@ const MoodHeatmap = () => {
 
   return (
     <div style={{ width: '100%', maxWidth: '1000px', margin: 'auto', }}>
-      <h2>Mood Calendar</h2>
+      <h3>Mood Calendar</h3>
       <CalendarHeatmap
         startDate={startDate}
         endDate={new Date()}
