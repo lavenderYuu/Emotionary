@@ -51,16 +51,20 @@ export default function Landing ({ setCryptoKey }) {
           flexDirection: 'column', 
           flex: 1
         }}>
-        <div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          flexDirection: 'column', 
+        }}>
           <img
             src={logo}
             width="300"
-            style={{ marginBottom: '20px' }}
+            style={{ marginBottom: '20px', marginRight: '20px' }}
           />
           {showLogout && (
-            <Box sx={{ mb: 3, fontFamily: 'Outfit', fontSize: '20px', display: 'flex', alignItems: 'center' }}>
-              <CheckCircleOutlineIcon sx={{ mx: 1, color:'#4caf50' }} />
-              <Box>You have successfully logged out.</Box>
+            <Box sx={{ mb: 4, fontFamily: 'Outfit', fontSize: '20px', display: 'flex', alignItems: 'center' }}>
+              <CheckCircleOutlineIcon sx={{ marginRight: 1, color:'#4caf50' }} />
+              <Box sx={{ marginRight: 3 }}>You have successfully logged out.</Box>
             </Box>
           )}
           <LoginButton onClick={handleOpen} />
