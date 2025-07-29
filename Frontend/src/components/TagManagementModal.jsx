@@ -7,6 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { tagColours } from '../utils/helpers';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import LetterButton from './buttons/LetterButton';
 
 const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -108,125 +109,171 @@ const TagManagementModal = ({ open, onClose, userId, userTags = [], onTagUpdated
 
   return (
     <>
-    {/* https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue */}
-    <Dialog open={open} onClose={onClose} closeAfterTransition={false} sx={{ zIndex: 10000}} slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, fontFamily: 'Outfit, sans-serif' }}}}>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        Manage Tags
-        <IconButton onClick={onClose}><CloseIcon /></IconButton>
-      </DialogTitle>
-
-      <DialogContent dividers sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-
-        {/* Existing tag list */}
-        {userTags.map(tag => (
-          <Box key={tag._id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
-              sx={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                bgcolor: tag.colour,
-                mr: 1
-              }}
-            />
-
-            {editingTagId === tag._id ? (
-              <>
-                <TextField
-                  value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                  size="small"
-                  sx={{ flex: 1 }}
-                />
-                <IconButton onClick={() => handleEditTag(tag._id)}><CheckIcon /></IconButton>
-              </>
-            ) : (
-              <>
-                <Typography sx={{ flex: 1 }}>{tag.name}</Typography>
-                <IconButton onClick={() => { setEditingTagId(tag._id); setEditedName(tag.name); }}>
-                  <EditIcon />
-                </IconButton>
-              </>
-            )}
-
-            <IconButton onClick={() => setTagToDelete(tag)}><DeleteIcon /></IconButton>
-          </Box>
-        ))}
-
-        {/* Create tag flow */}
-        {!showCreateForm ? (
-          <Button
-            variant="outlined"
-            onClick={() => setShowCreateForm(true)}
-            // disabled={userTags.length >= 10}
-            sx={{ fontFamily: 'Outfit, sans-serif' }}
-          >
-            Create Tag
-          </Button>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <TextField
-              label="Tag Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button onClick={handleCancelCreate}>Cancel</Button>
-              <Button onClick={handleCreateTag} variant="contained">Save Tag</Button>
-            </Box>
-          </Box>
-        )}
-      </DialogContent>
-
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
-
-    {/* show snackbar alert if user attempts to create >10 tags */}
-    <Snackbar
-      open={snackbar.open}
-      autoHideDuration={3000}
-      onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-    >
-      <MuiAlert
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        severity={snackbar.severity}
-        sx={{ width: '100%' }}
+      {/* https://stackoverflow.com/questions/79006592/aria-hidden-warning-on-closing-mui-dialogue */}
+      <Dialog
+        open={open}
+        onClose={onClose}
+        closeAfterTransition={false}
+        sx={{ zIndex: 10000 }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 4,
+              minWidth: 400,
+              fontFamily: "Outfit, sans-serif",
+            },
+          },
+        }}
       >
-        {snackbar.message}
-      </MuiAlert>
-    </Snackbar>
-
-    {/* delete tag confirmation window */}
-    <Dialog
-      open={Boolean(tagToDelete)}
-      onClose={() => setTagToDelete(null)}
-      sx={{ zIndex: 10001 }}
-      slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400, }}}}
-    >
-      <DialogTitle>Delete Tag</DialogTitle>
-      <DialogContent>
-        <Typography>
-          Are you sure you want to delete the tag{' '}
-          <strong>{tagToDelete?.name}</strong>?
-        </Typography>
-      </DialogContent>
-      <DialogActions sx={{ display: 'flex', justifyContent: 'space-around' }}>
-        <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
-        <Button
-          onClick={() => {
-            handleDeleteTag(tagToDelete._id);
-            setTagToDelete(null);
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
-          color="error"
         >
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
+          Manage Tags
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent
+          dividers
+          sx={{ display: "flex", flexDirection: "column", gap: 2 , paddingBottom: 4}}
+        >
+          {/* Existing tag list */}
+          {userTags.map((tag) => (
+            <Box
+              key={tag._id}
+              sx={{ display: "flex", alignItems: "center", gap: 1, marginLeft: 1, borderRadius: 2}}
+            >
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  bgcolor: tag.colour,
+                  mr: 1,
+                }}
+              />
+
+              {editingTagId === tag._id ? (
+                <>
+                  <TextField
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    size="small"
+                    sx={{ flex: 1 }}
+                  />
+                  <IconButton onClick={() => handleEditTag(tag._id)}>
+                    <CheckIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  <Typography sx={{ flex: 1 }}>{tag.name}</Typography>
+                  <IconButton
+                    onClick={() => {
+                      setEditingTagId(tag._id);
+                      setEditedName(tag.name);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </>
+              )}
+
+              <IconButton onClick={() => setTagToDelete(tag)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          ))}
+
+          {/* Create tag flow */}
+          {!showCreateForm ? (
+            <LetterButton onClick={() => setShowCreateForm(true)}>
+              Create Tag
+            </LetterButton>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <TextField
+                label="Tag Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+              />
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  onClick={handleCancelCreate}
+                  style={{
+                    color: "#b91313ff",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateTag}
+                  style={{
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  Save Tag
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+
+        {/* <DialogActions>
+          <Button onClick={onClose}>Close</Button>
+        </DialogActions> */}
+      </Dialog>
+
+      {/* show snackbar alert if user attempts to create >10 tags */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        sx={{ zIndex: 10001 }}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <MuiAlert
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
+
+      {/* delete tag confirmation window */}
+      <Dialog
+        open={Boolean(tagToDelete)}
+        onClose={() => setTagToDelete(null)}
+        sx={{ zIndex: 10001 }}
+        slotProps={{ paper: { sx: { borderRadius: 4, minWidth: 400 } } }}
+      >
+        <DialogTitle>Delete Tag</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete the tag{" "}
+            <strong>{tagToDelete?.name}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ display: "flex", justifyContent: "space-around" }}>
+          <Button onClick={() => setTagToDelete(null)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleDeleteTag(tagToDelete._id);
+              setTagToDelete(null);
+            }}
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

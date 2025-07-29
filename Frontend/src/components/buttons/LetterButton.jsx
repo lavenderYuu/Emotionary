@@ -8,9 +8,8 @@ const LetterButton = ({ onClick, children, ...props }) => {
       {...props}
       sx={{
         backgroundColor: "#ffe59a",
-        color: "#3d3d3d",
+        color: "black",
         borderRadius: "30px",
-        fontWeight: 500,
         textTransform: "none",
         margin: "8px",
         textDecoration: "none",
