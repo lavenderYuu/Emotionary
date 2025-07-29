@@ -206,9 +206,9 @@ export default function GoogleSetupModal({ user, open, hide, setCryptoKey }) {
               <>
                 <Typography variant="caption">
                   We require users who sign up using their Google email address to set up a passkey for security.
-                  Your passkey is very important and is required to lock/unlock your journal. 
+                  Your passkey is used to lock and unlock your journal. 
                   Please treat your passkey like a password and remember it. You will need it to log in.
-                  If you lose your passkey, you will not be able to unlock your journal entries. 
+                  If you forget your passkey, your data cannot be recovered.
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Checkbox 

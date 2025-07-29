@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Tooltip from "@mui/material/Tooltip";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../features/users/usersSlice";
 import { Checkbox, useTheme, Alert, Snackbar } from '@mui/material';
@@ -265,39 +266,81 @@ export default function LoginModal({ open, onClose, setCryptoKey }) {
                 },
               }}
             />
-            <TextField
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              variant="outlined"
-              fullWidth
-              required
-              value={formData.password}
-              onChange={handleChange}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#fbbbeb",
+            {!showSignIn ? (
+              <Tooltip
+                title="Your password is used to lock and unlock your journal. If you forget it, your data cannot be recovered."
+                arrow
+                placement="top"
+              >
+                <TextField
+                  name="password"
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#fbbbeb",
+                      },
+                    },
+                    "& label.Mui-focused": {
+                      color: "#3d3d3d",
+                    },
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          onClick={() => setShowPassword((show) => !show)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Tooltip>
+            ) : (
+              <TextField
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                required
+                value={formData.password}
+                onChange={handleChange}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#fbbbeb",
+                    },
                   },
-                },
-                "& label.Mui-focused": {
-                  color: "#3d3d3d",
-                },
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      onClick={() => setShowPassword((show) => !show)}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+                  "& label.Mui-focused": {
+                    color: "#3d3d3d",
+                  },
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        onClick={() => setShowPassword((show) => !show)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
             {showSignIn ? "" : (
               <PasskeyRequirements requirements={requirements} isPasskey={false} />
             )}
