@@ -192,7 +192,7 @@ const NavigationBar = () => {
                   src={logo}
                   alt="emotionary logo"
                   height="45"
-                  style={{ marginRight: "40px" }}
+                  style={{ marginRight: "40px", marginTop: "5px"}}
                 />
               </Link>
               {/* Desktop */}
