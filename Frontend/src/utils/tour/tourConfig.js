@@ -167,6 +167,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
         offset(16),
       ],
     },
+    scrollTo: false,
+    when: {
+      show: function() {
+        window.scrollTo(0, 800);
+      }
+    },
   },
   {
     id: 'view-entry',
@@ -251,6 +257,12 @@ export const createTourSteps = ({ handleTourSkip, handleTourComplete }) => [
         action: function () { this.next(); },
       },
     ],
+    scrollTo: false,
+    when: {
+      show: function() {
+        window.scrollTo(0, 800);
+      }
+    },
   },
   {
     id: 'home',
