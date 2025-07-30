@@ -84,8 +84,12 @@ a, h1, h2, h3, h4, h5, p {
 .react-calendar-heatmap .color-scale-5 { fill: #10a9a7; }
 
 .vertical-heatmap .react-calendar-heatmap {
-  transform: scale(0.4);
+  transform: scale(0.7);
   transform-origin: top center;
+}
+
+.vertical-heatmap .heatmap-padding-wrapper {
+  padding-left: 120px;
 }
 
 .vertical-heatmap .react-calendar-heatmap text {

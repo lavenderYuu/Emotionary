@@ -37,28 +37,30 @@ const MoodHeatmap = () => {
   return (
     <div className={isHorizontal ? 'heatmap-wrapper horizontal-heatmap' : 'heatmap-wrapper vertical-heatmap'} style={{ width: '100%', maxWidth: '1000px', margin: 'auto', }}>
       <h3>Mood Calendar</h3>
-      <CalendarHeatmap
-        key={isHorizontal ? 'horizontal' : 'vertical'}
-        startDate={startDate}
-        endDate={new Date()}
-        values={moodData}
-        classForValue={(value) => {
-          if (!value) return 'color-empty';
-          return `color-scale-${value.count}`; // use mood score to set colours
-        }}
-        tooltipDataAttrs={(value) => {
-          const date = value?.date ? getDate(value.date) : null;
-          const mood = value?.count ? scoreToMood[value.count] : null;
+      <div className='heatmap-padding-wrapper'>
+        <CalendarHeatmap
+          key={isHorizontal ? 'horizontal' : 'vertical'}
+          startDate={startDate}
+          endDate={new Date()}
+          values={moodData}
+          classForValue={(value) => {
+            if (!value) return 'color-empty';
+            return `color-scale-${value.count}`; // use mood score to set colours
+          }}
+          tooltipDataAttrs={(value) => {
+            const date = value?.date ? getDate(value.date) : null;
+            const mood = value?.count ? scoreToMood[value.count] : null;
 
-          return {
-            'data-tooltip-id': 'tooltip',
-            'data-tooltip-content': `${(!date || !mood) ? 'No entry' : (`Date: ${date}, Mood: ${mood}`)}`,
-          };
-        }}
-        gutterSize={1}
-        showWeekdayLabels={true}
-        horizontal={isHorizontal}
-      />
+            return {
+              'data-tooltip-id': 'tooltip',
+              'data-tooltip-content': `${(!date || !mood) ? 'No entry' : (`Date: ${date}, Mood: ${mood}`)}`,
+            };
+          }}
+          gutterSize={1}
+          showWeekdayLabels={true}
+          horizontal={isHorizontal}
+        />
+      </div>
       <Tooltip id="tooltip"/>
     </div>
     
