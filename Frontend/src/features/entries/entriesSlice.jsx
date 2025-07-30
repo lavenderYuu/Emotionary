@@ -98,6 +98,18 @@ export const entriesSlice = createSlice({
         page: 1,
       };
     },
+    resetFilter(state, action) {
+      state.filters = {
+        startDate: null,
+        endDate: null,
+        mood: null,
+        favorite: undefined,
+        tagId: null,
+        deleted: false,
+        page: 1,
+        limit: 9,
+      };
+    },
     setPage: (state, action) => {
       state.filters.page = action.payload;
     },
@@ -154,6 +166,6 @@ export const entriesSlice = createSlice({
   },
 });
 
-export const { selectEntry, resetEntry, setFilter, setPage } = entriesSlice.actions;
+export const { selectEntry, resetEntry, setFilter, resetFilter, setPage } = entriesSlice.actions;
 
 export default entriesSlice.reducer;

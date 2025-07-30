@@ -9,11 +9,12 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { sentimentEmojiMap } from '../utils/helpers';
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "../features/entries/entriesSlice";
+import { setFilter, resetFilter } from "../features/entries/entriesSlice";
 import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import dayjs from "dayjs";
 import { fetchTags } from "../features/tags/tagsSlice";
+import LetterButton from "./buttons/LetterButton";
 
 const FilterRow = () => {
     const dispatch = useDispatch();
@@ -40,6 +41,11 @@ const FilterRow = () => {
       dispatch(fetchTags());
   }, []);
 
+  useEffect(() => {
+    return () => {
+      dispatch(resetFilter());
+    };
+  }, []);
 
   const handleFavorite = () => {
     const newFavoriteValue = filters.favorite === undefined ? true : undefined;
@@ -129,6 +135,7 @@ const FilterRow = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Start Date"
+          value={filters.startDate ? dayjs(filters.startDate) : null}
           onChange={handleDateChange("startDate")}
           disableFuture
           sx={{
@@ -137,6 +144,7 @@ const FilterRow = () => {
         />
         <DatePicker
           label="End Date"
+          value={filters.endDate ? dayjs(filters.endDate) : null}
           onChange={handleDateChange("endDate")}
           disableFuture
           sx={{ width: 180 }}
@@ -145,15 +153,17 @@ const FilterRow = () => {
       <Autocomplete
         disablePortal
         options={moodOptions}
+        value={moodOptions.find((option) => option.value === filters.mood) || null}
         onChange={handleMoodChange}
         sx={{
-          width: 180,
+          width: 206,
         }}
         renderInput={(params) => <TextField {...params} label="Mood" />}
       />
       <Autocomplete
         disablePortal
         options={tagsOptions}
+        value={tagsOptions.find((tag) => tag.value === filters.tagId) || null}
         onChange={handleTagChange}
         sx={{
           width: 180,
@@ -190,6 +200,15 @@ const FilterRow = () => {
           <DeleteOutlinedIcon />
         )}
       </IconButton>
+      <LetterButton
+        sx={{
+          fontSize: "0.875rem",
+          fontWeight: 500,
+        }}
+        onClick={() => dispatch(resetFilter())}
+      >
+        Reset Filter
+      </LetterButton>
     </div>
   );
 };
