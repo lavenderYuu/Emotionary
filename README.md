@@ -94,7 +94,7 @@ We integrated ML to analyze the emotional tone of each journal entry and used th
 - Client-side encryption for user privacy
 ![encryption](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0712c9ba-0c9b-4336-9cbc-48012bae86a1)
 
-- ML for for sentiment analysis
+- ML for sentiment analysis
 ![sentiment](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0d151348-79ff-486d-aa59-6fb4a8f57e3f)
 
 - Mental health indicator and resources
