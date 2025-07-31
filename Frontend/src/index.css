@@ -90,7 +90,6 @@ a, h1, h2, h3, h4, h5, p {
 
 .vertical-heatmap .heatmap-padding-wrapper {
   padding-left: 120px;
-  margin: 0;
   padding-bottom: 0;
 }
 
@@ -98,7 +97,7 @@ a, h1, h2, h3, h4, h5, p {
   font-size: 6px;
 }
 
-.react-calendar-heatmap {
+.vertical-heatmap .react-calendar-heatmap {
   margin-bottom: -1150px;
 }
 
