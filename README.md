@@ -76,21 +76,41 @@ We added the ability to filter entries by start/end dates, mood, tag, favorited,
 We integrated ML to analyze the emotional tone of each journal entry and used the results for different mood visualizations. Sentiment analysis provides users with personalized insights and emotional trends over time. Using an external API gives us access to a pretrained model of our choice with minimal local resource costs, while maintaining user privacy by sending only entry content. We include a clear privacy policy during signup so users understand how their data is used. We also recognize that ML isn’t always accurate, so users can manually overwrite the detected mood if needed.
 
 ## Demo
-Core UX for creating, editing, viewing, and deleting entries
-![core_ux](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/a7aa7c6c-4fc6-461d-a750-df6b4b43dcb8)
+- Core UX for creating, editing, viewing, and deleting entries
+![core_ux](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/e8c44c74-a5c0-4d9e-ad98-a6a1ea0f8319)
 
-Mood insights 
+- Mood insights
 ![insights](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/4c6d559a-5ab3-4d1d-8154-c2aa98ed22a9)
 
-Filter by start/end dates, mood, tag, favorited, and/or deleted
-![filtering](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/6c65279a-7e91-44c2-8c15-08502de5c39c)
+- Filter entries by start/end dates, mood, tag, favorited, and/or deleted
+![filtering](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0c0d04e8-bd54-4c68-9e15-c3881d9f7691)
 
-Search by title, content, or tags
-![search](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0c0d04e8-bd54-4c68-9e15-c3881d9f7691)
+- Search entries by title, content, or tags
+![search](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/6c65279a-7e91-44c2-8c15-08502de5c39c)
 
-Time Capsule feature
+- Time Capsule feature to write a letter to your future self
 ![time_capsule](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/8f76ffab-8f6a-4f85-8192-d2efc4b034d1)
 
+- Client-side encryption for user privacy
+![encryption](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/e5e92ba1-9a84-457d-a633-10cd04dffd8a)
+
+- ML for for sentiment analysis
+![sentiment](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0d151348-79ff-486d-aa59-6fb4a8f57e3f)
+
+- Mental health indicator and resources
+![health](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/e697efcf-ed3b-4e1f-87c6-6a455340f047)
+
+- Daily prompts to guide reflection
+![daily_prompts](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/33a17f60-7446-4e21-903f-6fbe4c5c7940)
+
+- Dark mode for user accessibility and to reduce eye strain
+![dark_mode](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/fa421744-476a-42a4-aba6-2637ff23d8f5)
+
+- Ability to soft/hard delete and restore entries
+![delete](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/b9f5bcd3-3f46-410a-8525-a2a82b55b6a9)
+
+- Tutorial for first-time users
+![tutorial](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/1313d30d-219b-4acf-8b20-d0adb6135830)
 
 ## XSS Security Assessment
 We performed a manual XSS security assessment by entering various payloads into all input fields across our application to determine whether user input could manipulate the DOM or execute unintended scripts.
@@ -241,9 +261,12 @@ For Milestone 5, we focused on finetuning our existing features, addressing cros
 - 🔍 Insights Page improvements
     - 📊 Stacked bar chart that shows how often different moods are associated with different tags over the past month (CP)
     - 🗺️ Vertical responsiveness for mood heatmap (CP)
+- 📄 Entries Page improvements
+    - ↩️ Filtered entries are reset when user navigates to another page 
+    - ↩️ Reset filter button 
 - 🏷️ Updated styling for tags and buttons to ensure consistency
 - 🌡️ Keyword-triggered mental health resources
-- 🔃 Loading indicator when entries are being analyzed and saved
+- 🔄️ Loading indicator when entries are being analyzed and saved (CP)
 
 ## Test Suite
 We implemented a comprehensive test suite using the Mocha and Chai testing frameworks, as well as mongodb-memory-server and supertest. Our backend tests cover all API routes for entries, tags, and users; our frontend tests cover filtering for our search functionality. Additionally, we used mochawesome to generate our test reports.
