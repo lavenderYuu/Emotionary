@@ -65,13 +65,32 @@ We chose to implement the time capsule feature as our stretch goal and decided t
 We opted not to implement disappearing messages as it conflicted with the idea that journal entries should be a lasting, personal record. We also chose to leave out AI-generated summaries due to privacy concerns. Processing user content through AI would have required deeper consideration around data handling, consent, and transparency, which we felt was outside the scope of this project.
 
 ## Non-Trivial Elements
-- [completed] End-to-end encryption
-- [in-testing] System design and comprehensive testing
+- [completed] Client-side encryption using Web Crypto API
 - [completed] Filtering, favoriting, tagging, and search functionalities
-- [completed] ML for NLP and sentiment analysis
+- [completed] ML for sentiment analysis via Hugging Face Inference API
+
+We implemented client-side encryption to ensure that all journal entries are encrypted before being stored in the database and decrypted only on the frontend. This approach prioritizes user privacy and data security by preventing server-side access to sensitive journal content.
+
+We added the ability to filter entries by start/end dates, mood, tag, favorited, and/or deleted. Users can create, edit, and delete custom tags, and perform keyword searches. These features enhance usability and make it easier for users to organize, navigate, and reflect on past entries.
+
+We integrated ML to analyze the emotional tone of each journal entry and used the results for different mood visualizations. Sentiment analysis provides users with personalized insights and emotional trends over time. Using an external API gives us access to a pretrained model of our choice with minimal local resource costs, while maintaining user privacy by sending only entry content. We include a clear privacy policy during signup so users understand how their data is used. We also recognize that ML isn’t always accurate, so users can manually overwrite the detected mood if needed.
 
 ## Demo
-<!-- TODO -->
+Core UX for creating, editing, viewing, and deleting entries
+![core_ux](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/a7aa7c6c-4fc6-461d-a750-df6b4b43dcb8)
+
+Mood insights 
+![insights](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/4c6d559a-5ab3-4d1d-8154-c2aa98ed22a9)
+
+Filter by start/end dates, mood, tag, favorited, and/or deleted
+![filtering](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/6c65279a-7e91-44c2-8c15-08502de5c39c)
+
+Search by title, content, or tags
+![search](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/0c0d04e8-bd54-4c68-9e15-c3881d9f7691)
+
+Time Capsule feature
+![time_capsule](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/assets/20702/8f76ffab-8f6a-4f85-8192-d2efc4b034d1)
+
 
 ## XSS Security Assessment
 We performed a manual XSS security assessment by entering various payloads into all input fields across our application to determine whether user input could manipulate the DOM or execute unintended scripts.
@@ -231,13 +250,13 @@ We implemented a comprehensive test suite using the Mocha and Chai testing frame
 
 ### Instructions to run
 1. Please follow Steps #1 and #2 below from [Getting Started](#instructions-to-run-1)
-    - Clone this repo, go to the `Milestone4` branch, and add the `.env` file
+    - Clone this repo, go to the `FinalRelease` branch, and add the `.env` file
 2. If you would like to run the test suite image separately, run `docker compose up --build test`
 4. Otherwise, follow the remaining instructions below, and test reports will be automatically generated in Step #6
 
 ### Links
-- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone4/Backend/test)
-- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/Milestone4/Frontend/test)
+- [Backend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/FinalRelease/Backend/test)
+- [Frontend tests](https://github.students.cs.ubc.ca/CPSC455-2025S/team15/tree/FinalRelease/Frontend/test)
 
 ## Getting Started
 The following credentials need to be passed as environment variables:
@@ -250,7 +269,7 @@ The following credentials need to be passed as environment variables:
 We will send you a `.env` file to use for Step #2 below.
 
 ### Instructions to run
-1. Clone this repo and go to the `Milestone4` branch
+1. Clone this repo and go to the `FinalRelease` branch
 2. Replace the `.env.example` file in the root directory with the `.env` file we provide to you
     - Make sure the file is named `.env`
 3. Run `docker compose up --build`

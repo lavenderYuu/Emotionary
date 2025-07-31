@@ -156,7 +156,7 @@ const FilterRow = () => {
         value={moodOptions.find((option) => option.value === filters.mood) || null}
         onChange={handleMoodChange}
         sx={{
-          width: 206,
+          width: 210,
         }}
         renderInput={(params) => <TextField {...params} label="Mood" />}
       />
