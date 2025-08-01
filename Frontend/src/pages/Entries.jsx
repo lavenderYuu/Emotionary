@@ -32,9 +32,8 @@ const Entries = ({ cryptoKey }) => {
   const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
 
   useEffect(() => {
-    dispatch(filterEntries());
     window.scrollTo(0, 0);
-  }, [dispatch, filters, entries]);
+  }, [filters]);
 
   useEffect(() => {
     async function decryptAndStore() {
