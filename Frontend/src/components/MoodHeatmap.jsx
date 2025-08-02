@@ -11,7 +11,7 @@ const MoodHeatmap = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      console.log('window.innerWidth:', window.outerWidth);
+      // console.log('window.innerWidth:', window.outerWidth);
       setIsHorizontal(window.outerWidth > 600);
       // setIsHorizontal(prev => {
       //   const shouldBeHorizontal = window.innerWidth > 600;

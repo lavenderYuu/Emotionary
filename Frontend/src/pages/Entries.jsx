@@ -32,8 +32,9 @@ const Entries = ({ cryptoKey }) => {
   const activeEntry = decryptedEntries.find(e => e._id === activeEntryId);
 
   useEffect(() => {
+    dispatch(filterEntries());
     window.scrollTo(0, 0);
-  }, [filters]);
+  }, [dispatch, filters, entries]);
 
   useEffect(() => {
     async function decryptAndStore() {
@@ -93,7 +94,15 @@ const Entries = ({ cryptoKey }) => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        minHeight: "100vh"
+      }}
+    >
       <h1>Journal Entries</h1>
       <FilterRow />
       <CreateButton onClick={handleCreateModal} />
@@ -139,7 +148,7 @@ const Entries = ({ cryptoKey }) => {
         )}
       </div>
       <MentalHealthIndicator />
-    </>
+    </div>
   );
 };
 

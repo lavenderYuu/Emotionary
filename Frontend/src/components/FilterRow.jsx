@@ -10,7 +10,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { sentimentEmojiMap } from '../utils/helpers';
 import { useDispatch, useSelector } from "react-redux";
 import { setFilter, resetFilter } from "../features/entries/entriesSlice";
-import { filterEntries } from "../features/entries/entriesSlice";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import dayjs from "dayjs";
 import { fetchTags } from "../features/tags/tagsSlice";
@@ -34,17 +33,7 @@ const FilterRow = () => {
   }));
 
   useEffect(() => {
-    dispatch(filterEntries());
-  }, [dispatch, filters]);
-
-  useEffect(() => {
-      dispatch(fetchTags());
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetFilter());
-    };
+    dispatch(fetchTags());
   }, []);
 
   const handleFavorite = () => {
