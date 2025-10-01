@@ -3,6 +3,17 @@
 ## App Summary
 *emotionary* is a journaling app with sentiment analysis that helps users reflect on their moods through visual insights. Our app offers a seamless and intuitive user experience, complete with features such as tagging, favoriting, filtering, and search. Our top priority is user privacy, and we securely encrypt all account information and journal entries.
 
+## Live Demo
+https://emotionary-ubc.vercel.app/
+<img width="3199" height="1631" alt="image" src="https://github.com/user-attachments/assets/1dbd2d9c-b703-411b-8ca5-e32890b38664" />
+
+
+### Test Account
+
+Use this test account to try the app:
+- **Email:** `testhash@email.com`
+- **Password:** `testingthehash`
+
 ## Table of Contents
 - [App Summary](#app-summary)
 - [Team Info](#team-info)
@@ -11,7 +22,7 @@
 
 ## Team Info
 
-**Name**: SLAcK (Team #15)
+**Name**: SLAcK
 
 **Members**:
 - Annie Chung
@@ -125,3 +136,4 @@ We will send you a `.env` file to use for Step #2 below.
     - `backend-test-report.html`
 
     - `frontend-test-report.html`
+
